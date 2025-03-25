@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import theme from '../Utilities/fonts';
+import theme from '../Utilities/theme';
 import { ChakraProvider, Box, UnorderedList, ListItem, Image, Heading, VStack, Text, Spacer,  } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../Utilities/pageTitles';

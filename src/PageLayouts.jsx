@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Image, Text, Box } from '@chakra-ui/react';
+import { Flex, Image, Text, Box, ChakraProvider } from '@chakra-ui/react';
 import { useBreakpointValue } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import NavigationTop from './Headers/NavigationTop';
 import BottomNav from './Footers/BottomNav';
 import { useAnimation, motion } from 'framer-motion';
+import theme from './Utilities/theme';
 
 const PageLayouts = ({ children }) => {
   const { pathname } = useLocation();
@@ -34,6 +35,7 @@ const PageLayouts = ({ children }) => {
   }, [WelcomePagePath]);
 
   const CenteredContent = () => (
+    <ChakraProvider theme={theme}>
     <Flex
       direction="column"
       align="center"
@@ -72,6 +74,7 @@ const PageLayouts = ({ children }) => {
         </motion.div>
       )}
     </Flex>
+    </ChakraProvider>
   );
   
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import theme from '../Utilities/fonts';
+import theme from '../Utilities/theme';
 import { VStack, Image, Flex, UnorderedList, ListItem, Heading, Text, Spacer, ChakraProvider} from '@chakra-ui/react'
 import BottomNav from '../Footers/BottomNav';
 import { usePageTitle } from '../Utilities/pageTitles';

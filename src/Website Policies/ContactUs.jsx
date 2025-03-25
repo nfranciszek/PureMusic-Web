@@ -2,7 +2,7 @@ import React from 'react'
 import { VStack, Flex, ChakraProvider, Heading, Button, Spacer, Text, Image } from '@chakra-ui/react'
 import { usePageTitle } from '../Utilities/pageTitles';
 import { Helmet } from 'react-helmet';
-import theme from '../Utilities/fonts';
+import theme from '../Utilities/theme';
 import BottomNav from '../Footers/BottomNav';
 
 

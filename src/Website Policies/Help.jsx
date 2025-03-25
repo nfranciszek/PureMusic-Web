@@ -1,5 +1,5 @@
 import React from 'react'
-import theme from '../Utilities/fonts'
+import theme from '../Utilities/theme';
 import { ChakraProvider, Image, Heading, VStack, Text, Spacer, Button } from '@chakra-ui/react'
 import { usePageTitle } from '../Utilities/pageTitles'
 import { Helmet } from 'react-helmet';

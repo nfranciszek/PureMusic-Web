@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import BottomNav from '../Footers/BottomNav';
-import theme from '../Utilities/fonts';
+import theme from '../Utilities/theme';
 import { ChakraProvider, Box, UnorderedList, ListItem, Image, Heading, VStack, Text, Flex, HStack, Spacer, Button } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom';
 import { usePageTitle } from '../Utilities/pageTitles';
