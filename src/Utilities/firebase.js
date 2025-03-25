@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, ref, child, get, equalTo, orderByChild, query, update, remove, set, onValue, push, off} from 'firebase/database';
-import { getStorage, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { getDatabase, child, get, equalTo, orderByChild, query, update, remove, set, onValue, push, off} from 'firebase/database';
+import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,13 +21,15 @@ const pureMusicConfig = {
 const pureMusicApp = initializeApp(pureMusicConfig);
 const analytics = getAnalytics(pureMusicApp);
 
-const databasePureMusic = getDatabase(pureMusicConfig);
-const storage= getStorage(pureMusicConfig);
+const storage = getStorage(pureMusicApp);
 
 
 
 export { 
     pureMusicApp,
     storage,
+    ref,
+    getDownloadURL,
+
 
 };

@@ -90,8 +90,8 @@ const PageLayouts = ({ children }) => {
           <Box
             flex={1}
             w={{ base: 'calc(100% - 70px)', md: 'calc(100% - 240px)' }}
-            pt="6rem"
-            pb={isBigScreen ? '6rem' : '0rem'}
+            pt="5rem"
+            pb={isBigScreen ? '5rem' : '0rem'}
           >
             {children}
           </Box>
