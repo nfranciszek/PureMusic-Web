@@ -5,42 +5,44 @@ import './index.css';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { extendTheme } from '@chakra-ui/react';
 import { BrowserRouter } from 'react-router-dom';
+import { mode } from '@chakra-ui/theme-tools';
 
 const colors = {
   brand: {
-
-    light: '#06e4ed',  // Example primary color for light mode
-    dark: '#ffffff',   // Example primary color for dark mode
+    light: '#06e4ed',
+    dark: '#ffffff',
   },
-background: {
-  light: '#ffffff',  // Background color for light mode
-  dark: '#000000',   // Background color for dark mode
-},
-text: {
-  light: '#000000',  // Text color for light mode
-  dark: '#ffffff',   // Text color for dark mode
-},
+  background: {
+    light: '#ffffff',
+    dark: '#000000',
+  },
+  text: {
+    light: '#000000',
+    dark: '#ffffff',
+  },
 };
 
 const theme = extendTheme({
-config: {
-  initialColorMode: 'dark', // Force dark mode
-  useSystemColorMode: false, // Disable system preference
-},
-colors, // Your color scheme
-styles: {
-  global: (props) => ({
-    body: {
-      bg: props.colorMode === 'dark' ? colors.background.dark : colors.background.light,
-      color: props.colorMode === 'dark' ? colors.text.dark : colors.text.light,
-    },
-  }),
-},
+  config: {
+    initialColorMode: 'light',
+    useSystemColorMode: false,
+  },
+  colors,
+  styles: {
+    global: (props) => ({
+      body: {
+        bg: mode(colors.background.light, colors.background.dark)(props),
+        color: mode(colors.text.light, colors.text.dark)(props),
+      },
+    }),
+  },
 });
+
 
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
       <BrowserRouter>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <ChakraProvider theme={theme}>
           <App/>
         </ChakraProvider>

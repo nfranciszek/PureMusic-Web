@@ -26,14 +26,12 @@ const ContactUs = () => {
     <meta charset="UTF-8" />
   </Helmet>
   <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      height="50vh"
-      width="55vw"
-    > 
+  flexDirection="column"
+  alignItems="center"
+  justifyContent="center">
   <Heading mt="2rem">Contact Us</Heading>
-                <Image src='/PureMusicLogo.jpeg' h={10} alt='Pure Music Logo'></Image>
+                <Image src='/PureMusicLogo.jpeg'    width="70px"
+        maxH="50px" alt='Pure Music Logo'></Image>
   
   
   {/* Add your message here */}

@@ -14,7 +14,7 @@ const ArtistCard = ({ image, name, bio }) => {
         p={6}
         bg="white"
         width="100%" // Make it take full width
-        maxW="1200px" // Optionally, you can set a max-width to avoid stretching too much
+       // maxW="1200px" // Optionally, you can set a max-width to avoid stretching too much
         mx="auto" // Center the card horizontally
         position="relative"
         zIndex="1"
@@ -29,7 +29,7 @@ const ArtistCard = ({ image, name, bio }) => {
             mr={4}
           />
           <VStack align="flex-start">
-            <Heading as="h3" size="lg" fontWeight="bold">{name}</Heading>
+            <Heading as="h3" size="lg" fontWeight="bold" color="black">{name}</Heading>
             <Text fontSize="md" color="gray.600">{bio}</Text>
           </VStack>
         </Flex>
@@ -40,8 +40,8 @@ const ArtistCard = ({ image, name, bio }) => {
   const ArtistsPage = () => {
     return (
       <Box bg="white" minH="100vh" py={12} px={6}>
-      <VStack spacing={8}>
-        <Heading mb="2rem" justifyContent="center">Artists</Heading>
+      <VStack spacing={8} align="center" mx="auto">
+        <Heading mb="2rem" justifyContent="center" color="black">Artists</Heading>
         <ArtistCard
           image="/Artists1.jpg"
           name="Nathanael Fra"

@@ -127,7 +127,7 @@ const WelcomePage = () => {
                 fontSize={{ base: "12px", sm: "14px", md: "16px", lg: "24px" }}
                 marginBottom="20px"
               >
-                Tip now to continue watching!
+                Tip this artist now to continue watching!
               </Text>
               <div>
                 <Button onClick={() => handleTip(10)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}

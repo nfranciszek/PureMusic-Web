@@ -77,21 +77,25 @@ const PageLayouts = ({ children }) => {
 
   return (
     <Flex
-      direction={isVisible ? 'column' : ''}
-      justifyContent='center' 
-      alignItems={isVisible ? 'center' : ''}
-      bg={isVisible ? 'white' : 'transparent'} // Set background to transparent when not visible
-    >
+    direction="column"
+    justifyContent="center"
+    alignItems="center"
+    bg="white"
+    minH="100vh" // Ensures full page height
+    w="100vw" // Ensures full page width
+  >
+
       {isVisible ? (
         <CenteredContent />
       ) : (
         <>
           <NavigationTop />
           <Box
-            flex={1}
-            w={{ base: 'calc(100% - 70px)', md: 'calc(100% - 240px)' }}
-            pt="5rem"
-            pb={isBigScreen ? '5rem' : '0rem'}
+               flex={1} // Limits max width for proper centering
+               w="100%" // Ensures it takes the full available width
+               pt="5rem"
+               pb={isBigScreen ? "5rem" : "0rem"}
+               mx="auto" // Centers horizontally
           >
             {children}
           </Box>

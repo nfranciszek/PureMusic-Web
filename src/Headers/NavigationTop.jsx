@@ -96,7 +96,6 @@ const NavigationTop = () => {
 
 
 
-
              <Button
                             width="full"
                             onClick={goToArtists}
@@ -106,6 +105,7 @@ const NavigationTop = () => {
                             fontWeight="normal"
                             mr={!isBaseOrSm ? "1rem" : null}
                             as='b'
+                            color="gray"
                             _hover={{
                                 color: '#06e4ed', // White text color
                                 borderColor: 'white', // White border color
@@ -130,6 +130,7 @@ const NavigationTop = () => {
                                     fontSize="16px"
                                     fontWeight="normal"
                                     as='b'
+                                    color="gray"
                                     _hover={{
                                         color: '#06e4ed', // White text color
                                         borderColor: 'white', // White border color
@@ -147,6 +148,7 @@ const NavigationTop = () => {
                                     fontSize="16px"
                                     fontWeight="normal"
                                     as='b'
+                                    color="gray"
                                     _hover={{
                                         color: '#06e4ed', // White text color
                                         borderColor: 'white', // White border color
