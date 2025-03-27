@@ -6,6 +6,7 @@ import NavigationTop from './Headers/NavigationTop';
 import BottomNav from './Footers/BottomNav';
 import { useAnimation, motion } from 'framer-motion';
 import theme from './Utilities/theme';
+import { useData } from './App';
 
 const PageLayouts = ({ children }) => {
   const { pathname } = useLocation();
@@ -17,6 +18,23 @@ const PageLayouts = ({ children }) => {
 
   const [showWelcome, setShowWelcome] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+
+  const {
+    onTransferedPage, setOnTransferedPage,
+  } = useData();
+
+
+ 
+  useEffect(() => {
+    const currentUrl = window.location.href;
+
+    console.log("video url = " + currentUrl)
+    if (currentUrl.includes('video')) {
+      setOnTransferedPage(true); // Hide page cover for this specific page
+    } else {
+      setOnTransferedPage(false); // Show it for all other pages
+    }
+  }, []);
 
   useEffect(() => {
     if (WelcomePagePath) {
@@ -88,7 +106,7 @@ const PageLayouts = ({ children }) => {
     w="100vw" // Ensures full page width
   >
 
-      {isVisible ? (
+      {isVisible && !onTransferedPage ? (
         <CenteredContent />
       ) : (
         <>

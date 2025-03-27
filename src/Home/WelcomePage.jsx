@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Text, Flex, Image, VStack } from '@chakra-ui/react';
+import { Button, Text, Flex, Image, VStack, Box } from '@chakra-ui/react';
 import { fetchVideoUrl } from '../Movies/videos';
 import { tipWaiter } from '../Utilities/stripe';
 
@@ -7,6 +7,8 @@ const WelcomePage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPausedForTips, setIsPausedForTips] = useState(false);
+  const [tipAmount, setTipAmount] = useState("");
+
   const videoRef = useRef(null);
   const containerRef = useRef(null); // Fullscreen wrapper
 
@@ -21,7 +23,7 @@ const WelcomePage = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (videoRef.current && videoRef.current.currentTime >= 30) {
+      if (videoRef.current && videoRef.current.currentTime >= 60) {
         videoRef.current.pause();
         setIsPausedForTips(true);
 
@@ -50,6 +52,10 @@ const WelcomePage = () => {
   };
 
   const handleTip = (amount) => {
+
+    setShowSelectedTip(true);
+    setTipAmount(amount);
+    /*
     console.log(`User tipped: $${amount}`);
     
     tipWaiter(amount)
@@ -67,6 +73,7 @@ const WelcomePage = () => {
         // Handle any errors that occurred in the payment process
         console.log('Payment initiation error:', error);
       });
+    */
   };
 
 
@@ -79,6 +86,36 @@ const WelcomePage = () => {
       containerRef.current.msRequestFullscreen();
     }
   };
+
+  const DonorboxEmbed = ({ amount }) => {
+    useEffect(() => {
+      const script = document.createElement("script");
+      script.src = "https://donorbox.org/widget.js";
+      script.setAttribute("paypalExpress", "false");
+      script.async = true;
+      document.body.appendChild(script);
+  
+      return () => {
+        document.body.removeChild(script);
+      };
+    }, []);
+  
+    return (
+      <iframe
+        src={`https://donorbox.org/embed/puremusic-artists-${amount}?default_interval=o&amount=${amount}`}
+        name="donorbox"
+        allowpaymentrequest="allowpaymentrequest"
+        seamless="seamless"
+        frameBorder="0"
+        scrolling="no"
+        height="900px"
+        width="100%"
+        style={{ maxWidth: "500px", minWidth: "250px", maxHeight: "none !important" }}
+        allow="payment"
+      ></iframe>
+    );
+  };
+  
 
   return (
     <div ref={containerRef} style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: 'auto' }}>
@@ -146,6 +183,9 @@ const WelcomePage = () => {
           )}
 
           {/* Tip Overlay */}
+
+          {!tipAmount ? (
+            <>
           {isPausedForTips && (
             <div
               style={{
@@ -182,17 +222,52 @@ const WelcomePage = () => {
             </Flex> */}
 
 
-              <Button onClick={() => handleTip(10)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $10</Button>
-              <Button onClick={() => handleTip(15)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $15</Button>
-              <Button onClick={() => handleTip(25)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $25</Button>
-              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $30</Button>
-              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $50</Button>
-              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $100</Button>
+<Flex wrap="wrap"   justify="center"  
+    align="center"   gap={2}>
+          {[10, 15, 25, 30, 50, 100].map((amount) => (
+            <Button
+              key={amount}
+              onClick={() => setTipAmount(amount)}
+              bg="#04b6c3"
+              color="white"
+              m="2"
+              size={{ base: "sm", sm: "sm", md: "md" }}
+              _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3" }}
+            >
+              Tip ${amount}
+            </Button>
+          ))}
+        </Flex>
 
               <Text color="white" fontWeight="bold" fontSize={{ base: "12px", md: "14x", lg: "14px" }}>
                Unlock the full musical movie with your tip.
               </Text>
             </div>
+
+          )}
+
+</>
+          ) : (
+            <>
+<Box
+  style={{
+    flex: 1,
+    zIndex: 5, // This should be above the overlay
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+    position: 'absolute', // Make sure it's absolutely positioned
+    top: '90%', // Adjust this to move it lower
+    left: '50%',
+    width: '80%', 
+    transform: 'translate(-50%, -50%)',
+  }}
+>
+  <DonorboxEmbed amount={tipAmount} />
+</Box>
+
+</>
           )}
         </>
       ) : (

@@ -2,9 +2,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { functions } from "./firebase";
 import { httpsCallable } from "firebase/functions";
 
-//const stripePromise = loadStripe("pk_test_yourPublishableKeyHere");
+const stripePromise = loadStripe("pk_test_yourPublishableKeyHere");
 
-const stripePromise = loadStripe('pk_test_51R5FL0Ix59YKNmqvYJwu8MdpKZupqFGv4XzssZ0pLMVCaNATa039IvGy8fXyRqFv9zEbOlHMTbzzyk7vUWD9BwZf00izNWbcPV');
 
 export async function tipWaiter(amount) {
   return new Promise((resolve, reject) => {
@@ -59,6 +58,7 @@ export async function tipWaiter(amount) {
   });
 }
 
+//const stripePromise = loadStripe('pk_test_51R5FL0Ix59YKNmqvYJwu8MdpKZupqFGv4XzssZ0pLMVCaNATa039IvGy8fXyRqFv9zEbOlHMTbzzyk7vUWD9BwZf00izNWbcPV');
 
 
 /*

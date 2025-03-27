@@ -72,10 +72,10 @@ const NavigationTop = () => {
             >
                 <Flex flexDirection="row" alignItems="center">
 
-
+             
 
                     <Image
-                        src="/dist/PureMusicLogoName.png"
+                        src="/PureMusicLogoName.png"
                         alt="PureMusic Logo"
                         maxH="70px"
                         ml="12px"
