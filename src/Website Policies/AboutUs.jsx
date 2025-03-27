@@ -26,15 +26,17 @@ const AboutUs = () => {
     About PureMusic
   </Heading>
 
-  <Text 
->
-At PureMusic, we're redefining how people experience music. We believe music is more than just sound—it's a story, a journey, an emotion—and it deserves to be presented in a way that is just as immersive as a live performance.
-</Text>
+  <Text>
+    PureMusic is a platform that produces <b>Musical Movies</b>—high-quality, cinematic recordings of live performances by local musicians. We don’t just capture music; we elevate it into an immersive visual experience, creating stunning concert-like moments that audiences can enjoy anywhere, anytime.
+  </Text>
 
-<Text pt="1rem">
-That’s why we’ve created Musical Movies—cinematic, high-quality recordings of live performances by up-and-coming musicians and local talent, captured in stunning locations with the best instruments. Whether you’re waiting at a restaurant, relaxing at home, or looking for an inspiring moment, PureMusic brings you a concert-like experience, anytime, anywhere.</Text>
+  <Text pt="1rem">
+    We actively promote these performances through our recruiting team at various venues, attracting both in-person and online audiences. Viewers can <b>tip to unlock full performances</b>, directly supporting artists and fostering a deeper connection between musicians and their fans.
+  </Text>
 
-
+  <Text pt="1rem">
+    Our mission is to help musicians gain exposure, monetize their art, and build a dedicated fanbase—transforming live music into a thriving digital experience.
+  </Text>
 
 <Text pt="2rem" fontSize='xl'>Our Vision</Text>
 
@@ -44,16 +46,15 @@ That’s why we’ve created Musical Movies—cinematic, high-quality recordings
 <Text pt="2rem" fontSize='xl'>How It Works</Text>
 
 <UnorderedList>
-                        <ListItem>Scan the QR code at participating locations.</ListItem>
-                        <ListItem>Instantly watch a high-quality musical movie performed by an artist.</ListItem>
-                        <ListItem>Support the artist by leaving a tip.</ListItem>
-                    </UnorderedList>
+    <ListItem>Scan the QR code at participating locations.</ListItem>
+    <ListItem>Instantly watch a high-quality Musical Movie performed by an artist.</ListItem>
+    <ListItem>Support the artist by leaving a tip.</ListItem>
+  </UnorderedList>
 
-<Text pt="2rem" fontSize='xl'>Join the Movement</Text>
+  <Text pt="2rem" fontSize='xl'>Join the Movement</Text>
 
-<Text>Music should be more than background noise. At PureMusic, we’re creating a new way to listen, watch, and connect with live music—one performance at a time.</Text>
-
-
+  <Text>
+  Music should be more than background noise. At PureMusic, we’re creating a new way to listen, watch, and connect with live music—one performance at a time, while giving you the opportunity to support your favorite artists.</Text>
 
 <Flex mb="3rem" flexDirection={'row'} ml="40px" mr="10px">
 <Image

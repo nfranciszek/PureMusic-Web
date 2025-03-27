@@ -59,7 +59,7 @@ const PageLayouts = ({ children }) => {
           transition={{ duration: 2, ease: 'easeInOut' }} // Slow fade-in and fade-out for both
         >
           <Text fontSize="lg" textAlign="center" mx="2rem">
-            Welcome to Pure Music
+            Welcome to PureMusic
           </Text>
         </motion.div>
       ) : (

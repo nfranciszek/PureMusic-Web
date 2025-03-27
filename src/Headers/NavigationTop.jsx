@@ -75,9 +75,10 @@ const NavigationTop = () => {
 
 
                     <Image
-                        src="/PureMusicLogo.jpeg"
+                        src="/dist/PureMusicLogoName.png"
                         alt="PureMusic Logo"
                         maxH="70px"
+                        ml="12px"
                         onClick={goToHome}
                    
                     />

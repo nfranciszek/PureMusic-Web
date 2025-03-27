@@ -13,6 +13,9 @@
     "@chakra-ui/react": "^2.10.7",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@stripe/stripe-js": "^6.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "firebase": "^11.5.0",
     "framer-motion": "^12.5.0",
     "helmet": "^8.1.0",
@@ -20,6 +23,7 @@
     "react-dom": "^19.0.0",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^7.4.0",
+    "stripe": "^17.7.0",
     "vite-plugin-pwa": "^0.21.2",
     "vite-plugin-remove-console": "^2.2.0"
   },

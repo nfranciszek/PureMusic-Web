@@ -1,93 +1,131 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { VStack, Center, Flex, Image, Button, Text } from '@chakra-ui/react'
+import React, { useRef, useState, useEffect } from 'react';
+import { Button, Text, Flex, Image, VStack } from '@chakra-ui/react';
 import { fetchVideoUrl } from '../Movies/videos';
+import { tipWaiter } from '../Utilities/stripe';
+
 const WelcomePage = () => {
   const [videoUrl, setVideoUrl] = useState("");
-  const [isPlaying, setIsPlaying] = useState(false);  // Track whether the video is playing
-  const videoRef = useRef(null);  // R
-  const [isPausedForTips, setIsPausedForTips] = useState(false); // Track if video paused for tips
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // if (videoRef.current && videoRef.current.currentTime >= 600) { // 600 seconds = 10 minutes
-      if (videoRef.current && videoRef.current.currentTime >= 30) { // 600 seconds = 10 minutes
-        videoRef.current.pause();
-        setIsPausedForTips(true);
-      }
-    }, 1000); // Check every second
-
-    return () => clearInterval(interval); // Cleanup the interval on unmount
-  }, []);
-
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPausedForTips, setIsPausedForTips] = useState(false);
+  const videoRef = useRef(null);
+  const containerRef = useRef(null); // Fullscreen wrapper
 
   useEffect(() => {
-    fetchVideoUrl("gs://puremusic-d8ee8.firebasestorage.app/ChopinPreludeOp28No4.mp4").then((url) => {
+    //  Test Video
+    // fetchVideoUrl("gs://puremusic-d8ee8.firebasestorage.app/ChopinPreludeOp28No4.mp4").then((url) => {
+
+    fetchVideoUrl("https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f").then((url) => {
       if (url) setVideoUrl(url);
     });
   }, []);
 
-  const handlePlayClick = () => {
-    videoRef.current.play();  // Play the video
-    setIsPlaying(true);  // Set state to playing
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (videoRef.current && videoRef.current.currentTime >= 30) {
+        videoRef.current.pause();
+        setIsPausedForTips(true);
 
-  const handlePause = () => {
-    setIsPlaying(false);  // Set state to not playing
+
+        // exitting full screen for tip 
+        // Ensure the video is fullscreen on all platforms before exiting
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+          // Exit fullscreen on supported browsers
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { // Safari for iOS
+            document.webkitExitFullscreen();
+          }
+        }
+
+
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handlePlayClick = () => {
+    videoRef.current.play();
+    setIsPlaying(true);
   };
 
   const handleTip = (amount) => {
     console.log(`User tipped: $${amount}`);
-    setIsPausedForTips(false);  // Hide tip options after tipping
-    videoRef.current.play();  // Resume video after tipping
+    
+    tipWaiter(amount)
+      .then((paymentSuccess) => {
+        if (paymentSuccess) {
+          // Only unpause and hide the popup if payment is successful
+          setIsPausedForTips(false);
+          videoRef.current.play();
+        } else {
+          // Handle payment failure (if needed)
+          console.log('Payment failed or was canceled.');
+        }
+      })
+      .catch((error) => {
+        // Handle any errors that occurred in the payment process
+        console.log('Payment initiation error:', error);
+      });
   };
 
-  const handleCustomTip = () => {
-    const customAmount = prompt("Enter your custom tip amount:");
-    if (customAmount) {
-      console.log(`User tipped: $${customAmount}`);
-      setIsPausedForTips(false);  // Hide tip options after tipping
-      videoRef.current.play();  // Resume video after tipping
+
+  const enterFullscreen = () => {
+    if (containerRef.current.requestFullscreen) {
+      containerRef.current.requestFullscreen();
+    } else if (containerRef.current.webkitRequestFullscreen) {
+      containerRef.current.webkitRequestFullscreen();
+    } else if (containerRef.current.msRequestFullscreen) {
+      containerRef.current.msRequestFullscreen();
     }
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: 'auto' }}>
       {videoUrl ? (
         <>
           <video
             ref={videoRef}
             width="100%"
-            controls={false}  // Disable default controls
-            onPlay={() => setIsPlaying(true)}  // Track when the video starts
-            onPause={handlePause} // Track when the video pauses
-            style={{ position: 'relative', zIndex: 0 }}
+            controls={false}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            controlsList="nodownload nofullscreen noremoteplayback" // Removes the gray fullscreen button
+            style={{ position: 'relative', zIndex: 0, borderRadius: '10px' }}
+            onClick={enterFullscreen} // Enter fullscreen properly
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
 
-          {/* Show Play Button when the video is paused */}
+          {/* Play Button */}
           {!isPlaying && !isPausedForTips && (
-            <div
-              onClick={handlePlayClick}
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                background: 'rgba(0, 0, 0, 0.5)',
-                borderRadius: '8px',
-                padding: '20px',
-                cursor: 'pointer',
-                textAlign: 'center',
-                color: 'white',
-                fontSize: '20px',
-                zIndex: 2, // Ensure it's above everything
-              }}
-            >
-              <p>Play Now</p>
-            </div>
+            <>
+              <div
+                onClick={handlePlayClick}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  borderRadius: '8px',
+                  border: '2px solid white',
+                  height: '50px',
+                  width: '150px', // Adjust width as needed
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 2,
+                }}
+              >
+                <p>Play Now</p>
+              </div>
+
+            </>
           )}
 
           {/* Show Thumbnail Image when the video is paused */}
@@ -97,6 +135,7 @@ const WelcomePage = () => {
                 position: 'absolute',
                 top: '0',
                 left: '0',
+                borderRadius: '8px',
                 width: '100%',
                 height: '100%',
                 background: `url("/MusicalMovie01Thumbnail.jpg") no-repeat center center/cover`,  // Thumbnail from public folder
@@ -106,7 +145,7 @@ const WelcomePage = () => {
             ></div>
           )}
 
-          {/* Show Tip Options when the video is paused after 10 minutes */}
+          {/* Tip Overlay */}
           {isPausedForTips && (
             <div
               style={{
@@ -114,67 +153,49 @@ const WelcomePage = () => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                background: 'rgba(0, 0, 0, 0.7)',
-                padding: '30px',
+                background: 'rgba(0, 0, 0, 0.8)',
+                padding: '20px',
                 borderRadius: '10px',
                 textAlign: 'center',
-                zIndex: 3, // Make sure the tips are above everything
-                minWidth: '300px', // Set minimum width to 100px
+                zIndex: 3,
+                minWidth: '300px',
               }}
             >
-              <Text
-                color="white"
-                fontSize={{ base: "12px", sm: "14px", md: "16px", lg: "24px" }}
-                marginBottom="20px"
-              >
-                Tip this artist now to continue watching!
+              <Text color="white" fontWeight="bold" fontSize={{ base: "14px", md: "16px", lg: "18px" }} marginBottom="20px">
+              Tip this artist to access the full performance.
               </Text>
-              <div>
-                <Button onClick={() => handleTip(10)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $10
-                </Button>
-                <Button onClick={() => handleTip(15)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $15
-                </Button>
-                <Button onClick={() => handleTip(25)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $25
-                </Button>
-                <Button onClick={() => handleTip(30)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $30
-                </Button>
-                <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $50
-                </Button>
-                <Button onClick={() => handleTip(100)} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
-                  Tip $100
-                </Button>
-                <Button onClick={handleCustomTip} bg="#04b6c3" color="white" size={{ base: "sm", sm: "sm", md: "md", lg: "lg" }}
-                  mt={4} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}
-                  _focus={{ border: "none" }} m="2">
+              {/*
+              <Flex alignItems="center" justifyContent="center" flexDirection="row"     mb="1rem" >
+  <Image
+    src={"Artists1.jpg"}
+    alt={name}
+    borderRadius="full"
+    boxSize="50px"
+    mr={4}
 
-                  Custom Tip
-                </Button>
-              </div>
+  />
+  
+    <Text fontSize="16px" color="white">
+      Nathanael Fra
+    </Text>
+
+            </Flex> */}
 
 
+              <Button onClick={() => handleTip(10)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $10</Button>
+              <Button onClick={() => handleTip(15)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $15</Button>
+              <Button onClick={() => handleTip(25)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $25</Button>
+              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $30</Button>
+              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $50</Button>
+              <Button onClick={() => handleTip(50)} bg="#04b6c3" color="white" m="2" size={{ base: "sm", sm: "sm", md: "md" }} _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3", }}>Tip $100</Button>
+
+              <Text color="white" fontWeight="bold" fontSize={{ base: "12px", md: "14x", lg: "14px" }}>
+               Unlock the full musical movie with your tip.
+              </Text>
             </div>
           )}
         </>
       ) : (
-
-
 
         <div
           style={{
@@ -183,18 +204,24 @@ const WelcomePage = () => {
             left: '0',
             width: '100%',
             height: '100%',
-            background: `url("/MusicalMovie01Thumbnail.jpg") no-repeat center center/cover`, // Thumbnail from public folder
+            background: `url("/MusicalMovie01Thumbnail.jpg") no-repeat center center/cover`,
             backgroundSize: 'cover',
             zIndex: 1,
           }}
+
+
+
         ></div>
+
+
+
       )}
     </div>
   );
 };
 
+export default WelcomePage;
 
-export default WelcomePage
 
 {/*}
         <Flex direction="column" align="center" justify="center" height="100vh" width="100vw">
