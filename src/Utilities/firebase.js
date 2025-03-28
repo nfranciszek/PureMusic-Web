@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getDatabase, child, get, equalTo, orderByChild, query, update, remove, set, onValue, push, off} from 'firebase/database';
-import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { getAuth, RecaptchaVerifier, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPhoneNumber, onAuthStateChanged, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { getDatabase, child, get, ref, equalTo, orderByChild, query, update, remove, set, onValue, push, off} from 'firebase/database';
+import { getStorage, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { getFunctions, httpsCallable } from "firebase/functions";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,16 +23,53 @@ const pureMusicConfig = {
 const pureMusicApp = initializeApp(pureMusicConfig);
 const analytics = getAnalytics(pureMusicApp);
 
+const auth = getAuth(pureMusicApp);
+const database = getDatabase(pureMusicApp);
 const storage = getStorage(pureMusicApp);
 
 const functions = getFunctions(pureMusicApp);
 
+
+const userInformationRef = ref(database, "Users Information");
+const userInformationRefSS = ref(database, "Users Information SS");
+const ProfilesRef = ref(database, "UserProfiles")
+
+const usersArtistsRef = ref(database, "ArtistsUsers");
+const userPromotersRef = ref(database, "PromotersUsers");
+const userAdminRef = ref(database, "Administrators");
+
+let currentUserId = null; 
+
+
+// Detect Auth State
+onAuthStateChanged(auth, user => {
+    if (user != null) {
+        // Set user UID when authenticated user is available
+        currentUserId = user.uid;
+   //     console.log('logged in');
+    } else {
+        currentUserId = null; // Reset user UID when user is not authenticated
+   //     console.log('No user here');
+    }
+});
+
+
 export { 
     pureMusicApp,
-    storage,
-    ref,
-    getDownloadURL,
     functions,
 
+    auth, 
+    signInWithEmailAndPassword, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, 
+    signInWithPhoneNumber, RecaptchaVerifier,
+    database, child, get, set, ref, equalTo, orderByChild, query, update, remove, onValue, push, off,
+    storage, getDownloadURL, uploadBytesResumable,
+    currentUserId, 
+
+    userInformationRef,
+    userInformationRefSS,
+    ProfilesRef,
+    usersArtistsRef,
+    userPromotersRef,
+    userAdminRef,
 
 };

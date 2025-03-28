@@ -8,10 +8,16 @@ import BottomNav from './Footers/BottomNav';
 import { useAnimation, motion } from 'framer-motion';
 import theme from './Utilities/theme';
 import { useData } from './App';
+import { getAuth } from 'firebase/auth';
+
 
 import MenuDashboard from './Dashboards/MenuDashboard';
 
 const PageLayouts = ({ children }) => {
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const { pathname } = useLocation();
   const includedWelcomePagePath = ['/'];
   const isBigScreen = useBreakpointValue({ base: false, md: true });
@@ -33,7 +39,7 @@ const PageLayouts = ({ children }) => {
     const currentUrl = window.location.href;
 
     console.log("video url = " + currentUrl)
-    if (currentUrl.includes('video') || currentUrl.includes('promote') || currentUrl.includes('dashboard')) {
+    if (currentUrl.includes('video') || currentUrl.includes('promote') || currentUrl.includes('dashboard') || currentUrl.includes('signup')){
       setOnTransferedPage(true); // Hide page cover for this specific page
     } else {
       setOnTransferedPage(false); // Show it for all other pages
@@ -55,6 +61,24 @@ const PageLayouts = ({ children }) => {
       }, 2000); // Wait 2 seconds before switching to the second slogan
     }
   }, [WelcomePagePath]);
+
+
+  useEffect(() => {
+
+
+
+
+    if (!user) {
+
+       
+        setIsDashboard(false);
+    } else {
+
+      setIsDashboard(true);
+    }
+
+
+}, [user]);
 
   const CenteredContent = () => (
     <ChakraProvider theme={theme}>
@@ -126,7 +150,7 @@ const PageLayouts = ({ children }) => {
       </>
     )}
 
-{isBigScreen && (<MenuDashboard />
+{isBigScreen && user && (<MenuDashboard />
     )}
      
           <Box
@@ -134,7 +158,7 @@ const PageLayouts = ({ children }) => {
              //  w="100%" // Ensures it takes the full available width
                pt="5rem"
                pb={isBigScreen ? "5rem" : "0rem"}
-               w={{ base: "calc(100% - 70px)", md: "calc(100% - 640px)" }}
+               w={user ? { base: "calc(100% - 70px)", md: "calc(100% - 640px)" } : null}
                mx="auto" // Centers horizontally
           >
              

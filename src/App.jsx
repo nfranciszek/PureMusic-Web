@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 
+import { getAuth } from 'firebase/auth';
 import AboutUs from './Website Policies/AboutUs';
 import ContactUs from './Website Policies/ContactUs';
 import TermsOfService from './Website Policies/TermsOfService';
@@ -12,6 +13,8 @@ import Help from './Website Policies/Help';
 import WelcomePage from './Home/WelcomePage';
 import ArtistsPage from './pages/ArtistsPage';
 import PromoterPage from './pages/PromoterPage';
+import SignUpPage from './pages/AuthPages/SignUpPage';
+import LoginPage from './pages/AuthPages/LoginPage';
 
 import Dashboard from './Dashboards/Dashboard';
 
@@ -25,18 +28,11 @@ export const useData = () => useContext(DataContext);
 
 function App() {
   const [YenZekRootLink, setYenZekRootLink] = useState("https://yenzek.com/");
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  const [videoUrlPureMusicContent, setPureMusicVideoContent] = useState("");
-  
-
-  // https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f
-  useEffect(() => {
-  if (!videoUrlPureMusicContent) {
-    setPureMusicVideoContent("https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f")
-
-  }
-  }, [videoUrlPureMusicContent]);
-
+  const { pathname } = useLocation();
+ 
   
  
   const [onTransferedPage, setOnTransferedPage] = useState(false);
@@ -53,6 +49,34 @@ function App() {
   const [helpSelected, setHelpSelected] = useState(false);
   const [logoutPageSelected, setLogoutPageSelected] = useState(false);
 
+
+  const [showFirstStepSignUp, setShowFirstStepSignUp] = useState(false);
+  const [showSecondStepSignUp, setShowSecondStepSignUp] = useState(false);
+  const [showThirdStepSignUp, setShowThirdStepSignUp] = useState(false);
+
+
+  const [isLogin, setIsLogin] = useState(true);
+
+  const [isSignUp, setSignUp] = useState(false);
+
+
+  const [didUserJustLogIn, setDidUserJustLogIn] = useState(false);
+  const [userJustSignedUp, setUserJustSignedUp] = useState(false);
+
+
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+
+  const [isLoginPathOpen, setIsLoginPathOpen] = useState(false);
+  const [isSignUpPathOpen, setIsSignUpPathOpen] = useState(false);
+  useEffect(() => {
+
+    const includedLoginPath = ['/login', ''];
+    setIsLoginPathOpen(includedLoginPath.some(path => pathname.includes(path)));
+
+    const includedSignUp = ['/signup', 'account/login'];
+    setIsSignUpPathOpen(includedSignUp.some(path => pathname.includes(path)));
+  }, [pathname]);
+  
   return (
     <DataContext.Provider value={{
       YenZekRootLink,
@@ -67,8 +91,20 @@ function App() {
       helpSelected, setHelpSelected,
       logoutPageSelected, setLogoutPageSelected,
       
-      videoUrlPureMusicContent,
+   
 
+      showFirstStepSignUp, setShowFirstStepSignUp,
+      showSecondStepSignUp, setShowSecondStepSignUp,
+      showThirdStepSignUp, setShowThirdStepSignUp,
+
+      isLogin, setIsLogin,
+      isSignUp, setSignUp,
+
+      showLoginPopup, setShowLoginPopup,
+
+      didUserJustLogIn, setDidUserJustLogIn,
+
+      userJustSignedUp, setUserJustSignedUp,
     }}>
       <PageLayouts>
         <Routes>
@@ -82,10 +118,23 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/help" element={<Help />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
+     
+
+          {user ? (
+            <Route path="/dashboard" element={<Dashboard />} />
+          ) : (
+            // redirect to Login Page
+            <Route path="/dashboard" element={<LoginPage to="/" />} />  // Redirect to the homepage if not logged in
+          )}
 
           <Route path="/video/watch=fpx7p9k2f4m8d3c6v" element={<Movies />} />
+        
+        
 
+          <Route path="/signup" element={<SignUpPage />} />
+          
+          <Route path="/account/login" element={<LoginPage />} />
+          
 
         </Routes>
       </PageLayouts>

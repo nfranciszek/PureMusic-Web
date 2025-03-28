@@ -20,13 +20,13 @@ const WelcomePage = () => {
   }
 
   useEffect(() => {
-    //  Test Video
-    // fetchVideoUrl("gs://puremusic-d8ee8.firebasestorage.app/ChopinPreludeOp28No4.mp4").then((url) => {
-
-    fetchVideoUrl("https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f").then((url) => {
-      if (url) setVideoUrl(url);
-    });
+    const videoUrl = "https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f";
+    setVideoUrl(videoUrl); // Directly set the URL to the state
   }, []);
+
+  useEffect(() => {
+    console.log("Official videoUrl:", videoUrl);  // Check if videoUrl is set correctly
+  }, [videoUrl]);
 
   useEffect(() => {
     const interval = setInterval(() => {

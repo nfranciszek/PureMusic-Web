@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Center, VStack, Box, Button, Image, Heading, Text, Flex, Slider, SliderMark, SliderTrack, SliderFilledTrack, SliderThumb, HStack } from "@chakra-ui/react";
 
-
+import { useNavigate } from 'react-router-dom';
 
 
 const PromoterPage = () => {
 
+    const navigate = useNavigate();
     const [currentImage, setCurrentImage] = useState(0);
 
     const images = [
@@ -22,29 +23,31 @@ const PromoterPage = () => {
         return () => clearInterval(interval); // Cleanup interval on component unmount
     }, []);
 
-  
+    const goSignUp = () => {
+        navigate("/signup");
+    }
 
     const HowItWorks = () => {
         return (
             <Center w="100%" py={10} textAlign="center">
                 <VStack spacing={8} maxW="80%" align="center">
-                <Heading      fontSize="2xl"
-    color="gray.800"
-    fontWeight="extrabold"
-    mb={4}
-    border="2px solid gray.600" // Add a gray border
-    borderRadius="10px" // Rounded corners
-    p="10px" // Padding to make it more button-like
-    paddingLeft="40px" // Increase left padding
-    paddingRight="40px" // Increase right padding
-    display="inline-block" // Ensure it's not taking full width
-    bg="white" // White background
-    boxShadow="sm"
-    width="auto" // Make the width auto to fit content, but still dynamic
-    maxWidth="100%" // Optional: ensure it doesn't go beyond the screen width
->
-            How It Works
-        </Heading>
+                    <Heading fontSize="2xl"
+                        color="gray.800"
+                        fontWeight="extrabold"
+                        mb={4}
+                        border="2px solid gray.600" // Add a gray border
+                        borderRadius="10px" // Rounded corners
+                        p="10px" // Padding to make it more button-like
+                        paddingLeft="40px" // Increase left padding
+                        paddingRight="40px" // Increase right padding
+                        display="inline-block" // Ensure it's not taking full width
+                        bg="white" // White background
+                        boxShadow="sm"
+                        width="auto" // Make the width auto to fit content, but still dynamic
+                        maxWidth="100%" // Optional: ensure it doesn't go beyond the screen width
+                    >
+                        How It Works
+                    </Heading>
                     <HStack spacing={8} align="center" flexWrap="wrap">
                         <Image
                             src="/TrainConductorScanPureMusic.jpg"
@@ -66,29 +69,30 @@ const PromoterPage = () => {
                     </HStack>
 
                     <Button
-    variant="outline"
-    size="md"
-    bg="white"
-    color="#05c7d0" // Website color for text
-    border="2px solid #05c7d0" // Border to match the website color
-    px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
-    _hover={{
-        bg: "#05c7d0", // Button background turns to website color on hover
-        color: "white", // White text when hovering
-        borderColor: "#06e4ed", // Keep border color same as background color
-        transform: "scale(1.05)", // Slightly grow button on hover
-        transition: "0.3s ease", // Smooth transition for hover effect
-    }}
-    _active={{
-        transform: "scale(1.02)", // Slight scale on click
-        boxShadow: "none", // Remove shadow on active state
-    }}
-    _focus={{
-        outline: "none", // Remove outline on focus
-    }}
->
-    Sign Up Now
-</Button>
+                        onClick={() => goSignUp()}
+                        variant="outline"
+                        size="md"
+                        bg="white"
+                        color="#05c7d0" // Website color for text
+                        border="2px solid #05c7d0" // Border to match the website color
+                        px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+                        _hover={{
+                            bg: "#05c7d0", // Button background turns to website color on hover
+                            color: "white", // White text when hovering
+                            borderColor: "#06e4ed", // Keep border color same as background color
+                            transform: "scale(1.05)", // Slightly grow button on hover
+                            transition: "0.3s ease", // Smooth transition for hover effect
+                        }}
+                        _active={{
+                            transform: "scale(1.02)", // Slight scale on click
+                            boxShadow: "none", // Remove shadow on active state
+                        }}
+                        _focus={{
+                            outline: "none", // Remove outline on focus
+                        }}
+                    >
+                        Sign Up Now
+                    </Button>
 
                 </VStack>
             </Center>
@@ -99,28 +103,28 @@ const PromoterPage = () => {
 
     const IncomeSlider = () => {
         const [conversions, setConversions] = useState(24); // Default at 24
-    
+
         const avgTip = 15;
         const conductorCut = 0.3;
         const earningsPerConversion = avgTip * conductorCut;
-    
+
         const calculateEarnings = (convs) => ({
             daily: (convs * earningsPerConversion).toFixed(2),
             monthly: (convs * earningsPerConversion * 30).toFixed(2),
         });
-    
+
         const earnings = calculateEarnings(conversions);
-    
+
         return (
             <VStack w="80%" spacing={6} py={10} textAlign="center">
                 <Text>
                     If your job involves meeting hundreds of people daily, you can earn an extra $3000+ per month just by introducing passengers to PureMusic.
                 </Text>
-                <Text 
-                    fontSize="xl" 
-                    fontWeight="bold" 
-                    color="gray.700"  
-                    border="2px solid gray.600" 
+                <Text
+                    fontSize="xl"
+                    fontWeight="bold"
+                    color="gray.700"
+                    border="2px solid gray.600"
                     borderRadius="10px"
                     p="10px"
                     paddingLeft="40px"
@@ -133,7 +137,7 @@ const PromoterPage = () => {
                 >
                     Projected Earnings for Promoters
                 </Text>
-    
+
                 <Text
                     as="b"
                     fontSize="20px"
@@ -148,7 +152,7 @@ const PromoterPage = () => {
                 >
                     Monthly Earnings: <b>${parseFloat(earnings.monthly).toLocaleString()}</b>
                 </Text>
-    
+
                 <Slider
                     defaultValue={24}
                     min={0}
@@ -161,14 +165,14 @@ const PromoterPage = () => {
                     <SliderTrack bg="gray.200">
                         <SliderFilledTrack bg="#05c7d0" />
                     </SliderTrack>
-    
+
                     <SliderThumb
                         boxSize={6}
                         bg="white"
                         borderRadius="full"
                         border="2px solid #06e4ed"
                     />
-                    
+
                     <SliderMark value={0} mt={2} ml={-1} fontSize="sm" color="gray.600">
                         0
                     </SliderMark>
@@ -176,7 +180,7 @@ const PromoterPage = () => {
                         100
                     </SliderMark>
                 </Slider>
-    
+
                 <HStack>
                     <Text fontSize="md">Conversions: <b>{conversions}</b> = </Text>
                     <Text
@@ -193,9 +197,9 @@ const PromoterPage = () => {
                         Daily Earnings: <b>${earnings.daily}</b>
                     </Text>
                 </HStack>
-    
+
                 {/* Disclaimer */}
-                <Text 
+                <Text
                     fontSize="10px"
                     color="gray.500"
                     mt={4}
@@ -206,7 +210,7 @@ const PromoterPage = () => {
             </VStack>
         );
     };
-    
+
 
     return (
         <VStack h="100%" w="100vw" spacing={0}>
@@ -253,6 +257,7 @@ const PromoterPage = () => {
                         Turn your daily interactions at work into extra income
                     </Text>
                     <Button
+                        onClick={() => goSignUp()}
                         variant="outline"
                         size="md"
                         bg="white"
@@ -270,7 +275,7 @@ const PromoterPage = () => {
             </Box>
 
             <IncomeSlider />
-            <HowItWorks  />
+            <HowItWorks />
 
         </VStack>
     )
