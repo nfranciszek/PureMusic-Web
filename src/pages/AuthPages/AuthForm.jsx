@@ -21,19 +21,11 @@ const AuthForm = ({ onLoginSuccess, onSignUp, onSignUpSuccess, onFrontPageSignUp
     showSecondStepSignUp, setShowSecondStepSignUp,
     showThirdStepSignUp, setShowThirdStepSignUp, profileURL,
     isLogin, setIsLogin,
-    isYenZekHomeOpen,
-    isLoginPathOpen,
-    isSignUpPathOpen,
+  
 
-    eventActionTaken,
-
-    storytellingCompSignUpActionTaken,
-
-    generalCompetitionActionTaken, 
-
-    socialCompSignUpActionTaken, 
-
-    showHalloweenEventPopup,
+    signUpAsArtist, setSignUpAsArtist,
+    signUpAsPromoter, setSignUpAsPromoter,
+    signUpAsFan, setSignUpAsFan
 
   } = useData();
 
@@ -82,19 +74,29 @@ const AuthForm = ({ onLoginSuccess, onSignUp, onSignUpSuccess, onFrontPageSignUp
            
   <Box maxW="md" mx="auto" p={10} borderWidth="1px" borderRadius="lg">
 
-    {isLogin ? ( 
- <Box textAlign="center"> 
- <Image src='/PureMusicLogoName.png' h={10} alt='Pure Music Logo' display="block" mx="auto" mb="1rem" />
+  {isLogin ? ( 
+  <Box textAlign="center"> 
+    <Image src='/PureMusicLogoName.png' h={10} alt='Pure Music Logo' display="block" mx="auto" mb="1rem" />
+  </Box>
+) : 
+  (!signUpAsPromoter && !signUpAsArtist && !signUpAsFan ? (
+    <Box textAlign="center"> 
+      <Image src='/PureMusicLogoName.png' h={10} alt='Pure Music Logo' display="block" mx="auto" mb="1rem" />
 
-</Box>
 
-    ):  (
+<Text textAlign='center' fontSize="16px" fontWeight="500" mb="1rem">Choose a category to get started:</Text>
 
-      <Box textAlign="center"> 
-      <Image src='/PureMusicLogo.jpeg' h={10} alt='Pure Music Logo' display="block" mx="auto" />
+
     </Box>
 
-    )}
+
+  ) : (
+    <Box textAlign="center"> 
+      <Image src='/PureMusicLogo.jpeg' h={10} alt='Pure Music Logo' display="block" mx="auto" />
+    </Box>
+  ))
+}
+
    
 
 

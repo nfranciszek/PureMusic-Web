@@ -6,7 +6,7 @@ import { PiEyeClosedBold } from "react-icons/pi";
 import { userLanguageCode, userLanguageName } from '../../Utilities/language';
 import { countries } from 'countries-list';
 import { HStack, FormControl, FormLabel, Select } from '@chakra-ui/react';
-import { useLocation } from 'react-router-dom';
+import {  useLocation } from 'react-router-dom';
 import { validateAge, validateEmail, checkIfEmailRegistered, validateName, validateNameSafety, validateNameFormat, validateImage, validateUsername, validateUsernameLength, validateUsernameFormat, validateUsernameSafety, validatePassword, validateUsernameExcludesCompanyWebsites } from './CreateAccount';
 import { useData } from '../../App';
 import { createAccountSignUp } from './CreateAccount';
@@ -29,23 +29,20 @@ const SignupForm = ({ onSignUpSuccess }) => {
         showSecondStepSignUp, setShowSecondStepSignUp,
         showThirdStepSignUp, setShowThirdStepSignUp,
         profileURL,
-        isNewUser, setNewUser,
         setCreatePostModal,
 
-        eventActionTaken,
-        setEventActionTaken,
-        setEventsSelected,
-        inviteSenderUID,
-
-        signUpCompetitionPhoto, setSignUpCompetitionPhoto,
 
 
         userJustSignedUp,
         setUserJustSignedUp,
 
-        creditedBrandAmbassadorUID,
-
+       signUpAsArtist, setSignUpAsArtist,
+            signUpAsPromoter, setSignUpAsPromoter,
+            signUpAsFan, setSignUpAsFan 
+ 
     } = useData();
+
+
 
     const months = [
         { value: 1, label: 'January' },
@@ -352,9 +349,20 @@ const SignupForm = ({ onSignUpSuccess }) => {
             // console.log('Country:', countryName);
             // console.log('birthday:', formattedBirthday);
 
+            let rank = "";
+            if (signUpAsPromoter) {
+                rank = "Promoter";
+            } else if (signUpAsArtist) {
+                rank = "Artist";
+            } else if (signUpAsFan) {
+                rank = "Fan";
+            } else {
+                rank = "Fan"; // Default to 'Fan' if none are selected
+            }
 
-            await createAccountSignUp(name, email, password, profilePic, username, languageName, languageCode, countryName, formattedBirthday, signUpCompetitionPhoto, creditedBrandAmbassadorUID);
+            await createAccountSignUp(name, email, password, profilePic, username, languageName, languageCode, countryName, formattedBirthday, rank);
 
+            
 
             setUserJustSignedUp(true);
 
@@ -362,7 +370,7 @@ const SignupForm = ({ onSignUpSuccess }) => {
 
             setLoading(false);
 
-            goToStories();
+            goToDashboard();
 
             // Temporary
             if (signUpCompetitionPhoto) {
@@ -382,63 +390,161 @@ const SignupForm = ({ onSignUpSuccess }) => {
     };
 
 
-    const includedPath = [
-        '/stories',
-        '/listen',
-        `/${profileURL}`
-    ];
-    const isYenZekHomeOpen = includedPath.some(path => pathname.includes(path));
-
-    const includedTalkCirclePaths = [
-
-
-        '/talkcircles',
-        '/talkcircles/session='
-
-    ]
-
-    const TalkCirclePaths = includedTalkCirclePaths.some(path => pathname.includes(path));
-
-    const goToStories = () => {
-        // if (isYenZekHomeOpen) {
-        // if Popup 
-        // close panel!
+    const goToDashboard = () => {
+     
         setShowThirdStepSignUp(false);
         onSignUpSuccess();
-        setNewUser(true);
+      
 
-        if (!TalkCirclePaths) {
-            if (!eventActionTaken) {
-                setCreatePostModal(true);
-            } else {
-                setEventActionTaken(false);
-                setEventsSelected(true);
-            }
-
-            if (signUpCompetitionPhoto) {
-                setEventsSelected(true);
-            }
-        }
+     
     };
+
+
+    const joinAsPromoter= () => { 
+
+     setSignUpAsPromoter(true);
+        setSignUpAsArtist(false);
+       setSignUpAsFan(false);
+    };
+
+    const joinAsArtist = () => {
+
+    setSignUpAsPromoter(false);
+       setSignUpAsArtist(true);
+      setSignUpAsFan(false);
+   };
+
+   const joinAsFan = () => {
+   setSignUpAsPromoter(false);
+      setSignUpAsArtist(false);
+     setSignUpAsFan(true);
+
+  };
+
+
+
 
 
 
     return (
         <VStack w="290px">
 
-            {loading && (
-                <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
-                    <CircularProgress isIndeterminate color="gray" />
-                </Box>
-            )}
-    
-            {showThirdStepSignUp && (
-           
-                <Text fontSize="12px" textAlign={'center'} pb={5}>
-                    Sign up to listen to exclusive music from our Artists
-                </Text>
-          
-            )}  
+
+{!signUpAsPromoter && !signUpAsArtist && !signUpAsFan ? (
+  <>
+
+<Button
+                        onClick={() => joinAsPromoter()}
+                        variant="outline"
+                        size="md"
+                        bg="white"
+                        color="#05c7d0" // Website color for text
+                        border="2px solid #05c7d0" // Border to match the website color
+                        px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+                        _hover={{
+                            bg: "#05c7d0", // Button background turns to website color on hover
+                            color: "white", // White text when hovering
+                            borderColor: "#06e4ed", // Keep border color same as background color
+                            transform: "scale(1.05)", // Slightly grow button on hover
+                            transition: "0.3s ease", // Smooth transition for hover effect
+                        }}
+                        _active={{
+                            transform: "scale(1.02)", // Slight scale on click
+                            boxShadow: "none", // Remove shadow on active state
+                        }}
+                        _focus={{
+                            outline: "none", // Remove outline on focus
+                        }}
+                    >
+                        Promoter
+                    </Button>
+
+                    <Button
+                        onClick={() => joinAsArtist()}
+                        variant="outline"
+                        size="md"
+                        bg="white"
+                        color="#05c7d0" // Website color for text
+                        border="2px solid #05c7d0" // Border to match the website color
+                        px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+                        _hover={{
+                            bg: "#05c7d0", // Button background turns to website color on hover
+                            color: "white", // White text when hovering
+                            borderColor: "#06e4ed", // Keep border color same as background color
+                            transform: "scale(1.05)", // Slightly grow button on hover
+                            transition: "0.3s ease", // Smooth transition for hover effect
+                        }}
+                        _active={{
+                            transform: "scale(1.02)", // Slight scale on click
+                            boxShadow: "none", // Remove shadow on active state
+                        }}
+                        _focus={{
+                            outline: "none", // Remove outline on focus
+                        }}
+                    >
+                        Artist
+                    </Button>
+
+                    <Button
+                        onClick={() => joinAsFan()}
+                        variant="outline"
+                        size="md"
+                        bg="white"
+                        color="#05c7d0" // Website color for text
+                        border="2px solid #05c7d0" // Border to match the website color
+                        px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+                        _hover={{
+                            bg: "#05c7d0", // Button background turns to website color on hover
+                            color: "white", // White text when hovering
+                            borderColor: "#06e4ed", // Keep border color same as background color
+                            transform: "scale(1.05)", // Slightly grow button on hover
+                            transition: "0.3s ease", // Smooth transition for hover effect
+                        }}
+                        _active={{
+                            transform: "scale(1.02)", // Slight scale on click
+                            boxShadow: "none", // Remove shadow on active state
+                        }}
+                        _focus={{
+                            outline: "none", // Remove outline on focus
+                        }}
+                    >
+                        Fan
+                    </Button>
+
+  </>
+) : (
+  <>
+  
+  {loading && (
+        <Box position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)">
+          <CircularProgress isIndeterminate color="gray" />
+        </Box>
+      )}
+
+{showThirdStepSignUp && (
+  <>
+    {signUpAsPromoter ? (
+      <>
+        <Text fontSize="14px" textAlign="center" pb={5}>
+          Sign up as a PureMusic Promoter and earn extra revenue by sharing music.
+        </Text>
+      </>
+    ) : signUpAsArtist ? (
+      <>
+        <Text fontSize="14px" textAlign="center" pb={5}>
+          Sign up as an artist on PureMusic and get paid for your online performances.
+        </Text>
+      </>
+    ) : signUpAsFan ? (
+      <>
+        <Text fontSize="14px" textAlign="center" pb={5}>
+          Sign up now to enjoy exclusive music from your favorite artists.
+        </Text>
+      </>
+    ) : null}
+  </>
+)}
+      
             <div style={{ display: 'flex' }}>
                 {[...Array(3)].map((_, index) => (
                     <span
@@ -457,222 +563,222 @@ const SignupForm = ({ onSignUpSuccess }) => {
             </div>
 
 
-            {showFirstStepSignUp && (
-                <>
-                    <VStack spacing={4}>
+{showFirstStepSignUp && (
+    <>
+        <VStack spacing={4}>
 
-                        <FormControl align="flex-start" pt="5px" >
-                            <Text textAlign="center" fontSize="14px">What's your birthday?</Text>
-                        </FormControl>
-                        <HStack spacing={4} width="20rem">
-                            <FormControl>
-                                <Text fontSize="10px">Month</Text>
-                                <Select value={birthday.month} onChange={(e) => handleBirthdayChanges('month', e.target.value)}>
-                                    <option style={{ width: "100%" }} value="">Month</option>
-                                    {months.map((month) => (
-                                        <option key={month.value} value={month.value}>{month.label}</option>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl>
-                                <Text fontSize="10px">Day</Text>
-                                <Select value={birthday.day} onChange={(e) => handleBirthdayChanges('day', e.target.value)}>
-                                    <option style={{ width: "100%" }} value="">Day</option>
-                                    {days.map((day) => (
-                                        <option key={day.value} value={day.value}>{day.label}</option>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                            <FormControl>
-                                <Text fontSize="10px">Year</Text>
-                                <Select value={birthday.year} onChange={(e) => handleBirthdayChanges('year', e.target.value)}>
-                                    <option style={{ width: "100%" }} value="">Year</option>
-                                    {years.map((year) => (
-                                        <option key={year.value} value={year.value}>{year.label}</option>
-                                    ))}
-                                </Select>
+            <FormControl align="flex-start" pt="5px" >
+                <Text textAlign="center" fontSize="14px">What's your birthday?</Text>
+            </FormControl>
+            <HStack spacing={4} width="20rem">
+                <FormControl>
+                    <Text fontSize="10px">Month</Text>
+                    <Select value={birthday.month} onChange={(e) => handleBirthdayChanges('month', e.target.value)}>
+                        <option style={{ width: "100%" }} value="">Month</option>
+                        {months.map((month) => (
+                            <option key={month.value} value={month.value}>{month.label}</option>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <Text fontSize="10px">Day</Text>
+                    <Select value={birthday.day} onChange={(e) => handleBirthdayChanges('day', e.target.value)}>
+                        <option style={{ width: "100%" }} value="">Day</option>
+                        {days.map((day) => (
+                            <option key={day.value} value={day.value}>{day.label}</option>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl>
+                    <Text fontSize="10px">Year</Text>
+                    <Select value={birthday.year} onChange={(e) => handleBirthdayChanges('year', e.target.value)}>
+                        <option style={{ width: "100%" }} value="">Year</option>
+                        {years.map((year) => (
+                            <option key={year.value} value={year.value}>{year.label}</option>
+                        ))}
+                    </Select>
 
-                            </FormControl>
-                        </HStack>
-                        {birthdayError && (
-                            <Text fontSize={12} color="red.500" mt={1}>
-                                {birthdayError}
-                            </Text>
-                        )}
-                        <Box align="flex-start">
-                            <Text fontSize="10px">Your birthday won't be shown publicly.</Text>
-                        </Box>
-
-
-
-
-
-                        <Input
-                            w="320px"
-                            type='email'
-                            name="email"
-                            value={email}
-                            placeholder='Email'
-                            fontSize={14}
-                            focusBorderColor="#05c7d0"
-                            onChange={(e) => setEmail(e.target.value)} />
-
-
-
-                        <VStack spacing={4}>
-
-                            {emailError && (
-                                <Text fontSize={12} color="red.500" mt={1}>
-                                    {emailError}
-                                </Text>
-                            )}
-
-
-
-
-                            <Button w="320px" _hover={{ bg: '#05c7d0', color: 'white' }} onClick={handleFirstStepContinue} >Continue</Button>
-                        </VStack>
-
-                    </VStack>
-                    <Text textAlign="center" fontSize="12px">
-                        By continuing, you agree to our{' '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToTermsOfService}>
-                            Terms
-                        </Link>
-                        {', '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToPrivacyPolicy}>
-                            Privacy Policy
-                        </Link>
-                        {', and '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToCommunityGuidelines}>
-                            Community Guidelines
-                        </Link>
-                        .
-                    </Text>
-
-                </>
+                </FormControl>
+            </HStack>
+            {birthdayError && (
+                <Text fontSize={12} color="red.500" mt={1}>
+                    {birthdayError}
+                </Text>
             )}
+            <Box align="flex-start">
+                <Text fontSize="10px">Your birthday won't be shown publicly.</Text>
+            </Box>
 
-            {showSecondStepSignUp && (
-                <>
-                    <Text textAlign="center" fontSize="14px">Upload a Profile Picture</Text>
-                    <label htmlFor="profilePicInput" className="profile-image" style={{ display: 'block', margin: 'auto' }}>
-                        {profilePicError && (
-                            <Text fontSize={12} color="red.500" mt={1}>
-                                {profilePicError}
-                            </Text>
-                        )}
-                        {profilePic ? (
-                            <Image
-                                src={URL.createObjectURL(profilePic)}
-                                alt="Profile"
-                                borderRadius="10px"
-                                boxShadow="base"
-                                className="profile-image"
-                            />
-                        ) : (
-                            <Box
-                                border="1px dashed #05c7d0"
-                                borderRadius="10px"
-                                p="80px"
-                                cursor="pointer"
-                                className="profile-image"
-                            >
 
-                                <IoImageOutline size="32px" />
-                            </Box>
-                        )}
-                    </label>
 
-                    <Input
-                        w="320px"
-                        type='text'
-                        name="Name"
-                        value={name}
-                        placeholder='Name'
-                        fontSize={14}
-                        focusBorderColor="#05c7d0"
-                        onChange={(e) => setName(e.target.value)}
-                    />
 
-                    {nameError && (
-                        <Text fontSize={12} color="red.500" mt={1}>
-                            {nameError}
-                        </Text>
-                    )}
 
-                    <Button
-                        w="320px"
-                        _hover={{ bg: '#05c7d0', color: 'white' }}
-                        onClick={handleSecondStepContinue}
+            <Input
+                w="320px"
+                type='email'
+                name="email"
+                value={email}
+                placeholder='Email'
+                fontSize={14}
+                focusBorderColor="#05c7d0"
+                onChange={(e) => setEmail(e.target.value)} />
+
+
+
+            <VStack spacing={4}>
+
+                {emailError && (
+                    <Text fontSize={12} color="red.500" mt={1}>
+                        {emailError}
+                    </Text>
+                )}
+
+
+
+
+                <Button w="320px" _hover={{ bg: '#05c7d0', color: 'white' }} onClick={handleFirstStepContinue} >Continue</Button>
+            </VStack>
+
+        </VStack>
+        <Text textAlign="center" fontSize="12px">
+            By continuing, you agree to our{' '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToTermsOfService}>
+                Terms
+            </Link>
+            {', '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToPrivacyPolicy}>
+                Privacy Policy
+            </Link>
+            {', and '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToCommunityGuidelines}>
+                Community Guidelines
+            </Link>
+            .
+        </Text>
+
+    </>
+)}
+
+{showSecondStepSignUp && (
+    <>
+        <Text textAlign="center" fontSize="14px">Upload a Profile Picture</Text>
+        <label htmlFor="profilePicInput" className="profile-image" style={{ display: 'block', margin: 'auto' }}>
+            {profilePicError && (
+                <Text fontSize={12} color="red.500" mt={1}>
+                    {profilePicError}
+                </Text>
+            )}
+            {profilePic ? (
+                <Image
+                    src={URL.createObjectURL(profilePic)}
+                    alt="Profile"
+                    borderRadius="10px"
+                    boxShadow="base"
+                    className="profile-image"
+                />
+            ) : (
+                <Box
+                    border="1px dashed #05c7d0"
+                    borderRadius="10px"
+                    p="80px"
+                    cursor="pointer"
+                    className="profile-image"
+                >
+
+                    <IoImageOutline size="32px" />
+                </Box>
+            )}
+        </label>
+
+        <Input
+            w="320px"
+            type='text'
+            name="Name"
+            value={name}
+            placeholder='Name'
+            fontSize={14}
+            focusBorderColor="#05c7d0"
+            onChange={(e) => setName(e.target.value)}
+        />
+
+        {nameError && (
+            <Text fontSize={12} color="red.500" mt={1}>
+                {nameError}
+            </Text>
+        )}
+
+        <Button
+            w="320px"
+            _hover={{ bg: '#05c7d0', color: 'white' }}
+            onClick={handleSecondStepContinue}
+        >
+            Continue
+        </Button>
+
+        <Input
+            id="profilePicInput"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleInputChange}
+
+            name="profilePic"
+        />
+    </>
+)}
+
+{showThirdStepSignUp && (
+    <>
+        <VStack spacing={4}>
+
+            <FormControl align="flex-start" ml="20px">
+                <Text fontSize="12px">Create account</Text>
+            </FormControl>
+
+            <Input
+                w="320px"
+                type='text'
+                placeholder='Username'
+                fontSize={14} focusBorderColor="#05c7d0"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)} />
+
+            {usernameError && <Text fontSize={12} color="red.500">{usernameError}</Text>}
+
+            <Input
+                w="320px"
+                type={passwordVisible ? 'text' : 'password'}
+                placeholder='Password'
+                fontSize={14}
+                focusBorderColor="#05c7d0"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <div style={{ position: 'relative', width: '330px', marginTop: '8px' }}>
+                <div style={{ position: 'absolute', top: '30%', transform: 'translateY(-150%)', left: '0' }}>
+                    <Box
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                        cursor="pointer"
+                        style={{ marginRight: '0px' }} // Adjust the spacing as needed
                     >
-                        Continue
-                    </Button>
+                        {passwordVisible ? <RxEyeOpen color="#05c7d0" /> : <PiEyeClosedBold color="#05c7d0" />}
+                    </Box>
+                </div>
+                <div style={{ position: 'absolute', top: '30%', transform: 'translateY(-150%)', right: '0' }}>
+                    <Box
+                        onClick={() => setPasswordVisible(!passwordVisible)}
+                        cursor="pointer"
+                        style={{ marginLeft: '0px' }} // Adjust the spacing as needed
+                    >
+                        {passwordVisible ? <RxEyeOpen color="#05c7d0" /> : <PiEyeClosedBold color="#05c7d0" />}
+                    </Box>
+                </div>
+            </div>
 
-                    <Input
-                        id="profilePicInput"
-                        type="file"
-                        style={{ display: 'none' }}
-                        onChange={handleInputChange}
-        
-                        name="profilePic"
-                    />
-                </>
-            )}
-
-            {showThirdStepSignUp && (
-                <>
-                    <VStack spacing={4}>
-
-                        <FormControl align="flex-start" ml="20px">
-                            <Text fontSize="12px">Create account</Text>
-                        </FormControl>
-
-                        <Input
-                            w="320px"
-                            type='text'
-                            placeholder='Username'
-                            fontSize={14} focusBorderColor="#05c7d0"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)} />
-
-                        {usernameError && <Text fontSize={12} color="red.500">{usernameError}</Text>}
-
-                        <Input
-                            w="320px"
-                            type={passwordVisible ? 'text' : 'password'}
-                            placeholder='Password'
-                            fontSize={14}
-                            focusBorderColor="#05c7d0"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-
-                        <div style={{ position: 'relative', width: '330px', marginTop: '8px' }}>
-                            <div style={{ position: 'absolute', top: '30%', transform: 'translateY(-150%)', left: '0' }}>
-                                <Box
-                                    onClick={() => setPasswordVisible(!passwordVisible)}
-                                    cursor="pointer"
-                                    style={{ marginRight: '0px' }} // Adjust the spacing as needed
-                                >
-                                    {passwordVisible ? <RxEyeOpen color="#05c7d0" /> : <PiEyeClosedBold color="#05c7d0" />}
-                                </Box>
-                            </div>
-                            <div style={{ position: 'absolute', top: '30%', transform: 'translateY(-150%)', right: '0' }}>
-                                <Box
-                                    onClick={() => setPasswordVisible(!passwordVisible)}
-                                    cursor="pointer"
-                                    style={{ marginLeft: '0px' }} // Adjust the spacing as needed
-                                >
-                                    {passwordVisible ? <RxEyeOpen color="#05c7d0" /> : <PiEyeClosedBold color="#05c7d0" />}
-                                </Box>
-                            </div>
-                        </div>
-
-                        {passwordError && <Text fontSize={12} color="red.500">{passwordError}</Text>}
+            {passwordError && <Text fontSize={12} color="red.500">{passwordError}</Text>}
 
 
-                        <VStack spacing={4}>
+            <VStack spacing={4}>
 
 
 
@@ -682,30 +788,31 @@ const SignupForm = ({ onSignUpSuccess }) => {
 
 
 
-                            <Button w="320px" _hover={{ bg: '#05c7d0', color: 'white' }} mt="10px" onClick={handleThirdStepContinue} disabled={buttonClicked} >Sign up</Button>
-                        </VStack>
+                <Button w="320px" _hover={{ bg: '#05c7d0', color: 'white' }} mt="10px" onClick={handleThirdStepContinue} disabled={buttonClicked} >Sign up</Button>
+            </VStack>
 
-                    </VStack>
-                    <Text textAlign="center" fontSize={12}>
+        </VStack>
+        <Text textAlign="center" fontSize={12}>
 
-                        By signing up, you agree to our{' '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToTermsOfService}>
-                            Terms
-                        </Link>
-                        {', '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToPrivacyPolicy}>
-                            Privacy Policy
-                        </Link>
-                        {', and '}
-                        <Link color="blue.500" fontSize="inherit" onClick={goToCommunityGuidelines}>
-                            Community Guidelines
-                        </Link>
-                        .
-                    </Text>
-                </>
-            )}
+            By signing up, you agree to our{' '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToTermsOfService}>
+                Terms
+            </Link>
+            {', '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToPrivacyPolicy}>
+                Privacy Policy
+            </Link>
+            {', and '}
+            <Link color="blue.500" fontSize="inherit" onClick={goToCommunityGuidelines}>
+                Community Guidelines
+            </Link>
+            .
+        </Text>
+    </>
+)}
 
-
+  </>
+)}
 
         </VStack>
     );

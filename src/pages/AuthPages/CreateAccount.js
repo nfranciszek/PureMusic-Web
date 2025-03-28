@@ -1,4 +1,4 @@
-import { ProfilesRef, userInformationRef, userInformationRefSS, update, get, child, set, auth, storage, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "../../Utilities/firebase";
+import { ProfilesRef, userInformationRef, userInformationRefSS, update, get, child, set, auth, storage, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, usersArtistsRef, userPromotersRef } from "../../Utilities/firebase";
 import { getDownloadURL, uploadBytesResumable } from "../../Utilities/firebase";
 import { currentUserId } from "../../Utilities/firebase";
 import { ref } from 'firebase/storage';
@@ -141,6 +141,13 @@ export const validateUsername = async (username) => {
   const snapshot = await get(ProfilesRef);
   let usernameExists = false; // Flag variable to track username existence
 
+    if (!snapshot.exists()) {
+      // Handle empty database case
+      console.log("Database is empty. No usernames to check.");
+      return false; // Username doesn't exist because the database is empty
+    }
+  
+
   if (snapshot.exists()) {
     snapshot.forEach((childSnapshot) => {
       // Get the username from the database and convert it to lowercase
@@ -154,7 +161,7 @@ export const validateUsername = async (username) => {
         usernameExists = true; // Set flag to true if username is found
       }
     });
-  }
+  } 
 
   // Return based on the flag value
   if (usernameExists) {
@@ -203,7 +210,7 @@ const uploadProfilePhoto = async (uid, profilePhotoFile) => {
 
 
 
-export const createAccountSignUp = async (name, email, password, profilePhoto, username, languageName, languageCode, country, birthday, signUpCompetitionPhoto, creditedBrandAmbassadorUID) => {
+export const createAccountSignUp = async (name, email, password, profilePhoto, username, languageName, languageCode, country, birthday, rank) => {
   try {
     // Step 1: Create User Account
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -227,7 +234,10 @@ export const createAccountSignUp = async (name, email, password, profilePhoto, u
       language: languageCode,
       country: country,
       birthday: birthday,
+      rank: rank,
     });
+
+
 
 
 
@@ -244,11 +254,32 @@ export const createAccountSignUp = async (name, email, password, profilePhoto, u
       url: username,
     });
 
+    let userRankSSPromise = null;
+
+    console.log("rank equals ", rank);
+
+    if (rank.includes("Artist")) {
+      userRankSSPromise = set(child(usersArtistsRef, `${uid}`), {
+        uid: uid,
+        rank: rank,
+        status: "pending",
+      });
+    } else if (rank.includes("Promoter")) {
+      userRankSSPromise = set(child(userPromotersRef, `${uid}`), {
+        uid: uid,
+        rank: rank,
+        status: "pending",
+      });
+    }
+
+
+
+
     // Await Steps 3A, 3B, and 4 concurrently
-    await Promise.all([userInfoPromise, userInfoSSPromise, profileURLPromise]);
+    await Promise.all([userInfoPromise, userInfoSSPromise, profileURLPromise, userRankSSPromise].filter(Boolean));
 
 
-   // await checkIfSignedUpByAmbassador(creditedBrandAmbassadorUID, uid);
+    await setStatsForUser(uid, rank);
 
 
     // console.log('User signed up successfully:', uid);
@@ -259,7 +290,55 @@ export const createAccountSignUp = async (name, email, password, profilePhoto, u
   }
 };
 
+const setStatsForUser = async (uid, rank) => {
 
+  const currentDateStamp = new Date();
+  const currentMonthIndex = currentDateStamp.getMonth(); // getMonth() returns month from 0 (Jan) to 11 (Dec)
+const currentMonth = currentMonthIndex + 1;
+const currentYear = currentDateStamp.getFullYear();
+
+  if (rank.includes("Artist")) {
+    try {
+      await update(child(usersArtistsRef, `${uid}/stats`), { 
+      
+        //  totalPastPeopleInvited: 0,
+          tipA: 0,
+          tipB: 0,
+          tipC: 0,
+          tipD: 0,
+          tipE: 0,
+          tipF: 0,
+          bonuses: 0,
+          currentMonth: currentMonth,
+          currentYear: currentYear,
+  
+      });
+  } catch (error) {
+      console.error("Error updating ambassador stats:", error);
+  }
+  } else if (rank.includes("Promoter")) {
+   
+try {
+    await update(child(userPromotersRef, `${uid}/stats`), { 
+    
+      //  totalPastPeopleInvited: 0,
+      tipA: 0,
+      tipB: 0,
+      tipC: 0,
+      tipD: 0,
+      tipE: 0,
+      tipF: 0,
+      bonuses: 0,
+      currentMonth: currentMonth,
+      currentYear: currentYear,
+
+    });
+} catch (error) {
+    console.error("Error updating ambassador stats:", error);
+}
+  }
+
+}
 
 
 

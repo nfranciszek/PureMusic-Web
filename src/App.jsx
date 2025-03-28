@@ -66,17 +66,20 @@ function App() {
 
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
-  const [isLoginPathOpen, setIsLoginPathOpen] = useState(false);
-  const [isSignUpPathOpen, setIsSignUpPathOpen] = useState(false);
-  useEffect(() => {
 
-    const includedLoginPath = ['/login', ''];
-    setIsLoginPathOpen(includedLoginPath.some(path => pathname.includes(path)));
 
-    const includedSignUp = ['/signup', 'account/login'];
-    setIsSignUpPathOpen(includedSignUp.some(path => pathname.includes(path)));
-  }, [pathname]);
+  const [signUpAsPromoter, setSignUpAsPromoter] = useState(false);
+  const [signUpAsArtist, setSignUpAsArtist] = useState(false);
+  const [signUpAsFan, setSignUpAsFan] = useState(false);
+
+  const [extractedUrlUsername, setExtractedUrlUsername] = useState(false);
+
+  const getUserProfilePageURL = (userPageURL) => {
+    setExtractedUrlUsername(userPageURL);
+
+    }
   
+
   return (
     <DataContext.Provider value={{
       YenZekRootLink,
@@ -84,7 +87,7 @@ function App() {
       isDashboard, setIsDashboard,
       showMenuDashboard, setMenuDashboard,
       showPayoutDetails, setShowPayoutDetails,
-
+  
       homeSelected, setHomeSelected,
       shareQRSelected, setShareQRSelected,
       payoutDetailsSelected, setPayoutDetailsSelected,
@@ -105,6 +108,13 @@ function App() {
       didUserJustLogIn, setDidUserJustLogIn,
 
       userJustSignedUp, setUserJustSignedUp,
+
+
+      signUpAsArtist, setSignUpAsArtist,
+      signUpAsPromoter, setSignUpAsPromoter,
+      signUpAsFan, setSignUpAsFan,
+      extractedUrlUsername, setExtractedUrlUsername,
+      getUserProfilePageURL,
     }}>
       <PageLayouts>
         <Routes>

@@ -32,7 +32,7 @@ const functions = getFunctions(pureMusicApp);
 
 const userInformationRef = ref(database, "Users Information");
 const userInformationRefSS = ref(database, "Users Information SS");
-const ProfilesRef = ref(database, "UserProfiles")
+const ProfilesRef = ref(database, "UserProfiles");
 
 const usersArtistsRef = ref(database, "ArtistsUsers");
 const userPromotersRef = ref(database, "PromotersUsers");

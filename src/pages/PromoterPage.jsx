@@ -3,6 +3,7 @@ import { Center, VStack, Box, Button, Image, Heading, Text, Flex, Slider, Slider
 
 import { useNavigate } from 'react-router-dom';
 
+import { useData } from '../App';
 
 const PromoterPage = () => {
 
@@ -14,6 +15,9 @@ const PromoterPage = () => {
         "/FlightAttenants02PureMusic.jpg",
     ];
 
+   const { signUpAsArtist, setSignUpAsArtist,
+    signUpAsPromoter, setSignUpAsPromoter,
+    signUpAsFan, setSignUpAsFan } = useData();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -25,6 +29,10 @@ const PromoterPage = () => {
 
     const goSignUp = () => {
         navigate("/signup");
+
+        setSignUpAsArtist(false);
+        setSignUpAsFan(false);
+        setSignUpAsPromoter(true);
     }
 
     const HowItWorks = () => {

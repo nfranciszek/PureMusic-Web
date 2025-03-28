@@ -738,7 +738,7 @@ const Dashboard = () => {
                                                     <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.storyListens, rates["storyListens"])}</Text>
                                                 </VStack>
 
-                                                <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>*Conversions equals the number of people who tipped artists on PureMusic from your promotion.</Text>
+                                                <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>*This chart displays your earnings in tips thanks to your promotion of PureMusic.</Text>
 
                                             </>
 

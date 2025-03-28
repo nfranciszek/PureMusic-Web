@@ -8,10 +8,36 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
 
-  const handleLoginSuccess = () => {
-    // Navigate to MainPage
+const {
 
-    navigate('/stories');
+  setIsLogin,
+
+
+  showMenuDashboard, setMenuDashboard,
+        showPayoutDetails, setShowPayoutDetails,
+        homeSelected, setHomeSelected,
+        shareQRSelected, setShareQRSelected,
+        payoutDetailsSelected, setPayoutDetailsSelected,
+        helpSelected, setHelpSelected,
+        logoutPageSelected, setLogoutPageSelected,
+
+} = useData();
+
+  const handleLoginSuccess = () => {
+
+
+
+    setHomeSelected(true);
+    setShareQRSelected(false);
+    setPayoutDetailsSelected(false);
+    setShowPayoutDetails(false);
+    setMenuDashboard(false);
+
+    setHelpSelected(false);
+
+    navigate('/dashboard');
+
+    setLogoutPageSelected(false);
 };
 
 
@@ -22,11 +48,6 @@ const LoginPage = () => {
 
 
 
-const {
-
-  setIsLogin
-
-} = useData();
 
 
 

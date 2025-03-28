@@ -26,7 +26,7 @@ const {
 
 const handleSignUpSuccess = () => {
 
-  navigate('/stories');
+  navigate('/dashboard');
 };
 
 
