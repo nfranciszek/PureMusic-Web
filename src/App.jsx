@@ -26,13 +26,33 @@ export const useData = () => useContext(DataContext);
 function App() {
   const [YenZekRootLink, setYenZekRootLink] = useState("https://yenzek.com/");
 
+  const [videoUrlPureMusicContent, setPureMusicVideoContent] = useState("");
+  
 
+  // https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f
+  useEffect(() => {
+  if (!videoUrlPureMusicContent) {
+    setPureMusicVideoContent("https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f")
+
+  }
+  }, [videoUrlPureMusicContent]);
+
+  
+ 
   const [onTransferedPage, setOnTransferedPage] = useState(false);
 
 
   const [isDashboard, setIsDashboard] = useState(true);
   const [showMenuDashboard, setMenuDashboard] = useState(false);
   const [showPayoutDetails, setShowPayoutDetails] = useState(false);
+
+
+  const [homeSelected, setHomeSelected] = useState(true);
+  const [shareQRSelected, setShareQRSelected] = useState(false);
+  const [payoutDetailsSelected, setPayoutDetailsSelected] = useState(false);
+  const [helpSelected, setHelpSelected] = useState(false);
+  const [logoutPageSelected, setLogoutPageSelected] = useState(false);
+
   return (
     <DataContext.Provider value={{
       YenZekRootLink,
@@ -40,6 +60,14 @@ function App() {
       isDashboard, setIsDashboard,
       showMenuDashboard, setMenuDashboard,
       showPayoutDetails, setShowPayoutDetails,
+
+      homeSelected, setHomeSelected,
+      shareQRSelected, setShareQRSelected,
+      payoutDetailsSelected, setPayoutDetailsSelected,
+      helpSelected, setHelpSelected,
+      logoutPageSelected, setLogoutPageSelected,
+      
+      videoUrlPureMusicContent,
 
     }}>
       <PageLayouts>
@@ -54,7 +82,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/help" element={<Help />} />
 
-          <Route path="/dashboard" element={<Dashboard/>} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/video/watch=fpx7p9k2f4m8d3c6v" element={<Movies />} />
 

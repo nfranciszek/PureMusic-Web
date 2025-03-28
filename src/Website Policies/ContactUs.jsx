@@ -1,5 +1,5 @@
 import React from 'react'
-import { VStack, Flex, ChakraProvider, Heading, Button, Spacer, Text, Image } from '@chakra-ui/react'
+import { VStack, Flex, ChakraProvider, Heading, Button, Spacer, Text, Image, useBreakpointValue } from '@chakra-ui/react'
 import { usePageTitle } from '../Utilities/pageTitles';
 import { Helmet } from 'react-helmet';
 import theme from '../Utilities/theme';
@@ -9,6 +9,7 @@ import BottomNav from '../Footers/BottomNav';
 const ContactUs = () => {
 
 
+  const isBaseScreen = useBreakpointValue({ base: true, sm: false, md: false });
 
 
 
@@ -17,7 +18,7 @@ const ContactUs = () => {
 
 
 <ChakraProvider theme={theme}>
-<VStack pt='6rem' px={{ base: '2rem', sm: '2rem', md: '4rem', lg: '14rem' }}>
+<VStack  pt={isBaseScreen ? "2rem" : '6rem'}  px={{ base: '2rem', sm: '2rem', md: '4rem', lg: '14rem' }}>
 
 
 <Helmet>

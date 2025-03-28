@@ -4,6 +4,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { IoArrowBack } from "react-icons/io5";
 import { DeleteIcon } from "@chakra-ui/icons";
 
+import ShareContentPage from '../pages/ShareContentPage';
+import Help from '../Website Policies/Help';
+import LogoutPage from '../pages/LogoutPage';
 // import { updatePayoutDetails, checkPayoutExists, getPayoutDetails, checkForLeadAmbassador, getAmbassadorStats, getLeadAmbassadorStats, getCurrentMonthAndYear, testUpdate, fetchArchivedStats } from '../../Utilities/Ambassador';
 import { getCurrentMonthAndYear, removePayoutVenmo, removePayoutZelle } from './DashboardConfig';
 // import { currentUserId } from '../../Utilities/firebase';
@@ -30,7 +33,14 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
     const { showMenuDashboard, setMenuDashboard,
-        showPayoutDetails, setShowPayoutDetails } = useData();
+        showPayoutDetails, 
+        
+        setShowPayoutDetails,
+      homeSelected, setHomeSelected,
+      shareQRSelected, setShareQRSelected,
+      payoutDetailsSelected, setPayoutDetailsSelected,
+      helpSelected,
+      logoutPageSelected } = useData();
 
     const includedTalkCirclePaths = [
 
@@ -265,6 +275,11 @@ const Dashboard = () => {
     const handleBackButton = () => {
         if (showPayoutDetails) {
             setShowPayoutDetails(false);
+            setPayoutDetailsSelected(false);
+            setHomeSelected(true);
+        } else if (shareQRSelected) {
+            setShareQRSelected(false);
+            setHomeSelected(true);
         }
         //  } else {
         //      setDashboardSelected(false);
@@ -420,10 +435,10 @@ const Dashboard = () => {
             top="0"
             height="100%"
             bg="white"
-            borderRight="1px solid #e4e4e4"
             transition="left 0.6s ease" // Slower transition
             zIndex="0"
             pb="8px"
+            pt="3rem"
             overflowY="auto">
 
 
@@ -433,10 +448,24 @@ const Dashboard = () => {
                     <MenuDashboard />
                 </>
 
+            ) : shareQRSelected ? (
+<>
+
+<ShareContentPage/>
+
+</>
+
+) : helpSelected ? (
+    <>
+<Help/>
+    </>
+
+) : logoutPageSelected ? (
+    <>
+    <LogoutPage/>
+        </>
+    
             ) : (
-
-
-
 
                 <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "2rem"}>
                     <Flex direction="column">
@@ -845,7 +874,7 @@ const Dashboard = () => {
 
 
                                 {/* Payment Setup */}
-                                <VStack align="start" spacing={1} mt="1rem">
+                                <VStack align="start" spacing={1} mt="1rem"     mb="4rem">
                                     <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Details</Text>
 
                                     {!payoutExists ? (

@@ -1,15 +1,17 @@
 import React from 'react'
 import theme from '../Utilities/theme';
-import { ChakraProvider, Image, Heading, VStack, Text, Spacer, Button } from '@chakra-ui/react'
+import { ChakraProvider, Image, Heading, VStack, Text, Spacer, Button, useBreakpointValue } from '@chakra-ui/react'
 import { usePageTitle } from '../Utilities/pageTitles'
 import { Helmet } from 'react-helmet';
 import BottomNav from '../Footers/BottomNav'
 const Help = () => {
     usePageTitle("Help")
+    const isBaseScreen = useBreakpointValue({ base: true, sm: false, md: false });
+
   return (
 
         <ChakraProvider theme={theme}>
-        <VStack pt='6rem' px={{ base: '2rem', sm: '2rem', md: '4rem', lg: '14rem' }}>
+        <VStack pt={isBaseScreen ? "2rem" : '6rem'} px={{ base: '2rem', sm: '2rem', md: '4rem', lg: '14rem' }}>
     
     
     <Helmet>

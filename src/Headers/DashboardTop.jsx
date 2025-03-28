@@ -53,13 +53,14 @@ const DashboardTop = () => {
             position="fixed"
             top="0"
             left="0"
+
             width="100%"
             bg="white"
             transition="transform 0.3s ease"
             // transform={isOpen ? 'translateY(0)' : 'translateY(100%)'}
             zIndex="1"
-            pt="5px"
-            pb="5px"
+            pt="1rem"
+            pb="1rem"
         >
 
 
@@ -73,7 +74,7 @@ const DashboardTop = () => {
 
              
 <HStack ml="1rem" onClick={() => showMenu()}>
-            <RxHamburgerMenu/>
+            <RxHamburgerMenu size='20px' />
                   <Text>Nathanael</Text>
                   </HStack>
 

@@ -1,5 +1,10 @@
 import React from 'react'
 import { Image, Text, VStack, Box, Button, Flex, HStack, Spacer, useBreakpointValue } from '@chakra-ui/react'
+import { IoIosHelpCircleOutline, IoIosHelpCircle } from "react-icons/io";
+import { IoLogOutOutline } from "react-icons/io5";
+import { IoLogOut } from "react-icons/io5";
+
+
 import { IoCloseOutline } from "react-icons/io5";
 import { useState, useEffect } from 'react';
 
@@ -46,7 +51,14 @@ const MenuDashboard = () => {
     const navigate = useNavigate()
 
     const { showMenuDashboard, setMenuDashboard,
-        showPayoutDetails, setShowPayoutDetails } = useData();
+        showPayoutDetails, setShowPayoutDetails,
+
+        homeSelected, setHomeSelected,
+        shareQRSelected, setShareQRSelected,
+        payoutDetailsSelected, setPayoutDetailsSelected,
+        helpSelected, setHelpSelected,
+        logoutPageSelected, setLogoutPageSelected,
+    } = useData();
 
     const [isSubscriptionClicked, setIsSubscriptionClicked] = useState(false);
     const [isLanguageClicked, setIsLanguageClicked] = useState(false);
@@ -64,82 +76,94 @@ const MenuDashboard = () => {
         setMenuDashboard(false);
     };
 
-    const showPaymentLinks = () => {
 
+
+
+    const goHome = () => {
+        setHomeSelected(true);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(false);
+        setShowPayoutDetails(false);
+        closeSettings();
+
+        setHelpSelected(false);
+
+        navigate("/dashboard");
+
+    
+        setLogoutPageSelected(false);
+    };
+
+    const goQRShareContent = () => {
+        setHomeSelected(false);
+        setShareQRSelected(true);
+        setPayoutDetailsSelected(false);
+
+        closeSettings();
+
+        setHelpSelected(false);
+
+        setLogoutPageSelected(false);
+    };
+
+    const goPaymentDetails = () => {
+        setHomeSelected(false);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(true);
+
+
+        // for payment links page
         setShowPayoutDetails(true);
-
         setMenuDashboard(false);
+
+        setHelpSelected(false);
+
+        setLogoutPageSelected(false);
+    };
+
+    const goHelp = () => {
+        setHomeSelected(false);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(false);
+
+
+        // for payment links page
+        setShowPayoutDetails(false);
+        setMenuDashboard(false);
+
+        closeSettings();
+
+        setHelpSelected(true);
+
+        setLogoutPageSelected(false);
     };
 
 
-    const goBack = () => {
-
-        if (isSubscriptionClicked) {
-            setIsSubscriptionClicked(false);
-            setTitle("Settings");
-
-        } else if (isLanguageClicked) {
-            setIsLanguageClicked(false);
-            setTitle("Settings");
-
-        } else if (isAdvancedClicked) {
-            setIsAdvancedClicked(false);
-            setTitle("Settings");
-
-        } else if (isDeleteProfileClicked) {
-            setDeleteProfileClicked(false);
-            setTitle("Settings");
-
-        } else {
-            // setSettingsSelected(false);
-            setTitle("Settings");
-        }
+    const goLogOut = () => {
+        setHomeSelected(false);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(false);
 
 
+        // for payment links page
+        setShowPayoutDetails(false);
+        setMenuDashboard(false);
 
+        closeSettings();
 
-    };
+        setHelpSelected(false);
 
-    const goToAdvanced = () => {
-        setIsAdvancedClicked(true);
-        setIsLanguageClicked(false);
-        setIsSubscriptionClicked(false);
-        setDeleteProfileClicked(false);
-        setTitle("Advanced");
-    };
-
-    const goToLanguage = () => {
-        setIsAdvancedClicked(false);
-        setIsLanguageClicked(true);
-        setIsSubscriptionClicked(false);
-        setTitle("Language");
-    };
-
-    const goToSubscriptions = () => {
-        setIsAdvancedClicked(false);
-        setIsLanguageClicked(false);
-        setIsSubscriptionClicked(true);
-        setTitle("Subscriptions");
+        setLogoutPageSelected(true);
     };
 
     const goDeleteAccount = () => {
-        setTitle("Delete Account");
 
-
-        setIsLanguageClicked(false);
-        setIsSubscriptionClicked(false);
-
-        setDeleteProfileClicked(true);
 
     }
 
-    const includedTalkCirclePaths = [
+    const goToHelp = () => {
 
-
-        '/talkcircles',
-        '/talkcircles/session='
-    ];
-
+    }
 
 
 
@@ -150,10 +174,6 @@ const MenuDashboard = () => {
 
     };
 
-    const goToHelp = () => {
-        setSettingsSelected(false);
-        navigate('/help');
-    }
 
     const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -161,7 +181,7 @@ const MenuDashboard = () => {
 
 
         <Box
-        pl={isSmallScreen ? null : "5px"}
+            pl={isSmallScreen ? null : "5px"}
             position="fixed"
             top="0"
             left="0"
@@ -172,14 +192,14 @@ const MenuDashboard = () => {
             zIndex={4}
             pb="8px"
             width="320px"
-      >
+        >
 
 
 
 
-         {/* <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "5rem"}> */}  
+            {/* <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "5rem"}> */}
 
-         <VStack>
+            <VStack>
 
 
 
@@ -187,9 +207,9 @@ const MenuDashboard = () => {
 
                     <HStack pt="1rem" pb="1rem" ml="1rem">
 
-{isSmallScreen && (
-                    <IoCloseOutline onClick={closeSettings} size='40px' />
-)}
+                        {isSmallScreen && (
+                            <IoCloseOutline onClick={closeSettings} size='30px' />
+                        )}
 
 
                     </HStack>
@@ -197,27 +217,25 @@ const MenuDashboard = () => {
 
 
                     <VStack>
-                
 
-                <Image
-                    src="/PureMusicLogo.jpeg"
-                    borderRadius='full'
-                    width="50px"
-                    maxH="40px"
-                    className="profile-image-circle"
-                    alt='puremusic logo'
-                />
 
-                <Text>Nathanael</Text>
-        
+                        <Image
+                            src="/PureMusicLogo.jpeg"
+                            borderRadius='full'
+                            width="50px"
+                            maxH="40px"
+                            className="profile-image-circle"
+                            alt='puremusic logo'
+                        />
 
+                        <Text>Nathanael</Text>
 
 
 
 
-                <Box pl="1rem" pr="1rem" rounded="md" width={{ base: "100%", sm: "320px", lg: "320px" }}> 
 
-                     
+
+                        <Box pl="1rem" pr="1rem" rounded="md" width={{ base: "100%", sm: "320px", lg: "320px" }}>
 
 
 
@@ -226,111 +244,137 @@ const MenuDashboard = () => {
 
 
 
-                        <Spacer />
 
 
-                        <Button
-                            width="100%"
-                            color="black"
-                            leftIcon={<GoHomeFill fontSize="24px" />}
-                            onClick={closeSettings}
-                            bg="white"
-                            rounded="none"
-                            justifyContent="flex-start"
-                            textAlign="left"
-                            _hover={{
-                                bg: 'rgba(220, 220, 220, 0.1)',
-                                transform: "scale(1.022)",
-                            }}
-                        >
-                            <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                <Text fontSize='sm' color="black" >Home</Text>
-                                  <MdOutlineKeyboardArrowRight />
-                            </Flex>
+                            <Spacer />
 
 
-                        </Button>
-
-                        <Button
-                            width="100%"
-                            color="black"
-                            leftIcon={<BsQrCodeScan fontSize="24px" />}
-                            onClick={closeSettings}
-                            bg="white"
-                            rounded="none"
-                            justifyContent="flex-start"
-                            textAlign="left"
-                            _hover={{
-                                bg: 'rgba(220, 220, 220, 0.1)',
-                                transform: "scale(1.022)",
-                            }}
-                        >
-                            <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                <Text fontSize='sm' color="black">Share Content</Text>
-                              
-
-                                <MdOutlineKeyboardArrowRight />
-                            </Flex>
+                            <Button
+                                width="100%"
+                                color="black"
+                                leftIcon={homeSelected ? <GoHomeFill fontSize="24px" /> : <GoHome fontSize="24px" />}
+                                onClick={goHome}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black" >Home</Text>
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
 
 
-                        </Button>
+                            </Button>
 
-                        <Button
-                            width="100%"
-                            color="black"
-                            leftIcon={<IoWalletOutline fontSize="24px" />}
-                            onClick={showPaymentLinks}
-                            bg="white"
-                            rounded="none"
-                            justifyContent="flex-start"
-                            textAlign="left"
-                            _hover={{
-                                bg: 'rgba(220, 220, 220, 0.1)',
-                                transform: "scale(1.022)",
-                            }}
-                        >
-                            <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                <Text fontSize='sm' color="black">Payment Links</Text>
-                         
-                                <MdOutlineKeyboardArrowRight />
-                            </Flex>
+                            <Button
+                                width="100%"
+                                color="black"
+                                leftIcon={<BsQrCodeScan fontSize="24px" />}
+                                onClick={goQRShareContent}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black">Share Content</Text>
 
 
-                        </Button>
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
 
 
-                        <Button
+                            </Button>
 
-                            width="100%"
-                            color="black"
+                            <Button
+                                width="100%"
+                                color="black"
+                                leftIcon={payoutDetailsSelected ? <IoWallet fontSize="24px" /> : <IoWalletOutline fontSize="24px" />}
+                                onClick={goPaymentDetails}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black">Payment Links</Text>
 
-                            onClick={() => openLogoutPopup()}
-                            leftIcon={<TbLogout2 fontSize="22px" />}
-                            bg="white"
-                            rounded="none" // Remove rounded corners
-                            justifyContent="flex-start" // Align content to the start (left)
-                            textAlign="left" _hover={{
-                                bg: 'rgba(220, 220, 220, 0.1)',
-                                transform: "scale(1.022)",
-                            }}>
-
-
-                            <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                <Text fontSize='sm'>Log out</Text>
-                                <MdOutlineKeyboardArrowRight />
-                            </Flex>
-
-
-
-                        </Button>
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
 
 
+                            </Button>
+
+                            <Button 
+                                width="100%"
+                                color="black"
+                                leftIcon={helpSelected ? <IoIosHelpCircle fontSize="24px" /> : <IoIosHelpCircleOutline fontSize="24px" />}
+                                onClick={goHelp}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black">Help</Text>
+
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
+
+
+                            </Button>
+
+
+                            <Text ml="1rem" fontSize="12px" textColor="gray.500" 
+                                pt="3rem">Settings</Text>
+                            <Button
+
+                                width="100%"
+                                color="black"
+                                onClick={goLogOut}
+                                leftIcon={logoutPageSelected ? <IoLogOut fontSize="24px" /> : <IoLogOutOutline fontSize="24px" />}
+                                bg="white"
+                                rounded="none" // Remove rounded corners
+                                justifyContent="flex-start" // Align content to the start (left)
+                                textAlign="left" _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}>
+
+
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm'>Log out</Text>
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
+
+
+
+                            </Button>
 
 
 
 
 
-                    </Box>
+
+
+                        </Box>
 
                     </VStack>
 
