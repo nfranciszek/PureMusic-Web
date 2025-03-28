@@ -11,6 +11,7 @@ import Help from './Website Policies/Help';
 
 import WelcomePage from './Home/WelcomePage';
 import ArtistsPage from './pages/ArtistsPage';
+import PromoterPage from './pages/PromoterPage';
 
 import Movies from './Movies/Movies';
 
@@ -38,7 +39,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/artists" element={<ArtistsPage />} />
-
+          <Route path="/promoter-program" element={<PromoterPage />} />
 
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />

@@ -112,7 +112,7 @@ const NavigationTop = () => {
                                 borderColor: 'white', // White border color
                             }}
                         >
-                           Artists
+                         Artists
                         </Button>
              
 

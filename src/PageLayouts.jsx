@@ -29,7 +29,7 @@ const PageLayouts = ({ children }) => {
     const currentUrl = window.location.href;
 
     console.log("video url = " + currentUrl)
-    if (currentUrl.includes('video')) {
+    if (currentUrl.includes('video') || currentUrl.includes('promote')) {
       setOnTransferedPage(true); // Hide page cover for this specific page
     } else {
       setOnTransferedPage(false); // Show it for all other pages
