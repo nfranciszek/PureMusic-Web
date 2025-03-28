@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Button, Text, Flex, Image, VStack, Box } from '@chakra-ui/react';
 import { fetchVideoUrl } from '../Movies/videos';
 import { tipWaiter } from '../Utilities/stripe';
+import { useNavigate } from 'react-router-dom';
 
 const WelcomePage = () => {
   const [videoUrl, setVideoUrl] = useState("");
@@ -11,6 +12,12 @@ const WelcomePage = () => {
 
   const videoRef = useRef(null);
   const containerRef = useRef(null); // Fullscreen wrapper
+
+  const navigate = useNavigate();
+
+  const goToPromoterPage = () => {
+    navigate("/promoter-program");
+  }
 
   useEffect(() => {
     //  Test Video
@@ -338,6 +345,7 @@ const WelcomePage = () => {
     variant="outline"
     size="sm"
     bg="white"
+    onClick={() => goToPromoterPage()} 
     color="#05c7d0" // Website color for text
     border="2px solid #05c7d0" // Border to match the website color
     px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}

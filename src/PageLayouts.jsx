@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Image, Text, Box, ChakraProvider } from '@chakra-ui/react';
+import { Flex, Image, Text, Box, ChakraProvider, HStack } from '@chakra-ui/react';
 import { useBreakpointValue } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import NavigationTop from './Headers/NavigationTop';
+import DashboardTop from './Headers/DashboardTop';
 import BottomNav from './Footers/BottomNav';
 import { useAnimation, motion } from 'framer-motion';
 import theme from './Utilities/theme';
 import { useData } from './App';
+
+import MenuDashboard from './Dashboards/MenuDashboard';
 
 const PageLayouts = ({ children }) => {
   const { pathname } = useLocation();
@@ -21,6 +24,7 @@ const PageLayouts = ({ children }) => {
 
   const {
     onTransferedPage, setOnTransferedPage,
+    isDashboard, setIsDashboard, showMenuDashboard,
   } = useData();
 
 
@@ -29,7 +33,7 @@ const PageLayouts = ({ children }) => {
     const currentUrl = window.location.href;
 
     console.log("video url = " + currentUrl)
-    if (currentUrl.includes('video') || currentUrl.includes('promote')) {
+    if (currentUrl.includes('video') || currentUrl.includes('promote') || currentUrl.includes('dashboard')) {
       setOnTransferedPage(true); // Hide page cover for this specific page
     } else {
       setOnTransferedPage(false); // Show it for all other pages
@@ -110,17 +114,35 @@ const PageLayouts = ({ children }) => {
         <CenteredContent />
       ) : (
         <>
+
+{!showMenuDashboard && (
+<>
+
+{isDashboard ? (
+        <DashboardTop />
+      ) : (
           <NavigationTop />
+      )}
+      </>
+    )}
+
+{isBigScreen && (<MenuDashboard />
+    )}
+     
           <Box
                flex={1} // Limits max width for proper centering
-               w="100%" // Ensures it takes the full available width
+             //  w="100%" // Ensures it takes the full available width
                pt="5rem"
                pb={isBigScreen ? "5rem" : "0rem"}
+               w={{ base: "calc(100% - 70px)", md: "calc(100% - 640px)" }}
                mx="auto" // Centers horizontally
           >
+             
+
             {children}
           </Box>
-          {isBigScreen && <BottomNav />}
+       
+          {isBigScreen && !isDashboard && <BottomNav />}
         </>
       )}
     </Flex>

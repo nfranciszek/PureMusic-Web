@@ -13,6 +13,8 @@ import WelcomePage from './Home/WelcomePage';
 import ArtistsPage from './pages/ArtistsPage';
 import PromoterPage from './pages/PromoterPage';
 
+import Dashboard from './Dashboards/Dashboard';
+
 import Movies from './Movies/Movies';
 
 import PageLayouts from './PageLayouts';
@@ -28,11 +30,16 @@ function App() {
   const [onTransferedPage, setOnTransferedPage] = useState(false);
 
 
-
+  const [isDashboard, setIsDashboard] = useState(true);
+  const [showMenuDashboard, setMenuDashboard] = useState(false);
+  const [showPayoutDetails, setShowPayoutDetails] = useState(false);
   return (
     <DataContext.Provider value={{
       YenZekRootLink,
       onTransferedPage, setOnTransferedPage,
+      isDashboard, setIsDashboard,
+      showMenuDashboard, setMenuDashboard,
+      showPayoutDetails, setShowPayoutDetails,
 
     }}>
       <PageLayouts>
@@ -46,6 +53,8 @@ function App() {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/help" element={<Help />} />
+
+          <Route path="/dashboard" element={<Dashboard/>} />
 
           <Route path="/video/watch=fpx7p9k2f4m8d3c6v" element={<Movies />} />
 
