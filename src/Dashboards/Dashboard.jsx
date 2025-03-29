@@ -16,7 +16,7 @@ import { fetchUserStatus } from './UserProfile';
 import { currentUserId } from '../Utilities/firebase';
 
 const Dashboard = () => {
-    const isBaseScreen = useBreakpointValue({ base: true, sm: false, md: false });
+    const isBaseScreen = useBreakpointValue({ base: true, sm: true, md: false });
 
     const isLargeScreen = useBreakpointValue({ base: false, sm: false, md: false, lg: true });
 
@@ -458,6 +458,10 @@ const Dashboard = () => {
                 setStatusMessage("* Your account is active.");
                 break;
 
+            case 'rejected':
+                setStatusMessage("* Your account has been rejected as it does not meet our requirements.");
+
+                break;
             case 'paused':
                 setStatusMessage("* Your account has been paused");
                 break;

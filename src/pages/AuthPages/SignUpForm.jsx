@@ -24,7 +24,7 @@ const SignupForm = ({ onSignUpSuccess }) => {
 
     const {
 
-        getUserProfilePageURL,
+        getUserUsernameUrl,
         showFirstStepSignUp, setShowFirstStepSignUp,
         showSecondStepSignUp, setShowSecondStepSignUp,
         showThirdStepSignUp, setShowThirdStepSignUp,
@@ -366,7 +366,7 @@ const SignupForm = ({ onSignUpSuccess }) => {
 
             setUserJustSignedUp(true);
 
-            getUserProfilePageURL(username);
+            getUserUsernameUrl(username);
 
             setLoading(false);
 

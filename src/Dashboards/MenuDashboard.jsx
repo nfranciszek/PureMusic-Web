@@ -221,12 +221,18 @@ const MenuDashboard = () => {
                 setStatusColor("#FFA500");
                 setTextColor("#FFA500");
                 break;
-                
+
             case 'approved':
                 setStatusInfo("Active");
                 setStatusColor("#4CAF50");
                 setTextColor("#4CAF50");
                 break;
+
+          case 'rejected':
+                    setStatusInfo("Account Rejected");
+                    setStatusColor("#FF0000");
+                    setTextColor("#FF0000");
+                    break;
 
             case 'paused':
                 setStatusInfo("Paused");
@@ -239,6 +245,8 @@ const MenuDashboard = () => {
                 setStatusColor("gray.600");
                 setTextColor("gray.600");
                 break;
+
+           
 
             case 'terminated':
                 setStatusInfo("Terminated");

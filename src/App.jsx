@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-
+import { creditUserForConversion } from './Movies/creditUsers';
 import { getAuth } from 'firebase/auth';
 import AboutUs from './Website Policies/AboutUs';
 import ContactUs from './Website Policies/ContactUs';
@@ -8,7 +8,7 @@ import TermsOfService from './Website Policies/TermsOfService';
 import PrivacyPolicy from './Website Policies/PrivacyPolicy';
 import Help from './Website Policies/Help';
 
-
+import PromotedMovies from './Movies/PromotedMovies';
 
 import WelcomePage from './Home/WelcomePage';
 import ArtistsPage from './pages/ArtistsPage';
@@ -34,6 +34,12 @@ function App() {
   const { pathname } = useLocation();
  
   
+  // when user just signs up
+
+  const getUserUsernameUrl = (username) => {
+    savedUsernameUrl(username);
+
+    }
  
   const [onTransferedPage, setOnTransferedPage] = useState(false);
 
@@ -72,12 +78,88 @@ function App() {
   const [signUpAsArtist, setSignUpAsArtist] = useState(false);
   const [signUpAsFan, setSignUpAsFan] = useState(false);
 
-  const [extractedUrlUsername, setExtractedUrlUsername] = useState(false);
+  const [usernameUrl, savedUsernameUrl] = useState("");
 
-  const getUserProfilePageURL = (userPageURL) => {
+  const [extractedUrlUsername, setExtractedUrlUsername] = useState("");
+  const [savedCreditedUser, setSavedCreditedUser] = useState("");
+
+  const [finalTipAmount, setFinalTipAmount] = useState("");
+
+  useEffect(() => {
+    if (extractedUrlUsername) {
+      setSavedCreditedUser(extractedUrlUsername); 
+      console.log("user credited : ", extractedUrlUsername); // Log extracted username directly
+    }
+  }, [extractedUrlUsername]);
+
+  const getPromoterUsernameUrl = (userPageURL) => {
     setExtractedUrlUsername(userPageURL);
 
     }
+
+    useEffect(() => {
+      const currentUrl = window.location.href;
+  
+      // Check if the URL contains the specific pattern
+      if (currentUrl.includes("/video/watch=hYp8Cf2kmeJwgf2dL")) {
+          // Extract the username from the URL using a regular expression
+          const regex = /_user=([^&]+)/;
+          const match = currentUrl.match(regex);
+  
+          if (match && match[1]) {
+              const usernameFromUrl = match[1]; // Extract the username part
+              const username = usernameFromUrl.toLowerCase(); // Ensure username is in lowercase
+              console.log('Extracted Username:', username);
+  
+              // Call the function with the extracted username
+              getPromoterUsernameUrl(username);
+          } else {
+              console.error("Username not found in URL.");
+          }
+      } else {
+          console.error("URL does not contain the expected pattern.");
+      }
+  }, []);
+
+
+  useEffect(() => {
+    const currentUrl = window.location.href;
+  
+    // Check if the URL contains the specific pattern
+    if (currentUrl.includes("fpx7p9k2f4m8d3c6v")) {
+      const handleCreditUser = async () => {
+        if (savedCreditedUser && finalTipAmount) {
+    
+          setSavedCreditedUser(null);
+          setFinalTipAmount(null);
+        }
+      };
+  
+      handleCreditUser(); // Now we call the function inside the effect
+    }
+  }, [savedCreditedUser, finalTipAmount]);
+  
+  // IMPORTANT AS IT SAVES IN LOCALSTORAGE!!!
+  useEffect(() => {
+    // Store the data in localStorage when savedCreditedUser or finalTipAmount changes
+    if (savedCreditedUser && finalTipAmount) {
+      localStorage.setItem('savedCreditedUser', savedCreditedUser);
+      localStorage.setItem('finalTipAmount', finalTipAmount);
+      const savedUser = localStorage.getItem('savedCreditedUser');
+      const savedAmount = localStorage.getItem('finalTipAmount');
+      
+      if (savedUser && savedAmount) {
+    
+        console.log("initial saved Credited User ", savedUser);
+        console.log("initial saved final TipAmount ", savedAmount);
+
+      }
+    }
+  }, [savedCreditedUser, finalTipAmount]);
+  
+
+ 
+    
   
 
   return (
@@ -114,7 +196,10 @@ function App() {
       signUpAsPromoter, setSignUpAsPromoter,
       signUpAsFan, setSignUpAsFan,
       extractedUrlUsername, setExtractedUrlUsername,
-      getUserProfilePageURL,
+      getUserUsernameUrl, 
+
+      savedCreditedUser, setSavedCreditedUser,
+      finalTipAmount, setFinalTipAmount,
     }}>
       <PageLayouts>
         <Routes>
@@ -138,7 +223,11 @@ function App() {
           )}
 
           <Route path="/video/watch=fpx7p9k2f4m8d3c6v" element={<Movies />} />
-        
+      
+    
+          <Route path={`video/watch=hYp8Cf2kmeJwgf2dL_user=${extractedUrlUsername}`} element={<PromotedMovies />} />
+      
+          
         
 
           <Route path="/signup" element={<SignUpPage />} />

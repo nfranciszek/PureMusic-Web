@@ -8,8 +8,13 @@ import { useData } from '../App';
 import { currentUserId } from '../Utilities/firebase';
 import { fetchUserData, fetchUserStatus } from '../Dashboards/UserProfile';
 
+import { getAuth } from 'firebase/auth';
+
 const DashboardTop = () => {
   const navigate = useNavigate();
+
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   const { showMenuDashboard, setMenuDashboard } = useData();
 
@@ -81,9 +86,10 @@ const DashboardTop = () => {
       setStatus(userStatus); // Set the user status based on the fetch result
       renderStatusInfo(userStatus);
     };
-
+if (user) {
     getStatus();
-  }, [currentUserId]);
+}
+  }, [currentUserId, user]);
 
   // Conditional rendering based on user status
   const renderStatusInfo = (status) => {
@@ -99,6 +105,12 @@ const DashboardTop = () => {
         setStatusColor("#4CAF50");
         setTextColor("#4CAF50");
         break;
+
+        case 'rejected':
+          setStatusInfo("Account Rejected");
+          setStatusColor("#FF0000");
+          setTextColor("#FF0000");
+          break;
 
       case 'paused':
         setStatusInfo("Paused");
@@ -129,7 +141,7 @@ const DashboardTop = () => {
         setStatusColor("#FFA500");
         setTextColor("#FFA500");
         break;
-        
+
       default:
         setStatusInfo("Pending Status...");
         setStatusColor("#FFA500");

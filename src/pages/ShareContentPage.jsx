@@ -2,9 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { VStack, Flex, Box, Text, Button, Image, useBreakpointValue } from '@chakra-ui/react';
 import { useData } from '../App';
 import { QRCodeCanvas } from "qrcode.react";
-import { useParams } from "react-router-dom";
-import { IoArrowBack } from "react-icons/io5";
-import { fetchVideoUrl } from '../Movies/videos';
+import { fetchUserData } from '../Dashboards/UserProfile';
+import { currentUserId } from '../Utilities/firebase';
 
 const ShareContentPage = () => {
     const [videoUrl, setVideoUrl] = useState("");
@@ -12,9 +11,7 @@ const ShareContentPage = () => {
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
 
-    const { videoUrlPureMusicContent,
-        setShareQRSelected,
-        setHomeSelected } = useData
+    const {  getUserProfilePageURL } = useData
 
     const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -30,6 +27,7 @@ const ShareContentPage = () => {
             setIsPlaying(true);
         }
     };
+
 
     const enterFullscreen = () => {
         if (videoRef.current) {
@@ -49,19 +47,41 @@ const ShareContentPage = () => {
 
     const qrRef = useRef(null);
 
-    // Dynamically generate the video URL with the username
-    // const qrValue = `https://yourwebsite.com/video/watch=${videoId}?user=${encodeURIComponent(username)}`;
 
-    const qrValue = `https://puremusic.live/video/watch=fpx7p9k2f4m8d3c6v`
 
-    const username = "nathanaelfra"
+    const [userData, setUserData] = useState(null); // State to hold user data
+
+    const [qrValue, setQrValue] = useState(""); 
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const data = await fetchUserData(currentUserId); // Fetch user data using the utility function
+                setUserData(data); // Set the fetched data to state
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        if (currentUserId) {
+            getData(); // Call the function to fetch the data if the UID exists
+        }
+    }, [currentUserId]);
+    
+                                                            
+  
+    useEffect(() => {
+        if (userData?.username) {
+            setQrValue(`https://puremusic.live/video/watch=hYp8Cf2kmeJwgf2dL_user=${encodeURIComponent(userData.username)}`);
+        
+        }
+    }, [userData]);
 
     const downloadQRCode = () => {
         const canvas = qrRef.current.querySelector("canvas");
         const url = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = url;
-        link.download = `QRCode_${username}.png`;
+        link.download = `QRCode_${userData.username}.png`;
         link.click();
     };
 

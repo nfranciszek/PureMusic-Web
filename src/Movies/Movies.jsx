@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Button, Text, Flex, Image, VStack } from '@chakra-ui/react';
 import { fetchVideoUrl } from './videos';
 import { tipWaiter } from '../Utilities/stripe';
+import { useData } from '../App';
+import { creditUserForConversion } from './creditUsers';
 
 const Movies = () => {
     const [videoUrl, setVideoUrl] = useState("");
@@ -18,11 +20,37 @@ const Movies = () => {
     }, []);
 
      
-   
+ 
+    useEffect(() => {
+      const currentUrl = window.location.href;
     
-  
-   
-  
+      // Check if the URL contains the specific pattern
+      if (currentUrl.includes("fpx7p9k2f4m8d3c6v")) {
+        const handleCreditUser = async () => {
+          const savedUser = localStorage.getItem('savedCreditedUser');
+          const savedAmount = localStorage.getItem('finalTipAmount');
+          
+          if (savedUser && savedAmount) {
+        
+            console.log("Credit USER FINAL ", savedUser);
+            console.log("Tip amount FINAL ", savedAmount);
+            
+            // Call the credit function
+            await creditUserForConversion(savedUser, savedAmount);
+    
+            // Clear the localStorage after successful crediting
+            localStorage.removeItem('savedCreditedUser');
+            localStorage.removeItem('finalTipAmount');
+          } else {
+            console.log("Data is empty or not found in localStorage.");
+          }
+        };
+    
+        handleCreditUser(); // Execute the crediting process
+      }
+    }, []); // Empty dependency array to run this effect only once on mount
+    
+    
    
   
     const handlePlayClick = () => {
