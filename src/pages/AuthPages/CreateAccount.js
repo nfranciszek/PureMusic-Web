@@ -308,7 +308,6 @@ const currentYear = currentDateStamp.getFullYear();
           tipD: 0,
           tipE: 0,
           tipF: 0,
-          bonuses: 0,
           currentMonth: currentMonth,
           currentYear: currentYear,
   
@@ -328,7 +327,6 @@ try {
       tipD: 0,
       tipE: 0,
       tipF: 0,
-      bonuses: 0,
       currentMonth: currentMonth,
       currentYear: currentYear,
 

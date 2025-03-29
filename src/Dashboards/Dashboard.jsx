@@ -3,17 +3,21 @@ import { Box, Image, Button, Flex, VStack, Text, HStack, Spacer, Select, Input, 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IoArrowBack } from "react-icons/io5";
 import { DeleteIcon } from "@chakra-ui/icons";
+import AdminDashboard from './AdminDashboard';
 
 import ShareContentPage from '../pages/ShareContentPage';
 import Help from '../Website Policies/Help';
 import LogoutPage from '../pages/LogoutPage';
 // import { updatePayoutDetails, checkPayoutExists, getPayoutDetails, checkForLeadAmbassador, getAmbassadorStats, getLeadAmbassadorStats, getCurrentMonthAndYear, testUpdate, fetchArchivedStats } from '../../Utilities/Ambassador';
-import { getCurrentMonthAndYear, removePayoutVenmo, removePayoutZelle } from './DashboardConfig';
-// import { validateEmail } from '../../pages/AuthPages/CreateAccount';
+import { getStats, removePayoutVenmo, removePayoutZelle } from './DashboardConfig';
+import { updatePayoutDetails, checkPayoutExists, getPayoutDetails, getCurrentMonthAndYear } from './DashboardConfig';
+import { checkTimeForArchive } from './DashboardConfig';
+import { validateEmail } from '../pages/AuthPages/CreateAccount';
 import MenuDashboard from './MenuDashboard';
 import { useData } from '../App';
 import { fetchUserStatus } from './UserProfile';
 import { currentUserId } from '../Utilities/firebase';
+
 
 const Dashboard = () => {
     const isBaseScreen = useBreakpointValue({ base: true, sm: true, md: false });
@@ -24,9 +28,11 @@ const Dashboard = () => {
 
 
 
-    const [isLeadAmbassador, setLeadAmbassador] = useState(false);
+    const [chartExplaniation, setChartExplaination] = useState("");
 
     const [isViewPastEarnings, setViewPastEarnings] = useState(false);
+
+    const [userType, setUserType] = useState("");
 
     const { pathname } = useLocation()
 
@@ -40,31 +46,49 @@ const Dashboard = () => {
         shareQRSelected, setShareQRSelected,
         payoutDetailsSelected, setPayoutDetailsSelected,
         helpSelected,
-        logoutPageSelected } = useData();
+        logoutPageSelected,
 
-    const includedTalkCirclePaths = [
+        userIsArtist,
+        userIsPromoter,
+        userIsFan,
+        userIsAdmin, } = useData();
 
+    useEffect(() => {
+        if (userIsArtist) {
+            setUserType("Artist");
+            setChartExplaination("This chart displays your earnings in tips for being an Artist on PureMusic")
+        } else if (userIsPromoter) {
+            setUserType("Promoter");
+            setChartExplaination("*This chart displays your earnings in tips thanks to your promotion of PureMusic.")
+        } else {
+            setUserType("Fan");  // Default fallback to Fan.
+            setChartExplaination("");
+        }
 
-        '/talkcircles',
-        '/talkcircles/session='
-    ];
+    }, [userIsArtist, userIsPromoter, userIsFan]);
 
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
+    useEffect(() => {
+        const checkForArchive = async () => {
+            if (userType && !userType.includes("Fan") && !userType.includes("Admin")) {
+                checkTimeForArchive(currentUserId, userType);
 
+            }
+        };
 
-    const TalkCirclePaths = includedTalkCirclePaths.some(path => pathname.includes(path));
+        if (userType) {
+            checkForArchive();
+        }
+    }, [currentUserId, userType]);
 
     const [archivedStats, setArchivedStats] = useState({
-        liveUsers12: 0,
-        liveUsers25: 0,
-        liveUsers50: 0,
-        liveUsers100: 0,
-        liveUsers300: 0,
-        liveUsers500: 0,
-        //  peopleInvited: 0,
-        peopleMet: 0,
-        storyListens: 0
+        TipA: 0,
+        TipB: 0,
+        TipC: 0,
+        TipD: 0,
+        TipE: 0,
+        TipF: 0,
     });
 
     const monthMap = {
@@ -197,15 +221,12 @@ const Dashboard = () => {
 
 
     const [stats, setStats] = useState({
-        liveUsers12: 0,
-        liveUsers25: 0,
-        liveUsers50: 0,
-        liveUsers100: 0,
-        liveUsers300: 0,
-        liveUsers500: 0,
-        //  peopleInvited: 0,
-        peopleMet: 0,
-        storyListens: 0
+        TipA: 0,
+        TipB: 0,
+        TipC: 0,
+        TipD: 0,
+        TipE: 0,
+        TipF: 0
     });
 
 
@@ -231,15 +252,14 @@ const Dashboard = () => {
 
     // Define the rate values
     const rates = {
-        //  "peopleInvited": 1,
-        "peopleMet": 1,
-        "storyListens": 0.04,
-        "12+": 10,
-        "25+": 20,
-        "50+": 30,
-        "100+": 50,
-        "300+": 75,
-        "500+": 100
+
+        "A": 3,
+        "B": 4.5,
+        "C": 7.5,
+        "D": 9,
+        "E": 15,
+        "F": 30,
+
     };
 
 
@@ -248,28 +268,23 @@ const Dashboard = () => {
     };
 
     // Calculate earnings by multiplying the count of live users with the respective rate
-    const calculateEarnings = (isLeadAmbassador, stats) => {
+    const calculateEarnings = (stats) => {
         let totalEarnings = 0;
 
-        if (isLeadAmbassador) {
-            // Calculate earnings based on live user stats for lead ambassador
-            totalEarnings += stats.liveUsers12 * rates["12+"];
-            totalEarnings += stats.liveUsers25 * rates["25+"];
-            totalEarnings += stats.liveUsers50 * rates["50+"];
-            totalEarnings += stats.liveUsers100 * rates["100+"];
-            totalEarnings += stats.liveUsers300 * rates["300+"];
-            totalEarnings += stats.liveUsers500 * rates["500+"];
-        } else {
-            // Calculate earnings based on other stats for non-lead ambassador
-            //  totalEarnings += stats.peopleInvited * rates["peopleInvited"];
-            totalEarnings += stats.peopleMet * rates["peopleMet"];
-            totalEarnings += stats.storyListens * rates["storyListens"];
-        }
+
+
+        totalEarnings += stats.TipA * rates["A"];
+        totalEarnings += stats.TipB * rates["B"];
+        totalEarnings += stats.TipC * rates["C"];
+        totalEarnings += stats.TipD * rates["D"];
+        totalEarnings += stats.TipE * rates["E"];
+        totalEarnings += stats.TipF * rates["F"];
+
 
         return totalEarnings.toFixed(2);  // Ensure the earnings are formatted with 2 decimals
     };
 
-    const totalEarnings = calculateEarnings(isLeadAmbassador, stats);
+    const totalEarnings = calculateEarnings(stats);
 
 
     const handleBackButton = () => {
@@ -318,7 +333,7 @@ const Dashboard = () => {
         ]);
 
 
-        updatePayoutDetails(currentUserId, type, detail);
+        updatePayoutDetails(currentUserId, type, detail, userType);
 
         if (type === "Venmo") {
             setVenmo(detail);
@@ -345,12 +360,12 @@ const Dashboard = () => {
 
         // Remove from the database
         if (type === 'Venmo') {
-            await removePayoutVenmo(currentUserId);
+            await removePayoutVenmo(currentUserId, userType);
             setVenmo(null);
             setVenmoUsername(null);
 
         } else if (type === 'Zelle') {
-            await removePayoutZelle(currentUserId);
+            await removePayoutZelle(currentUserId, userType);
             setZelle(null);
             setZelleDetail(null);
         }
@@ -359,75 +374,41 @@ const Dashboard = () => {
 
 
 
-    /*
-        useEffect(() => {
-            const fetchPayoutDetails = async () => {
-                const details = await getPayoutDetails(currentUserId);
+    useEffect(() => {
+        const fetchPayoutDetails = async () => {
+            if (userType) {
+                const details = await getPayoutDetails(currentUserId, userType);
                 setVenmo(details.venmo);
                 setZelle(details.zelle);
-            };
-    
+            }
+        };
+
+        // Ensure that the function runs after userType is set
+        if (userType) {
             fetchPayoutDetails();
-        }, [currentUserId]);
-        */
+        }
+    }, [currentUserId, userType]);
+
 
     const [payoutExists, setPayoutExists] = useState(false);
 
-    /*
+
+
+
     useEffect(() => {
         const fetchPayoutStatus = async () => {
-            const exists = await checkPayoutExists(currentUserId);
-            setPayoutExists(exists);
+            if (userType) {
+                const exists = await checkPayoutExists(currentUserId, userType);
+                setPayoutExists(exists);
+            }
         };
-
-        fetchPayoutStatus();
-
+        if (userType) {
+            fetchPayoutStatus();
+        }
         if (!zelle & !venmo) {
             setPayoutExists(false);
         }
-    }, [currentUserId, zelle, venmo]);
-*/
-
-
-    /*
-        useEffect(() => {
-            const getAmbassadorRank = async () => {
-                const exists = await checkForLeadAmbassador(currentUserId);
-                setLeadAmbassador(exists);
-    
-                if (exists) {
-                    const fetchedStats = await getLeadAmbassadorStats(currentUserId);
-                    if (fetchedStats) {
-                        setStats(fetchedStats);
-                    }
-                } else {
-                    const fetchedStats = await getAmbassadorStats(currentUserId);
-                    if (fetchedStats) {
-                        setStats(fetchedStats);
-                    }
-                }
-            };
-    
-            getAmbassadorRank();
-    
-    
-        }, [currentUserId]);
-    */
-
-    /**/
-
-    /*
-    useEffect(() => {
-        const setTest = async () => {
-            await testUpdate(currentUserId);
-
-        };
-
-        setTest();
-
-
-    }, [currentUserId]);
-*/
+    }, [currentUserId, zelle, venmo, userType]);
 
 
 
@@ -489,6 +470,23 @@ const Dashboard = () => {
 
 
 
+    useEffect(() => {
+        const fetchUserStats = async () => {
+            if (userType && currentUserId) {
+                try {
+                    const fetchedStats = await getStats(currentUserId, userType); // Pass userType!
+                    if (fetchedStats) {
+                        setStats(fetchedStats);
+                    }
+                } catch (error) {
+                    console.error("Error fetching user stats:", error);
+                }
+            }
+        };
+
+        fetchUserStats(); // No need for `if (userType)`, it's already checked inside
+
+    }, [currentUserId, userType]);
 
 
 
@@ -510,6 +508,13 @@ const Dashboard = () => {
                 <>
 
                     <MenuDashboard />
+                </>
+
+            ) : userIsAdmin ? (
+                <>
+
+                    <AdminDashboard />
+
                 </>
 
             ) : shareQRSelected ? (
@@ -788,27 +793,29 @@ const Dashboard = () => {
                                                 <VStack align="center" spacing={3}>
                                                     <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
                                                     {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
-                                                    <Text fontSize="12px" color="black">{stats.peopleMet}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.storyListens}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.peopleMet}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.storyListens}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.peopleMet}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.storyListens}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipA}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipB}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipC}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipD}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipE}</Text>
+                                                    <Text fontSize="12px" color="black">{stats.TipF}</Text>
                                                 </VStack>
 
                                                 {/* Column: Earnings */}
                                                 <VStack align="end" spacing={3}>
                                                     <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
                                                     {/*   <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleInvited, rates["peopleInvited"])}</Text> */}
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleMet, rates["peopleMet"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.storyListens, rates["storyListens"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleMet, rates["peopleMet"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.storyListens, rates["storyListens"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleMet, rates["peopleMet"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.storyListens, rates["storyListens"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipA, rates["A"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipB, rates["B"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipC, rates["C"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipD, rates["D"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipE, rates["E"])}</Text>
+                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipF, rates["F"])}</Text>
                                                 </VStack>
 
-                                                <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>*This chart displays your earnings in tips thanks to your promotion of PureMusic.</Text>
+
+
+                                                <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>{chartExplaniation}</Text>
 
                                             </>
 
@@ -893,44 +900,41 @@ const Dashboard = () => {
                                                 {/* Display the Month's Stats */}
                                                 <HStack justify="space-between" w="100%" spacing={6}>
                                                     {/* Category Titles */}
-                                                    <VStack align="start" spacing={3} w="25%">
-                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Type</Text>
-                                                        <Text fontSize="12px" color="gray.500">12+ Live Users</Text>
-                                                        <Text fontSize="12px" color="gray.500">25+ Live Users</Text>
-                                                        <Text fontSize="12px" color="gray.500">50+ Live Users</Text>
-                                                        <Text fontSize="12px" color="gray.500">100+ Live Users</Text>
-                                                        <Text fontSize="12px" color="gray.500">300+ Live Users</Text>
-                                                        <Text fontSize="12px" color="gray.500">500+ Live Users</Text>
-                                                    </VStack>
 
-                                                    {/* Numbers */}
-                                                    <VStack align="center" spacing={3} w="25%">
-                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Count</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers12}</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers25}</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers50}</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers100}</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers300}</Text>
-                                                        <Text fontSize="12px" color="black">{statsABA.liveUsers500}</Text>
-                                                    </VStack>
                                                     <VStack align="center" spacing={3}>
-                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Rate</Text>
-                                                        <Text fontSize="12px" color="black">$10.00</Text>
-                                                        <Text fontSize="12px" color="black">$20.00</Text>
+                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Tip Rate</Text>
+                                                        <Text fontSize="12px" color="black">$3.00</Text>
+                                                        <Text fontSize="12px" color="black">$4.50</Text>
+                                                        <Text fontSize="12px" color="black">$7.50</Text>
+                                                        <Text fontSize="12px" color="black">$9.00</Text>
+                                                        <Text fontSize="12px" color="black">$15.00</Text>
                                                         <Text fontSize="12px" color="black">$30.00</Text>
-                                                        <Text fontSize="12px" color="black">$50.00</Text>
-                                                        <Text fontSize="12px" color="black">$75.00</Text>
-                                                        <Text fontSize="12px" color="black">$100.00</Text>
+
+
+                                                        {/* Numbers */}
+                                                        <VStack align="center" spacing={3} w="25%">
+                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
+                                                            {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
+                                                            <Text fontSize="12px" color="black">{statsABA.TipA}</Text>
+                                                            <Text fontSize="12px" color="black">{statsABA.TipB}</Text>
+                                                            <Text fontSize="12px" color="black">{statsABA.TipC}</Text>
+                                                            <Text fontSize="12px" color="black">{statsABA.TipD}</Text>
+                                                            <Text fontSize="12px" color="black">{statsABA.TipE}</Text>
+                                                            <Text fontSize="12px" color="black">{statsABA.TipF}</Text>
+                                                        </VStack>
+
+
+
                                                     </VStack>
                                                     {/* Earnings */}
                                                     <VStack align="end" spacing={3} w="25%">
                                                         <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers12, rates["12+"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers25, rates["25+"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers50, rates["50+"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers100, rates["100+"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers300, rates["300+"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.liveUsers500, rates["500+"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipA, rates["A"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipB, rates["B"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipC, rates["C"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipD, rates["D"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipE, rates["E"])}</Text>
+                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipF, rates["F"])}</Text>
                                                     </VStack>
                                                 </HStack>
                                             </VStack>

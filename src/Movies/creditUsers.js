@@ -70,8 +70,20 @@ export const creditUserForConversion = async (profileURL, tipAmount) => {
         }
 
         // 5. Update user stats if they are an Artist or Promoter
-        if (userIsArtist || userIsPromoter) {
+        if ( userIsPromoter) {
             await update(child(userPromotersRef, `${uid}/stats`), {
+                TipA: (currentStats.TipA || 0) + tipConversions.TipA,
+                TipB: (currentStats.TipB || 0) + tipConversions.TipB,
+                TipC: (currentStats.TipC || 0) + tipConversions.TipC,
+                TipD: (currentStats.TipD || 0) + tipConversions.TipD,
+                TipE: (currentStats.TipE || 0) + tipConversions.TipE,
+                TipF: (currentStats.TipF || 0) + tipConversions.TipF,
+                currentYear,
+                currentMonth,
+                lastUpdated: dateAdded
+            });
+        } else if (userIsArtist) {
+            await update(child(usersArtistsRef, `${uid}/stats`), {
                 TipA: (currentStats.TipA || 0) + tipConversions.TipA,
                 TipB: (currentStats.TipB || 0) + tipConversions.TipB,
                 TipC: (currentStats.TipC || 0) + tipConversions.TipC,

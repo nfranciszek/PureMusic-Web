@@ -4,6 +4,14 @@ import { IoIosHelpCircleOutline, IoIosHelpCircle } from "react-icons/io";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
 
+import { IoPeopleOutline } from "react-icons/io5";
+import { IoPeople } from "react-icons/io5";
+
+import { BsPeopleFill } from "react-icons/bs";
+import { BsPeople } from "react-icons/bs";
+
+
+
 import { currentUserId } from '../Utilities/firebase';
 import { fetchUserData, fetchUserStatus } from './UserProfile';
 
@@ -61,6 +69,10 @@ const MenuDashboard = () => {
         payoutDetailsSelected, setPayoutDetailsSelected,
         helpSelected, setHelpSelected,
         logoutPageSelected, setLogoutPageSelected,
+        userIsAdmin,
+
+        promoterTabSelected, setPromoterTabSelected,
+        artistTabSelected, setArtistTabSelected,
     } = useData();
 
     const [isSubscriptionClicked, setIsSubscriptionClicked] = useState(false);
@@ -95,6 +107,9 @@ const MenuDashboard = () => {
 
 
         setLogoutPageSelected(false);
+
+        setPromoterTabSelected(false);
+       setArtistTabSelected(false);
     };
 
     const goQRShareContent = () => {
@@ -107,6 +122,9 @@ const MenuDashboard = () => {
         setHelpSelected(false);
 
         setLogoutPageSelected(false);
+
+        setPromoterTabSelected(false);
+        setArtistTabSelected(false);
     };
 
     const goPaymentDetails = () => {
@@ -122,6 +140,9 @@ const MenuDashboard = () => {
         setHelpSelected(false);
 
         setLogoutPageSelected(false);
+
+        setPromoterTabSelected(false);
+        setArtistTabSelected(false);
     };
 
     const goHelp = () => {
@@ -139,8 +160,52 @@ const MenuDashboard = () => {
         setHelpSelected(true);
 
         setLogoutPageSelected(false);
+
+        setPromoterTabSelected(false);
+        setArtistTabSelected(false);
     };
 
+    const goToPromotersList = () => {
+        setHomeSelected(false);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(false);
+
+
+        // for payment links page
+        setShowPayoutDetails(false);
+        setMenuDashboard(false);
+
+        closeSettings();
+
+        setHelpSelected(false);
+
+        setLogoutPageSelected(false);
+
+        setPromoterTabSelected(true);
+        setArtistTabSelected(false);
+    };
+
+    const goToArtistsList = () => {
+        setHomeSelected(false);
+        setShareQRSelected(false);
+        setPayoutDetailsSelected(false);
+
+
+        // for payment links page
+        setShowPayoutDetails(false);
+        setMenuDashboard(false);
+
+        closeSettings();
+
+        setHelpSelected(false);
+
+        setLogoutPageSelected(false);
+
+        setPromoterTabSelected(false);
+        setArtistTabSelected(true);
+    };
+
+   
 
     const goLogOut = () => {
         setHomeSelected(false);
@@ -157,6 +222,9 @@ const MenuDashboard = () => {
         setHelpSelected(false);
 
         setLogoutPageSelected(true);
+
+        setPromoterTabSelected(false);
+        setArtistTabSelected(false);
     };
 
     const goDeleteAccount = () => {
@@ -228,11 +296,11 @@ const MenuDashboard = () => {
                 setTextColor("#4CAF50");
                 break;
 
-          case 'rejected':
-                    setStatusInfo("Account Rejected");
-                    setStatusColor("#FF0000");
-                    setTextColor("#FF0000");
-                    break;
+            case 'rejected':
+                setStatusInfo("Account Rejected");
+                setStatusColor("#FF0000");
+                setTextColor("#FF0000");
+                break;
 
             case 'paused':
                 setStatusInfo("Paused");
@@ -246,7 +314,7 @@ const MenuDashboard = () => {
                 setTextColor("gray.600");
                 break;
 
-           
+
 
             case 'terminated':
                 setStatusInfo("Terminated");
@@ -327,22 +395,25 @@ const MenuDashboard = () => {
                             </>
                         )}
 
-                        {/* Account Status Section */}
-                        <Flex align="center" gap={2} ml="1rem" >
-                            {/* Yellow Circle */}
-                            <Box
-                                width="8px"
-                                height="8px"
-                                borderRadius="50%"
-                                backgroundColor={statusColor} // Amber color (darker yellow)
-                            />
+                        {!userIsAdmin && (
+                            <>
+                                {/* Account Status Section */}
+                                <Flex align="center" gap={2} ml="1rem" >
+                                    {/* Yellow Circle */}
+                                    <Box
+                                        width="8px"
+                                        height="8px"
+                                        borderRadius="50%"
+                                        backgroundColor={statusColor} // Amber color (darker yellow)
+                                    />
 
-                            {/* "Awaiting Approval" Text */}
-                            <Text fontSize="12px" fontWeight="600" color={textColor} >
-                                {statusInfo}
-                            </Text>
+                                    {/* "Awaiting Approval" Text */}
+                                    <Text fontSize="12px" fontWeight="600" color={textColor} >
+                                        {statusInfo}
+                                    </Text>
 
-                        </Flex>
+                                </Flex>
+                            </>)}
 
                         <Box pl="1rem" pr="1rem" rounded="md" width={{ base: "100%", sm: "320px", lg: "320px" }}>
 
@@ -357,8 +428,58 @@ const MenuDashboard = () => {
 
                             <Spacer />
 
+                            {userIsAdmin ? (
+                                <>
+
+<Button
+                                width="100%"
+                                color="black"
+                                leftIcon={promoterTabSelected ? <BsPeopleFill fontSize="24px" /> : <BsPeople fontSize="24px" />}
+                                onClick={goToPromotersList}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black" >Promoters</Text>
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
+
+
+                            </Button>
 
                             <Button
+                                width="100%"
+                                color="black"
+                                leftIcon={artistTabSelected ? <IoPeople fontSize="24px" /> : <IoPeopleOutline fontSize="24px" />}
+                                onClick={goToArtistsList}
+                                bg="white"
+                                rounded="none"
+                                justifyContent="flex-start"
+                                textAlign="left"
+                                _hover={{
+                                    bg: 'rgba(220, 220, 220, 0.1)',
+                                    transform: "scale(1.022)",
+                                }}
+                            >
+                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                    <Text fontSize='sm' color="black">Artists</Text>
+
+
+                                    <MdOutlineKeyboardArrowRight />
+                                </Flex>
+                                </Button>
+
+                                </>
+                            ) : (
+                                <>
+
+<Button
                                 width="100%"
                                 color="black"
                                 leftIcon={homeSelected ? <GoHomeFill fontSize="24px" /> : <GoHome fontSize="24px" />}
@@ -449,6 +570,11 @@ const MenuDashboard = () => {
 
 
                             </Button>
+
+                                </>
+                            )}
+
+                           
 
 
                             <Text ml="1rem" fontSize="12px" textColor="gray.500"

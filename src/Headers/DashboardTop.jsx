@@ -16,7 +16,7 @@ const DashboardTop = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const { showMenuDashboard, setMenuDashboard } = useData();
+  const { showMenuDashboard, setMenuDashboard, userIsAdmin, } = useData();
 
 
   const resetAudioPosting = () => {
@@ -195,7 +195,8 @@ if (user) {
             )}
           </HStack>
 
-
+          {!userIsAdmin && (
+            <>
           {/*  RIGHT HERE:: ACOUNT STATUS   */}
           {/* Account Status Section */}
           <Flex align="center" gap={2} ml="1rem" >
@@ -215,8 +216,11 @@ if (user) {
                 </Text>
               </>
             )}
+          
 
           </Flex>
+          </>
+            )}
         </Flex>
 
         <Spacer />

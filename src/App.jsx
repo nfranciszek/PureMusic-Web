@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { creditUserForConversion } from './Movies/creditUsers';
+import { usersArtistsRef, userPromotersRef, userAdminRef, currentUserId, get, child } from './Utilities/firebase';
 import { getAuth } from 'firebase/auth';
 import AboutUs from './Website Policies/AboutUs';
 import ContactUs from './Website Policies/ContactUs';
@@ -31,16 +31,56 @@ function App() {
   const auth = getAuth();
   const user = auth.currentUser;
 
+  const [userIsArtist, setUserIsArtist] = useState(false);
+  const [userIsPromoter, setUserIsPromoter] = useState(false);
+  const [userIsFan, setUserIsFan] = useState(false);
+  const [userIsAdmin, setUserIsAdmin] = useState(false);
+
+  const checkUserType = async (uid) => {
+    try {
+      const artistSnapshot = await get(child(usersArtistsRef, `${uid}`));
+      const isArtist = artistSnapshot.exists();
+      setUserIsArtist(artistSnapshot.exists());
+      console.log("User is Artist:", isArtist);  // Log artist status
+
+      const promoterSnapshot = await get(child(userPromotersRef, `${uid}`));
+      const isPromoter = promoterSnapshot.exists();
+      setUserIsPromoter(promoterSnapshot.exists());
+      console.log("User is Promoter:", isPromoter);  // Log promoter status
+
+      const adminSnapshot = await get(child(userAdminRef, `${uid}`));
+      const isAdmin = adminSnapshot.exists();
+      setUserIsAdmin(adminSnapshot.exists());
+      console.log("User is A:", isAdmin);  
+
+      // You can set userIsFan based on other conditions if needed
+      const isFan = !isArtist && !isPromoter && !isAdmin;
+      setUserIsFan(!artistSnapshot.exists() && !promoterSnapshot.exists());
+      console.log("User is Fan:", isFan);  // Log fan status
+
+    } catch (error) {
+      console.error("Error checking user type:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (currentUserId && user) {
+      checkUserType(currentUserId);
+    }
+  }, [currentUserId, user]);
+
+
+
   const { pathname } = useLocation();
- 
-  
+
+
   // when user just signs up
 
   const getUserUsernameUrl = (username) => {
     savedUsernameUrl(username);
 
-    }
- 
+  }
+
   const [onTransferedPage, setOnTransferedPage] = useState(false);
 
 
@@ -54,6 +94,9 @@ function App() {
   const [payoutDetailsSelected, setPayoutDetailsSelected] = useState(false);
   const [helpSelected, setHelpSelected] = useState(false);
   const [logoutPageSelected, setLogoutPageSelected] = useState(false);
+
+  const [promoterTabSelected, setPromoterTabSelected] = useState(false);
+  const [artistTabSelected, setArtistTabSelected] = useState(false);
 
 
   const [showFirstStepSignUp, setShowFirstStepSignUp] = useState(false);
@@ -87,7 +130,7 @@ function App() {
 
   useEffect(() => {
     if (extractedUrlUsername) {
-      setSavedCreditedUser(extractedUrlUsername); 
+      setSavedCreditedUser(extractedUrlUsername);
       console.log("user credited : ", extractedUrlUsername); // Log extracted username directly
     }
   }, [extractedUrlUsername]);
@@ -95,50 +138,50 @@ function App() {
   const getPromoterUsernameUrl = (userPageURL) => {
     setExtractedUrlUsername(userPageURL);
 
-    }
+  }
 
-    useEffect(() => {
-      const currentUrl = window.location.href;
-  
-      // Check if the URL contains the specific pattern
-      if (currentUrl.includes("/video/watch=hYp8Cf2kmeJwgf2dL")) {
-          // Extract the username from the URL using a regular expression
-          const regex = /_user=([^&]+)/;
-          const match = currentUrl.match(regex);
-  
-          if (match && match[1]) {
-              const usernameFromUrl = match[1]; // Extract the username part
-              const username = usernameFromUrl.toLowerCase(); // Ensure username is in lowercase
-              console.log('Extracted Username:', username);
-  
-              // Call the function with the extracted username
-              getPromoterUsernameUrl(username);
-          } else {
-              console.error("Username not found in URL.");
-          }
+  useEffect(() => {
+    const currentUrl = window.location.href;
+
+    // Check if the URL contains the specific pattern
+    if (currentUrl.includes("/video/watch=hYp8Cf2kmeJwgf2dL")) {
+      // Extract the username from the URL using a regular expression
+      const regex = /_user=([^&]+)/;
+      const match = currentUrl.match(regex);
+
+      if (match && match[1]) {
+        const usernameFromUrl = match[1]; // Extract the username part
+        const username = usernameFromUrl.toLowerCase(); // Ensure username is in lowercase
+        console.log('Extracted Username:', username);
+
+        // Call the function with the extracted username
+        getPromoterUsernameUrl(username);
       } else {
-          console.error("URL does not contain the expected pattern.");
+        console.error("Username not found in URL.");
       }
+    } else {
+      console.error("URL does not contain the expected pattern.");
+    }
   }, []);
 
 
   useEffect(() => {
     const currentUrl = window.location.href;
-  
+
     // Check if the URL contains the specific pattern
     if (currentUrl.includes("fpx7p9k2f4m8d3c6v")) {
       const handleCreditUser = async () => {
         if (savedCreditedUser && finalTipAmount) {
-    
+
           setSavedCreditedUser(null);
           setFinalTipAmount(null);
         }
       };
-  
+
       handleCreditUser(); // Now we call the function inside the effect
     }
   }, [savedCreditedUser, finalTipAmount]);
-  
+
   // IMPORTANT AS IT SAVES IN LOCALSTORAGE!!!
   useEffect(() => {
     // Store the data in localStorage when savedCreditedUser or finalTipAmount changes
@@ -147,20 +190,20 @@ function App() {
       localStorage.setItem('finalTipAmount', finalTipAmount);
       const savedUser = localStorage.getItem('savedCreditedUser');
       const savedAmount = localStorage.getItem('finalTipAmount');
-      
+
       if (savedUser && savedAmount) {
-    
+
         console.log("initial saved Credited User ", savedUser);
         console.log("initial saved final TipAmount ", savedAmount);
 
       }
     }
   }, [savedCreditedUser, finalTipAmount]);
-  
 
- 
-    
-  
+
+
+
+
 
   return (
     <DataContext.Provider value={{
@@ -169,14 +212,17 @@ function App() {
       isDashboard, setIsDashboard,
       showMenuDashboard, setMenuDashboard,
       showPayoutDetails, setShowPayoutDetails,
-  
+
       homeSelected, setHomeSelected,
       shareQRSelected, setShareQRSelected,
       payoutDetailsSelected, setPayoutDetailsSelected,
       helpSelected, setHelpSelected,
       logoutPageSelected, setLogoutPageSelected,
       
-   
+      promoterTabSelected, setPromoterTabSelected,
+      artistTabSelected, setArtistTabSelected,
+
+
 
       showFirstStepSignUp, setShowFirstStepSignUp,
       showSecondStepSignUp, setShowSecondStepSignUp,
@@ -196,10 +242,16 @@ function App() {
       signUpAsPromoter, setSignUpAsPromoter,
       signUpAsFan, setSignUpAsFan,
       extractedUrlUsername, setExtractedUrlUsername,
-      getUserUsernameUrl, 
+      getUserUsernameUrl,
 
       savedCreditedUser, setSavedCreditedUser,
       finalTipAmount, setFinalTipAmount,
+
+      userIsArtist,
+      userIsPromoter,
+      userIsFan,
+      userIsAdmin, 
+
     }}>
       <PageLayouts>
         <Routes>
@@ -213,7 +265,7 @@ function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/help" element={<Help />} />
 
-     
+
 
           {user ? (
             <Route path="/dashboard" element={<Dashboard />} />
@@ -223,17 +275,17 @@ function App() {
           )}
 
           <Route path="/video/watch=fpx7p9k2f4m8d3c6v" element={<Movies />} />
-      
-    
+
+
           <Route path={`video/watch=hYp8Cf2kmeJwgf2dL_user=${extractedUrlUsername}`} element={<PromotedMovies />} />
-      
-          
-        
+
+
+
 
           <Route path="/signup" element={<SignUpPage />} />
-          
+
           <Route path="/account/login" element={<LoginPage />} />
-          
+
 
         </Routes>
       </PageLayouts>
