@@ -7,11 +7,11 @@ import SignupForm from './SignUpForm';
 import LoginForm from './LoginForm';
 import { useData } from '../../App';
 
-const AuthForm = ({ onLoginSuccess, onSignUp, onSignUpSuccess, onFrontPageSignUpSuccess }) => {
+const AuthForm = ({ onLoginSuccess, onSignUp, onSignUpSuccess}) => {
 
   const [isCreateAccountForm, setCreateAccountForm] = useState(false);
 
-
+  
 
 
   const {

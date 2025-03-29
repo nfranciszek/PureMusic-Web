@@ -19,10 +19,12 @@ import { checkUserExists } from './Login';
     
     } = useData();
 
+  
+/*
     const closeLoginPopup = () => {
         setShowLoginPopup(false);
       };
-
+*/
     const handleLogin = async () => {
 
             setError('');
@@ -85,12 +87,10 @@ import { checkUserExists } from './Login';
         if (userExists) {
 
 
-            if (showLoginPopup) {
-                closeLoginPopup();
-              } else {
-                onLoginSuccess();
-                setDidUserJustLogIn(true);
-              }
+        
+             // onLoginSuccess();
+              setDidUserJustLogIn(true);
+              
 
             setEmail('');
             setPassword('');

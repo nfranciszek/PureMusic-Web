@@ -16,9 +16,23 @@ const DashboardTop = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const { showMenuDashboard, setMenuDashboard, userIsAdmin, } = useData();
+  const { showMenuDashboard, setMenuDashboard,  userIsArtist,
+    userIsPromoter,
+    userIsFan,
+    userIsAdmin, } = useData();
 
+    const [userType, setUserType] = useState("");
 
+  useEffect(() => {
+    if (userIsArtist) {
+        setUserType("Artist");
+    } else if (userIsPromoter) {
+        setUserType("Promoter");
+    } else {
+        setUserType("Fan");  // Default fallback to Fan.
+    }
+
+}, [userIsArtist, userIsPromoter, userIsFan]);
   const resetAudioPosting = () => {
 
   }
@@ -82,14 +96,14 @@ const DashboardTop = () => {
   const [textColor, setTextColor] = useState('');
   useEffect(() => {
     const getStatus = async () => {
-      const userStatus = await fetchUserStatus(currentUserId);
+      const userStatus = await fetchUserStatus(currentUserId, userType);
       setStatus(userStatus); // Set the user status based on the fetch result
       renderStatusInfo(userStatus);
     };
-if (user) {
+if (user && userType) {
     getStatus();
 }
-  }, [currentUserId, user]);
+  }, [currentUserId, user, userType]);
 
   // Conditional rendering based on user status
   const renderStatusInfo = (status) => {

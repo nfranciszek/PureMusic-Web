@@ -158,7 +158,7 @@ const PageLayouts = ({ children }) => {
              //  w="100%" // Ensures it takes the full available width
                pt="5rem"
                pb={isBigScreen ? "5rem" : "0rem"}
-               w={user ? { base: "calc(100% - 70px)", md: "calc(100% - 640px)" } : null}
+               w={(user)? { base: "calc(100% - 70px)", md: "calc(100% - 640px)" } : null}
                mx="auto" // Centers horizontally
           >
              

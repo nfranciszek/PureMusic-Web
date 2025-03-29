@@ -51,7 +51,7 @@ function App() {
       const adminSnapshot = await get(child(userAdminRef, `${uid}`));
       const isAdmin = adminSnapshot.exists();
       setUserIsAdmin(adminSnapshot.exists());
-      console.log("User is A:", isAdmin);  
+      console.log("User is A:", isAdmin);
 
       // You can set userIsFan based on other conditions if needed
       const isFan = !isArtist && !isPromoter && !isAdmin;
@@ -140,6 +140,40 @@ function App() {
 
   }
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (didUserJustLogIn) {
+
+
+
+
+      if (userIsAdmin) {
+        setPromoterTabSelected(true);
+        setArtistTabSelected(false);
+        setHomeSelected(false);
+      } else {
+        setPromoterTabSelected(false);
+        setArtistTabSelected(false);
+        setHomeSelected(true);
+      }
+      setShareQRSelected(false);
+      setPayoutDetailsSelected(false);
+      setShowPayoutDetails(false);
+      setMenuDashboard(false);
+      setHelpSelected(false);
+      setLogoutPageSelected(false);
+
+
+
+      navigate("/dashboard"); // ✅ Navigate globally
+      setDidUserJustLogIn(false); // ✅ Reset state
+    }
+  }, [didUserJustLogIn, navigate]);
+
+
+
+  
+
   useEffect(() => {
     const currentUrl = window.location.href;
 
@@ -218,7 +252,7 @@ function App() {
       payoutDetailsSelected, setPayoutDetailsSelected,
       helpSelected, setHelpSelected,
       logoutPageSelected, setLogoutPageSelected,
-      
+
       promoterTabSelected, setPromoterTabSelected,
       artistTabSelected, setArtistTabSelected,
 
@@ -250,7 +284,7 @@ function App() {
       userIsArtist,
       userIsPromoter,
       userIsFan,
-      userIsAdmin, 
+      userIsAdmin,
 
     }}>
       <PageLayouts>

@@ -372,11 +372,7 @@ const SignupForm = ({ onSignUpSuccess }) => {
 
             goToDashboard();
 
-            // Temporary
-            if (signUpCompetitionPhoto) {
-
-                window.location.reload();
-            }
+          
 
 
 

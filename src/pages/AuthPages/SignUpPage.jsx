@@ -1,61 +1,82 @@
-import React, {  useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { VStack, Text } from '@chakra-ui/react'
 import AuthForm from './AuthForm'
 import { useNavigate } from 'react-router-dom'
-import BottomLoginSignUp from '../../Footers/ButtonLoginSignup';
 import { useData } from '../../App';
-import { currentUserId } from '../../Utilities/firebase';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
 
   const goLogin = () => {
-  navigate('/account/login');
+    navigate('/account/login');
 
-}
+  }
 
 
-const {
+  const {
 
-   setIsLogin,   showFirstStepSignUp, setShowFirstStepSignUp,
-   showSecondStepSignUp, setShowSecondStepSignUp,
-   showThirdStepSignUp, setShowThirdStepSignUp,
-  
+    setIsLogin, isLogin, showFirstStepSignUp, setShowFirstStepSignUp,
+    showSecondStepSignUp, setShowSecondStepSignUp,
+    showThirdStepSignUp, setShowThirdStepSignUp,
 
-} = useData();
 
-const handleSignUpSuccess = () => {
+    setHomeSelected,
+    setShareQRSelected,
+    setPayoutDetailsSelected,
+    setShowPayoutDetails,
+    setMenuDashboard,
+    setHelpSelected,
+    setLogoutPageSelected,
+    setPromoterTabSelected,
+    setArtistTabSelected,
+    userIsAdmin
 
-  navigate('/dashboard');
-};
+  } = useData();
+
+  const handleSignUpSuccess = () => {
+    if (userIsAdmin) {
+      setPromoterTabSelected(true);
+      setArtistTabSelected(false);
+      setHomeSelected(false);
+    } else {
+      setPromoterTabSelected(false);
+      setArtistTabSelected(false);
+      setHomeSelected(true);
+    }
+    setShareQRSelected(false);
+    setPayoutDetailsSelected(false);
+    setShowPayoutDetails(false);
+    setMenuDashboard(false);
+    setHelpSelected(false);
+    setLogoutPageSelected(false);
+
+
+    navigate("/dashboard");
+  };
 
 
 
 
   useEffect(() => {
     setIsLogin(false);
-  
-  }, []); 
+
+  }, []);
 
   useEffect(() => {
 
-if (!showSecondStepSignUp && !showThirdStepSignUp ) {
-  setShowFirstStepSignUp(true);
-}
+    if (!showSecondStepSignUp && !showThirdStepSignUp) {
+      setShowFirstStepSignUp(true);
+    }
 
 
-  }, [showFirstStepSignUp, showSecondStepSignUp, showThirdStepSignUp ]); 
-  
+  }, [showFirstStepSignUp, showSecondStepSignUp, showThirdStepSignUp]);
+
   return (
-   <VStack>
-
-<Text textAlign='center' fontSize="20px" fontWeight="bold">Sign up for PureMusic </Text>
-
-   <AuthForm onSignUpSuccess={handleSignUpSuccess}/>
-
-
-
-<BottomLoginSignUp onLogin={goLogin} />
+    <VStack>
+      {!isLogin && (
+        <Text textAlign='center' fontSize="20px" fontWeight="bold">Sign up for PureMusic </Text>
+      )}
+      <AuthForm onSignUpSuccess={handleSignUpSuccess} />
 
 
     </VStack>

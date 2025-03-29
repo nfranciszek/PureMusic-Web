@@ -69,11 +69,29 @@ const MenuDashboard = () => {
         payoutDetailsSelected, setPayoutDetailsSelected,
         helpSelected, setHelpSelected,
         logoutPageSelected, setLogoutPageSelected,
-        userIsAdmin,
+
 
         promoterTabSelected, setPromoterTabSelected,
         artistTabSelected, setArtistTabSelected,
-    } = useData();
+
+        userIsArtist,
+        userIsPromoter,
+        userIsFan,
+        userIsAdmin, } = useData();
+
+    const [userType, setUserType] = useState("");
+
+    useEffect(() => {
+        if (userIsArtist) {
+            setUserType("Artist");
+        } else if (userIsPromoter) {
+            setUserType("Promoter");
+        } else {
+            setUserType("Fan");  
+        }
+
+    }, [userIsArtist, userIsPromoter, userIsFan]);
+
 
     const [isSubscriptionClicked, setIsSubscriptionClicked] = useState(false);
     const [isLanguageClicked, setIsLanguageClicked] = useState(false);
@@ -109,7 +127,7 @@ const MenuDashboard = () => {
         setLogoutPageSelected(false);
 
         setPromoterTabSelected(false);
-       setArtistTabSelected(false);
+        setArtistTabSelected(false);
     };
 
     const goQRShareContent = () => {
@@ -205,7 +223,7 @@ const MenuDashboard = () => {
         setArtistTabSelected(true);
     };
 
-   
+
 
     const goLogOut = () => {
         setHomeSelected(false);
@@ -274,13 +292,14 @@ const MenuDashboard = () => {
     const [textColor, setTextColor] = useState('');
     useEffect(() => {
         const getStatus = async () => {
-            const userStatus = await fetchUserStatus(currentUserId);
+            const userStatus = await fetchUserStatus(currentUserId, userType);
             setStatus(userStatus); // Set the user status based on the fetch result
             renderStatusInfo(userStatus);
         };
-
-        getStatus();
-    }, [currentUserId]);
+        if (currentUserId && userType) {
+            getStatus();
+        }
+    }, [currentUserId, userType]);
 
     const renderStatusInfo = (status) => {
         switch (status) {
@@ -431,150 +450,150 @@ const MenuDashboard = () => {
                             {userIsAdmin ? (
                                 <>
 
-<Button
-                                width="100%"
-                                color="black"
-                                leftIcon={promoterTabSelected ? <BsPeopleFill fontSize="24px" /> : <BsPeople fontSize="24px" />}
-                                onClick={goToPromotersList}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black" >Promoters</Text>
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={promoterTabSelected ? <BsPeopleFill fontSize="24px" /> : <BsPeople fontSize="24px" />}
+                                        onClick={goToPromotersList}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black" >Promoters</Text>
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
 
 
-                            </Button>
+                                    </Button>
 
-                            <Button
-                                width="100%"
-                                color="black"
-                                leftIcon={artistTabSelected ? <IoPeople fontSize="24px" /> : <IoPeopleOutline fontSize="24px" />}
-                                onClick={goToArtistsList}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black">Artists</Text>
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={artistTabSelected ? <IoPeople fontSize="24px" /> : <IoPeopleOutline fontSize="24px" />}
+                                        onClick={goToArtistsList}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black">Artists</Text>
 
 
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
-                                </Button>
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
+                                    </Button>
 
                                 </>
                             ) : (
                                 <>
 
-<Button
-                                width="100%"
-                                color="black"
-                                leftIcon={homeSelected ? <GoHomeFill fontSize="24px" /> : <GoHome fontSize="24px" />}
-                                onClick={goHome}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black" >Home</Text>
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={homeSelected ? <GoHomeFill fontSize="24px" /> : <GoHome fontSize="24px" />}
+                                        onClick={goHome}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black" >Home</Text>
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
 
 
-                            </Button>
+                                    </Button>
 
-                            <Button
-                                width="100%"
-                                color="black"
-                                leftIcon={<BsQrCodeScan fontSize="24px" />}
-                                onClick={goQRShareContent}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black">Promote Content</Text>
-
-
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={<BsQrCodeScan fontSize="24px" />}
+                                        onClick={goQRShareContent}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black">Promote Content</Text>
 
 
-                            </Button>
-
-                            <Button
-                                width="100%"
-                                color="black"
-                                leftIcon={payoutDetailsSelected ? <IoWallet fontSize="24px" /> : <IoWalletOutline fontSize="24px" />}
-                                onClick={goPaymentDetails}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black">Payment Links</Text>
-
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
 
 
-                            </Button>
+                                    </Button>
 
-                            <Button
-                                width="100%"
-                                color="black"
-                                leftIcon={helpSelected ? <IoIosHelpCircle fontSize="24px" /> : <IoIosHelpCircleOutline fontSize="24px" />}
-                                onClick={goHelp}
-                                bg="white"
-                                rounded="none"
-                                justifyContent="flex-start"
-                                textAlign="left"
-                                _hover={{
-                                    bg: 'rgba(220, 220, 220, 0.1)',
-                                    transform: "scale(1.022)",
-                                }}
-                            >
-                                <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black">Help</Text>
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={payoutDetailsSelected ? <IoWallet fontSize="24px" /> : <IoWalletOutline fontSize="24px" />}
+                                        onClick={goPaymentDetails}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black">Payment Links</Text>
 
-                                    <MdOutlineKeyboardArrowRight />
-                                </Flex>
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
 
 
-                            </Button>
+                                    </Button>
+
+                                    <Button
+                                        width="100%"
+                                        color="black"
+                                        leftIcon={helpSelected ? <IoIosHelpCircle fontSize="24px" /> : <IoIosHelpCircleOutline fontSize="24px" />}
+                                        onClick={goHelp}
+                                        bg="white"
+                                        rounded="none"
+                                        justifyContent="flex-start"
+                                        textAlign="left"
+                                        _hover={{
+                                            bg: 'rgba(220, 220, 220, 0.1)',
+                                            transform: "scale(1.022)",
+                                        }}
+                                    >
+                                        <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
+                                            <Text fontSize='sm' color="black">Help</Text>
+
+                                            <MdOutlineKeyboardArrowRight />
+                                        </Flex>
+
+
+                                    </Button>
 
                                 </>
                             )}
 
-                           
+
 
 
                             <Text ml="1rem" fontSize="12px" textColor="gray.500"

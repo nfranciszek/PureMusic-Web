@@ -56,7 +56,7 @@ const Dashboard = () => {
     useEffect(() => {
         if (userIsArtist) {
             setUserType("Artist");
-            setChartExplaination("This chart displays your earnings in tips for being an Artist on PureMusic")
+            setChartExplaination("*This chart displays your earnings in tips for being an Artist on PureMusic")
         } else if (userIsPromoter) {
             setUserType("Promoter");
             setChartExplaination("*This chart displays your earnings in tips thanks to your promotion of PureMusic.")
@@ -420,48 +420,51 @@ const Dashboard = () => {
 
     useEffect(() => {
         const getStatus = async () => {
-            const userStatus = await fetchUserStatus(currentUserId);
+            const userStatus = await fetchUserStatus(currentUserId, userType);
             setStatus(userStatus); // Set the user status based on the fetch result
             renderStatusInfo(userStatus);
         };
+if (currentUserId && userType) {
 
         getStatus();
-    }, [currentUserId]);
+    }
+    }, [currentUserId, userType]);
 
     // Conditional rendering based on user status
     const renderStatusInfo = (status) => {
         switch (status) {
             case 'pending':
                 setStatusMessage("* Your account is awaiting approval");
-
                 break;
+
             case 'approved':
                 setStatusMessage("* Your account is active.");
                 break;
 
             case 'rejected':
                 setStatusMessage("* Your account has been rejected as it does not meet our requirements.");
-
                 break;
+
             case 'paused':
                 setStatusMessage("* Your account has been paused");
                 break;
+
             case 'suspended':
                 setStatusMessage("* Your account has been suspended.");
-
                 break;
+
             case 'terminated':
                 setStatusMessage("* Your account has been terminated.");
-
                 break;
+
             case 'non-existent':
                 setStatusMessage("* Your account is awaiting approval");
-
                 break;
+
             case 'error':
                 setStatusMessage("* There was an error fetching your account status.");
-
                 break;
+
             default:
                 setStatusMessage("* Pending Status...");
 
@@ -492,342 +495,351 @@ const Dashboard = () => {
 
 
     return (
-        <Box
-            position="fixed"
-            top="0"
-            height="100%"
-            bg="white"
-            transition="left 0.6s ease" // Slower transition
-            zIndex="0"
-            pb="8px"
-            pt="3rem"
-            overflowY="auto">
+        <VStack>
+            <>
+                {(showMenuDashboard && isBaseScreen) ? (
+                    <>
+
+                        <MenuDashboard />
+                    </>
+
+                ) : (
+                    <Box
+                        position="fixed"
+                        top="0"
+                        height="100%"
+                        bg="white"
+                        transition="left 0.6s ease" // Slower transition
+                        zIndex="0"
+                        pb="8px"
+                        pt="3rem"
+                        overflowY="auto">
 
 
-            {(showMenuDashboard && isBaseScreen) ? (
-                <>
-
-                    <MenuDashboard />
-                </>
-
-            ) : userIsAdmin ? (
-                <>
-
-                    <AdminDashboard />
-
-                </>
-
-            ) : shareQRSelected ? (
-                <>
-
-                    <ShareContentPage />
-
-                </>
-
-            ) : helpSelected ? (
-                <>
-                    <Help />
-                </>
-
-            ) : logoutPageSelected ? (
-                <>
-                    <LogoutPage />
-                </>
-
-            ) : (
-
-                <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "2rem"}>
-                    <Flex direction="column">
-
-                        <HStack pt="0.5rem" pb="0.5rem">
-
-                            {showPayoutDetails && (
-                                <IoArrowBack onClick={() => handleBackButton()} fontSize='24px' />
-                            )}
-                            <Text as='b' fontSize='24px' pt="1rem" pb="1rem ">Dashboard</Text>
-
-                        </HStack>
-
-                        {/* Asterisk and message */}
-                        <Text fontSize="12px" color="gray.500">
-                            {statusMessage}
-                        </Text>
-
-
-                        {showPayoutDetails ? (
-
-
-
+                        {userIsAdmin ? (
                             <>
-                                {/* Payout Method Input */}
-                                {payoutExists || venmoUsername || zelleDetail ? (
-                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Add or Remove Payout Method</Text>
+
+                                {logoutPageSelected ? (
+                                    <>
+                                        <LogoutPage />
+                                    </>
                                 ) : (
-                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Add Payout Method</Text>
+                                    <AdminDashboard />
+
                                 )}
+                            </>
 
+                        ) : shareQRSelected ? (
+                            <>
 
-                                {!venmo && (
-                                    <>
-
-                                        {/* Venmo Section */}
-                                        <HStack w="100%">
-                                            <Select isReadOnly value="Venmo" size="sm" w="80%">
-                                                <option value="Venmo">Venmo</option>
-                                            </Select>
-                                            <Input
-                                                placeholder="Enter Venmo Username"
-                                                value={venmoUsername}
-                                                onChange={(e) => setVenmoUsername(e.target.value)}
-                                                size="sm"
-                                                type="text"
-                                            />
-                                            <Button colorScheme="green" size="sm" onClick={() => addPayoutMethod("Venmo", venmoUsername)}>
-                                                Add
-                                            </Button>
-                                        </HStack>
-                                    </>
-                                )}
-
-                                {error && (
-                                    <Text fontSize={12} color="red.500" mt={1}>
-                                        {error}
-                                    </Text>
-                                )}
-                                {!zelle && (
-                                    <>
-
-                                        {/* Zelle Section */}
-                                        <HStack w="100%" mt={2}>
-                                            <Select value={zelleType} onChange={(e) => setZelleType(e.target.value)} size="sm" w="80%">
-                                                <option value="Zelle (Email)">Zelle (Email)</option>
-                                                <option value="Zelle (Phone)">Zelle (Phone)</option>
-                                            </Select>
-                                            <Input
-                                                placeholder={zelleType === "Zelle (Phone)" ? "Enter Phone Number" : "Enter Email Address"}
-                                                value={zelleDetail}
-                                                onChange={(e) => setZelleDetail(e.target.value)}
-                                                size="sm"
-                                                type={zelleType === "Zelle (Phone)" ? "tel" : "email"}
-                                            />
-                                            <Button colorScheme="green" size="sm" onClick={() => addPayoutMethod(zelleType, zelleDetail)}>
-                                                Add
-                                            </Button>
-                                        </HStack>
-                                    </>
-                                )}
-
-
-
-
-                                {/* Display Added Payout Methods */}
-
-
-
-
-
-                                <List w="100%" spacing={3} mt="1rem">
-
-                                    {venmo && (
-                                        <>
-                                            <ListItem
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                p={2}
-                                                border="1px solid gray"
-                                                borderRadius="md"
-                                            >
-                                                <HStack>
-                                                    <Image
-                                                        src={venmoIcon}
-                                                        boxSize="20px"
-                                                    />
-                                                    <Text>{venmo}</Text>
-                                                </HStack>
-                                                <IconButton
-                                                    icon={<DeleteIcon />}
-                                                    size="xs"
-                                                    colorScheme="red"
-                                                    onClick={() => handleRemovePayoutMethod('Venmo', currentUserId)}
-                                                />
-                                            </ListItem>
-
-                                        </>
-                                    )}
-
-                                    {zelle && (
-
-                                        <>
-                                            <ListItem
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                p={2}
-                                                border="1px solid gray"
-                                                borderRadius="md"
-                                            >
-                                                <HStack>
-                                                    <Image
-                                                        src={zelleIcon}
-                                                        boxSize="20px"
-                                                    />
-                                                    <Text>{zelle}</Text>
-                                                </HStack>
-                                                <IconButton
-                                                    icon={<DeleteIcon />}
-                                                    size="xs"
-                                                    colorScheme="red"
-                                                    onClick={() => handleRemovePayoutMethod('Zelle', currentUserId)}
-                                                />
-                                            </ListItem>
-
-                                        </>
-                                    )}
-                                </List>
-
-
-
-
-
-
-
+                                <ShareContentPage />
 
                             </>
 
+                        ) : helpSelected ? (
+                            <>
+                                <Help />
+                            </>
+
+                        ) : logoutPageSelected ? (
+                            <>
+                                <LogoutPage />
+                            </>
 
                         ) : (
-                            <>
-                                <Box
-                                    bg="white"
-                                    border="1px solid black"
-                                    borderRadius="md"
-                                    p="1rem"
-                                    boxShadow="sm"
-                                    w="100%"
-                                >
-                                    <HStack justify="space-between" w="100%" spacing={6} align="start"  >
-                                        <Flex direction={isPhonecreen ? "column" : "row"}>
-                                            {/* Current Month's Earnings */}
-                                            <VStack align="start" spacing={1}>
-                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Total Earnings (This Month)</Text>
-                                                <Text fontWeight="bold" fontSize="20px" color="green.500">${totalEarnings}</Text>
-                                                <Text fontSize="12px" color="gray.500" mr="3rem">Earnings under $25 will roll over to the next month's payout cycle</Text>
 
-                                                {isViewPastEarnings && (
-                                                    <Button size="xs" colorScheme="green" variant="outline" onClick={showCurrentEarnings}>
-                                                        See Current Earnings
-                                                    </Button>
-                                                )}
+                            <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "2rem"}>
+                                <Flex direction="column">
 
-                                            </VStack>
+                                    <HStack pt="0.5rem" pb="0.5rem">
 
-                                            {/* Last Month's Earnings */}
-                                            <VStack align="start" spacing={1}>
-                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Last Month's Earnings</Text>
-                                                <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
+                                        {showPayoutDetails && (
+                                            <IoArrowBack onClick={() => handleBackButton()} fontSize='24px' />
+                                        )}
+                                        <Text as='b' fontSize='24px' pt="1rem" pb="1rem ">Dashboard</Text>
 
-                                                {!isViewPastEarnings && (
-                                                    <Button size="xs" colorScheme="blue" variant="outline" onClick={showPastEarnings}>
-                                                        See Past Earnings
-                                                    </Button>
-                                                )}
-
-                                            </VStack>
-                                        </Flex>
-                                        <Flex direction={isPhonecreen ? "column" : "row"}>
-                                            {/* Rollover Earnings (Held from Previous Months) */}
-                                            <VStack align="start" spacing={1}>
-                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Rollover Earnings</Text>
-                                                <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
-
-                                                <Text fontSize="12px" color="gray.500" mr="3rem">Unpaid earnings will be moved to Payout Initiation once they reach $25.</Text>
-                                            </VStack>
-
-                                            {/* Payout Initiation Date */}
-                                            <VStack align="start" spacing={1}>
-                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Initiation</Text>
-                                                <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
-                                                <Text fontSize="12px" color="black">Next Payout: {time.payoutMonth} 15</Text>
-                                                <Text fontSize="12px" color="gray.500">Covers last month's earnings</Text>
-                                            </VStack>
-                                        </Flex>
                                     </HStack>
-                                </Box>
 
-                                <Box
-                                    bg="white"
-                                    border="1px solid black"
-                                    borderRadius="md"
-                                    p="1rem"
-                                    boxShadow="sm"
-                                    w="100%"
-                                    mt="1rem"
-                                >
+                                    {/* Asterisk and message */}
+                                    <Text fontSize="12px" color="gray.500">
+                                        {statusMessage}
+                                    </Text>
 
 
-                                    {!isViewPastEarnings ? (
-                                        <HStack justify="space-between" w="100%" spacing={isPhonecreen ? 2 : 6} wrap="wrap">
+                                    {showPayoutDetails ? (
 
 
-
-                                            <>
-
-
-
-
-
-                                                {/* Column: Numbers */}
-                                                <VStack align="center" spacing={3}>
-                                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Tip Rate</Text>
-                                                    {/*     <Text fontSize="12px" color="black">$1.00</Text>*/}
-                                                    <Text fontSize="12px" color="black">$3.00</Text>
-                                                    <Text fontSize="12px" color="black">$4.50</Text>
-                                                    <Text fontSize="12px" color="black">$7.50</Text>
-                                                    <Text fontSize="12px" color="black">$9.00</Text>
-                                                    <Text fontSize="12px" color="black">$15.00</Text>
-                                                    <Text fontSize="12px" color="black">$30.00</Text>
-                                                </VStack>
-
-                                                {/* Column: Numbers */}
-                                                <VStack align="center" spacing={3}>
-                                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
-                                                    {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
-                                                    <Text fontSize="12px" color="black">{stats.TipA}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.TipB}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.TipC}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.TipD}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.TipE}</Text>
-                                                    <Text fontSize="12px" color="black">{stats.TipF}</Text>
-                                                </VStack>
-
-                                                {/* Column: Earnings */}
-                                                <VStack align="end" spacing={3}>
-                                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
-                                                    {/*   <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleInvited, rates["peopleInvited"])}</Text> */}
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipA, rates["A"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipB, rates["B"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipC, rates["C"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipD, rates["D"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipE, rates["E"])}</Text>
-                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipF, rates["F"])}</Text>
-                                                </VStack>
-
-
-
-                                                <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>{chartExplaniation}</Text>
-
-                                            </>
-
-
-
-                                        </HStack>
-
-                                    ) : (
 
                                         <>
+                                            {/* Payout Method Input */}
+                                            {payoutExists || venmoUsername || zelleDetail ? (
+                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Add or Remove Payout Method</Text>
+                                            ) : (
+                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Add Payout Method</Text>
+                                            )}
 
-                                            {/*
+
+                                            {!venmo && (
+                                                <>
+
+                                                    {/* Venmo Section */}
+                                                    <HStack w="100%">
+                                                        <Select isReadOnly value="Venmo" size="sm" w="80%">
+                                                            <option value="Venmo">Venmo</option>
+                                                        </Select>
+                                                        <Input
+                                                            placeholder="Enter Venmo Username"
+                                                            value={venmoUsername}
+                                                            onChange={(e) => setVenmoUsername(e.target.value)}
+                                                            size="sm"
+                                                            type="text"
+                                                        />
+                                                        <Button colorScheme="green" size="sm" onClick={() => addPayoutMethod("Venmo", venmoUsername)}>
+                                                            Add
+                                                        </Button>
+                                                    </HStack>
+                                                </>
+                                            )}
+
+                                            {error && (
+                                                <Text fontSize={12} color="red.500" mt={1}>
+                                                    {error}
+                                                </Text>
+                                            )}
+                                            {!zelle && (
+                                                <>
+
+                                                    {/* Zelle Section */}
+                                                    <HStack w="100%" mt={2}>
+                                                        <Select value={zelleType} onChange={(e) => setZelleType(e.target.value)} size="sm" w="80%">
+                                                            <option value="Zelle (Email)">Zelle (Email)</option>
+                                                            <option value="Zelle (Phone)">Zelle (Phone)</option>
+                                                        </Select>
+                                                        <Input
+                                                            placeholder={zelleType === "Zelle (Phone)" ? "Enter Phone Number" : "Enter Email Address"}
+                                                            value={zelleDetail}
+                                                            onChange={(e) => setZelleDetail(e.target.value)}
+                                                            size="sm"
+                                                            type={zelleType === "Zelle (Phone)" ? "tel" : "email"}
+                                                        />
+                                                        <Button colorScheme="green" size="sm" onClick={() => addPayoutMethod(zelleType, zelleDetail)}>
+                                                            Add
+                                                        </Button>
+                                                    </HStack>
+                                                </>
+                                            )}
+
+
+
+
+                                            {/* Display Added Payout Methods */}
+
+
+
+
+
+                                            <List w="100%" spacing={3} mt="1rem">
+
+                                                {venmo && (
+                                                    <>
+                                                        <ListItem
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="space-between"
+                                                            p={2}
+                                                            border="1px solid gray"
+                                                            borderRadius="md"
+                                                        >
+                                                            <HStack>
+                                                                <Image
+                                                                    src={venmoIcon}
+                                                                    boxSize="20px"
+                                                                />
+                                                                <Text>{venmo}</Text>
+                                                            </HStack>
+                                                            <IconButton
+                                                                icon={<DeleteIcon />}
+                                                                size="xs"
+                                                                colorScheme="red"
+                                                                onClick={() => handleRemovePayoutMethod('Venmo', currentUserId)}
+                                                            />
+                                                        </ListItem>
+
+                                                    </>
+                                                )}
+
+                                                {zelle && (
+
+                                                    <>
+                                                        <ListItem
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="space-between"
+                                                            p={2}
+                                                            border="1px solid gray"
+                                                            borderRadius="md"
+                                                        >
+                                                            <HStack>
+                                                                <Image
+                                                                    src={zelleIcon}
+                                                                    boxSize="20px"
+                                                                />
+                                                                <Text>{zelle}</Text>
+                                                            </HStack>
+                                                            <IconButton
+                                                                icon={<DeleteIcon />}
+                                                                size="xs"
+                                                                colorScheme="red"
+                                                                onClick={() => handleRemovePayoutMethod('Zelle', currentUserId)}
+                                                            />
+                                                        </ListItem>
+
+                                                    </>
+                                                )}
+                                            </List>
+
+
+
+
+
+
+
+
+                                        </>
+
+
+                                    ) : (
+                                        <>
+                                            <Box
+                                                bg="white"
+                                                border="1px solid black"
+                                                borderRadius="md"
+                                                p="1rem"
+                                                boxShadow="sm"
+                                                w="100%"
+                                            >
+                                                <HStack justify="space-between" w="100%" spacing={6} align="start"  >
+                                                    <Flex direction={isPhonecreen ? "column" : "row"}>
+                                                        {/* Current Month's Earnings */}
+                                                        <VStack align="start" spacing={1}>
+                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Total Earnings (This Month)</Text>
+                                                            <Text fontWeight="bold" fontSize="20px" color="green.500">${totalEarnings}</Text>
+                                                            <Text fontSize="12px" color="gray.500" mr="3rem">Earnings under $25 will roll over to the next month's payout cycle</Text>
+
+                                                            {isViewPastEarnings && (
+                                                                <Button size="xs" colorScheme="green" variant="outline" onClick={showCurrentEarnings}>
+                                                                    See Current Earnings
+                                                                </Button>
+                                                            )}
+
+                                                        </VStack>
+
+                                                        {/* Last Month's Earnings */}
+                                                        <VStack align="start" spacing={1}>
+                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Last Month's Earnings</Text>
+                                                            <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
+
+                                                            {!isViewPastEarnings && (
+                                                                <Button size="xs" colorScheme="blue" variant="outline" onClick={showPastEarnings}>
+                                                                    See Past Earnings
+                                                                </Button>
+                                                            )}
+
+                                                        </VStack>
+                                                    </Flex>
+                                                    <Flex direction={isPhonecreen ? "column" : "row"}>
+                                                        {/* Rollover Earnings (Held from Previous Months) */}
+                                                        <VStack align="start" spacing={1}>
+                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Rollover Earnings</Text>
+                                                            <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
+
+                                                            <Text fontSize="12px" color="gray.500" mr="3rem">Unpaid earnings will be moved to Payout Initiation once they reach $25.</Text>
+                                                        </VStack>
+
+                                                        {/* Payout Initiation Date */}
+                                                        <VStack align="start" spacing={1}>
+                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Initiation</Text>
+                                                            <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
+                                                            <Text fontSize="12px" color="black">Next Payout: {time.payoutMonth} 15</Text>
+                                                            <Text fontSize="12px" color="gray.500">Covers last month's earnings</Text>
+                                                        </VStack>
+                                                    </Flex>
+                                                </HStack>
+                                            </Box>
+
+                                            <Box
+                                                bg="white"
+                                                border="1px solid black"
+                                                borderRadius="md"
+                                                p="1rem"
+                                                boxShadow="sm"
+                                                w="100%"
+                                                mt="1rem"
+                                            >
+
+
+                                                {!isViewPastEarnings ? (
+                                                    <HStack justify="space-between" w="100%" spacing={isPhonecreen ? 2 : 6} wrap="wrap">
+
+
+
+                                                        <>
+
+
+
+
+
+                                                            {/* Column: Numbers */}
+                                                            <VStack align="center" spacing={3}>
+                                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Tip Rate</Text>
+                                                                {/*     <Text fontSize="12px" color="black">$1.00</Text>*/}
+                                                                <Text fontSize="12px" color="black">$3.00</Text>
+                                                                <Text fontSize="12px" color="black">$4.50</Text>
+                                                                <Text fontSize="12px" color="black">$7.50</Text>
+                                                                <Text fontSize="12px" color="black">$9.00</Text>
+                                                                <Text fontSize="12px" color="black">$15.00</Text>
+                                                                <Text fontSize="12px" color="black">$30.00</Text>
+                                                            </VStack>
+
+                                                            {/* Column: Numbers */}
+                                                            <VStack align="center" spacing={3}>
+                                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
+                                                                {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
+                                                                <Text fontSize="12px" color="black">{stats.TipA}</Text>
+                                                                <Text fontSize="12px" color="black">{stats.TipB}</Text>
+                                                                <Text fontSize="12px" color="black">{stats.TipC}</Text>
+                                                                <Text fontSize="12px" color="black">{stats.TipD}</Text>
+                                                                <Text fontSize="12px" color="black">{stats.TipE}</Text>
+                                                                <Text fontSize="12px" color="black">{stats.TipF}</Text>
+                                                            </VStack>
+
+                                                            {/* Column: Earnings */}
+                                                            <VStack align="end" spacing={3}>
+                                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
+                                                                {/*   <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.peopleInvited, rates["peopleInvited"])}</Text> */}
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipA, rates["A"])}</Text>
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipB, rates["B"])}</Text>
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipC, rates["C"])}</Text>
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipD, rates["D"])}</Text>
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipE, rates["E"])}</Text>
+                                                                <Text fontSize="12px" color="green.500">${calculateSingularEarnings(stats.TipF, rates["F"])}</Text>
+                                                            </VStack>
+
+
+
+                                                            <Text as='i' fontSize='12px' color='gray.600' mr='3rem'>{chartExplaniation}</Text>
+
+                                                        </>
+
+
+
+                                                    </HStack>
+
+                                                ) : (
+
+                                                    <>
+
+                                                        {/*
                                             <HStack justify="space-between" w="100%" spacing={6} wrap="wrap">
                                                 {Object.entries(archivedStats).map(([month, stats]) => (
                                                     <VStack key={month} align="stretch" w="100%" spacing={6}>
@@ -880,159 +892,163 @@ const Dashboard = () => {
                                             */}
 
 
-                                            <VStack align="center" w="100%" spacing={6}>
-                                                {/* Navigation Arrows */}
-                                                <HStack spacing={6} justify="center">
-                                                    <Button onClick={goToPreviousMonth} disabled={currentMonthIndex === 0}>
-                                                        &lt; {/* Left Arrow */}
-                                                    </Button>
+                                                        <VStack align="center" w="100%" spacing={6}>
+                                                            {/* Navigation Arrows */}
+                                                            <HStack spacing={6} justify="center">
+                                                                <Button onClick={goToPreviousMonth} disabled={currentMonthIndex === 0}>
+                                                                    &lt; {/* Left Arrow */}
+                                                                </Button>
 
-                                                    <VStack>
-                                                        <Text fontSize="18px" fontWeight="bold">{currentMonthABA}</Text>
-                                                        <Text fontSize="14px" fontWeight="bold">{currentYear}</Text>
-                                                    </VStack>
+                                                                <VStack>
+                                                                    <Text fontSize="18px" fontWeight="bold">{currentMonthABA}</Text>
+                                                                    <Text fontSize="14px" fontWeight="bold">{currentYear}</Text>
+                                                                </VStack>
 
-                                                    <Button onClick={goToNextMonth} disabled={currentMonthIndex === monthNamesABA.length - 1}>
-                                                        &gt; {/* Right Arrow */}
-                                                    </Button>
-                                                </HStack>
+                                                                <Button onClick={goToNextMonth} disabled={currentMonthIndex === monthNamesABA.length - 1}>
+                                                                    &gt; {/* Right Arrow */}
+                                                                </Button>
+                                                            </HStack>
 
-                                                {/* Display the Month's Stats */}
-                                                <HStack justify="space-between" w="100%" spacing={6}>
-                                                    {/* Category Titles */}
+                                                            {/* Display the Month's Stats */}
+                                                            <HStack justify="space-between" w="100%" spacing={6}>
+                                                                {/* Category Titles */}
 
-                                                    <VStack align="center" spacing={3}>
-                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Tip Rate</Text>
-                                                        <Text fontSize="12px" color="black">$3.00</Text>
-                                                        <Text fontSize="12px" color="black">$4.50</Text>
-                                                        <Text fontSize="12px" color="black">$7.50</Text>
-                                                        <Text fontSize="12px" color="black">$9.00</Text>
-                                                        <Text fontSize="12px" color="black">$15.00</Text>
-                                                        <Text fontSize="12px" color="black">$30.00</Text>
+                                                                <VStack align="center" spacing={3}>
+                                                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Tip Rate</Text>
+                                                                    <Text fontSize="12px" color="black">$3.00</Text>
+                                                                    <Text fontSize="12px" color="black">$4.50</Text>
+                                                                    <Text fontSize="12px" color="black">$7.50</Text>
+                                                                    <Text fontSize="12px" color="black">$9.00</Text>
+                                                                    <Text fontSize="12px" color="black">$15.00</Text>
+                                                                    <Text fontSize="12px" color="black">$30.00</Text>
 
 
-                                                        {/* Numbers */}
-                                                        <VStack align="center" spacing={3} w="25%">
-                                                            <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
-                                                            {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
-                                                            <Text fontSize="12px" color="black">{statsABA.TipA}</Text>
-                                                            <Text fontSize="12px" color="black">{statsABA.TipB}</Text>
-                                                            <Text fontSize="12px" color="black">{statsABA.TipC}</Text>
-                                                            <Text fontSize="12px" color="black">{statsABA.TipD}</Text>
-                                                            <Text fontSize="12px" color="black">{statsABA.TipE}</Text>
-                                                            <Text fontSize="12px" color="black">{statsABA.TipF}</Text>
+                                                                    {/* Numbers */}
+                                                                    <VStack align="center" spacing={3} w="25%">
+                                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Conversions</Text>
+                                                                        {/*  <Text fontSize="12px" color="black">{stats.peopleInvited}</Text> */}
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipA}</Text>
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipB}</Text>
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipC}</Text>
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipD}</Text>
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipE}</Text>
+                                                                        <Text fontSize="12px" color="black">{statsABA.TipF}</Text>
+                                                                    </VStack>
+
+
+
+                                                                </VStack>
+                                                                {/* Earnings */}
+                                                                <VStack align="end" spacing={3} w="25%">
+                                                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipA, rates["A"])}</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipB, rates["B"])}</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipC, rates["C"])}</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipD, rates["D"])}</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipE, rates["E"])}</Text>
+                                                                    <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipF, rates["F"])}</Text>
+                                                                </VStack>
+                                                            </HStack>
                                                         </VStack>
 
 
+                                                    </>
+                                                )}
 
-                                                    </VStack>
-                                                    {/* Earnings */}
-                                                    <VStack align="end" spacing={3} w="25%">
-                                                        <Text fontWeight="bold" fontSize="14px" color="gray.600">Earnings</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipA, rates["A"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipB, rates["B"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipC, rates["C"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipD, rates["D"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipE, rates["E"])}</Text>
-                                                        <Text fontSize="12px" color="green.500">${calculateSingularEarnings(statsABA.TipF, rates["F"])}</Text>
-                                                    </VStack>
-                                                </HStack>
+
+                                            </Box>
+
+
+                                            {/* Payment Setup */}
+                                            <VStack align="start" spacing={1} mt="1rem" mb="4rem">
+                                                <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Details</Text>
+
+                                                {!payoutExists ? (
+
+                                                    // Show "Add Payout Details" if no payout exists
+                                                    <>
+                                                        <Text fontSize="12px" color="gray.500">Add your CashApp, Venmo, or Zelle to receive payouts.</Text>
+
+                                                        <Button size="xs" colorScheme="red" variant="solid" onClick={() => setShowPayoutDetails(true)}>
+                                                            Add Payout Details
+                                                        </Button>
+                                                    </>
+                                                ) : (
+
+                                                    <>
+                                                        <List w="40%" spacing={3} mt="1rem">
+
+                                                            {venmo && (
+                                                                <>
+                                                                    <ListItem
+                                                                        display="flex"
+                                                                        alignItems="center"
+                                                                        justifyContent="space-between"
+                                                                        p={2}
+                                                                        border="1px solid gray"
+                                                                        borderRadius="md"
+                                                                    >
+                                                                        <HStack>
+                                                                            <Image
+                                                                                src={venmoIcon}
+                                                                                boxSize="20px"
+                                                                            />
+                                                                            <Text>{venmo}</Text>
+                                                                        </HStack>
+
+                                                                    </ListItem>
+
+                                                                </>
+                                                            )}
+
+                                                            {zelle && (
+
+                                                                <>
+                                                                    <ListItem
+                                                                        display="flex"
+                                                                        alignItems="center"
+                                                                        justifyContent="space-between"
+                                                                        p={2}
+                                                                        border="1px solid gray"
+                                                                        borderRadius="md"
+                                                                    >
+                                                                        <HStack>
+                                                                            <Image
+                                                                                src={zelleIcon}
+                                                                                boxSize="20px"
+                                                                            />
+                                                                            <Text>{zelle}</Text>
+                                                                        </HStack>
+
+                                                                    </ListItem>
+
+                                                                </>
+                                                            )}
+                                                        </List>
+
+                                                        <Button size="xs" colorScheme="gray" variant="solid" onClick={() => setShowPayoutDetails(true)} mt="5px">
+                                                            Update Payout Details
+                                                        </Button>
+
+                                                    </>
+                                                )}
+
                                             </VStack>
 
-
                                         </>
+
                                     )}
 
+                                </Flex>
+                            </VStack>
 
-                                </Box>
-
-
-                                {/* Payment Setup */}
-                                <VStack align="start" spacing={1} mt="1rem" mb="4rem">
-                                    <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Details</Text>
-
-                                    {!payoutExists ? (
-
-                                        // Show "Add Payout Details" if no payout exists
-                                        <>
-                                            <Text fontSize="12px" color="gray.500">Add your CashApp, Venmo, or Zelle to receive payouts.</Text>
-
-                                            <Button size="xs" colorScheme="red" variant="solid" onClick={() => setShowPayoutDetails(true)}>
-                                                Add Payout Details
-                                            </Button>
-                                        </>
-                                    ) : (
-
-                                        <>
-                                            <List w="40%" spacing={3} mt="1rem">
-
-                                                {venmo && (
-                                                    <>
-                                                        <ListItem
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="space-between"
-                                                            p={2}
-                                                            border="1px solid gray"
-                                                            borderRadius="md"
-                                                        >
-                                                            <HStack>
-                                                                <Image
-                                                                    src={venmoIcon}
-                                                                    boxSize="20px"
-                                                                />
-                                                                <Text>{venmo}</Text>
-                                                            </HStack>
-
-                                                        </ListItem>
-
-                                                    </>
-                                                )}
-
-                                                {zelle && (
-
-                                                    <>
-                                                        <ListItem
-                                                            display="flex"
-                                                            alignItems="center"
-                                                            justifyContent="space-between"
-                                                            p={2}
-                                                            border="1px solid gray"
-                                                            borderRadius="md"
-                                                        >
-                                                            <HStack>
-                                                                <Image
-                                                                    src={zelleIcon}
-                                                                    boxSize="20px"
-                                                                />
-                                                                <Text>{zelle}</Text>
-                                                            </HStack>
-
-                                                        </ListItem>
-
-                                                    </>
-                                                )}
-                                            </List>
-
-                                            <Button size="xs" colorScheme="gray" variant="solid" onClick={() => setShowPayoutDetails(true)} mt="5px">
-                                                Update Payout Details
-                                            </Button>
-
-                                        </>
-                                    )}
-
-                                </VStack>
-
-                            </>
 
                         )}
+                    </Box>
+                )}
+            </>
+        </VStack>
 
-                    </Flex>
-                </VStack>
-
-
-            )}
-        </Box>
     )
 
 }
