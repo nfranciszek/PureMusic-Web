@@ -9,11 +9,11 @@ import Help from '../Website Policies/Help';
 import LogoutPage from '../pages/LogoutPage';
 // import { updatePayoutDetails, checkPayoutExists, getPayoutDetails, checkForLeadAmbassador, getAmbassadorStats, getLeadAmbassadorStats, getCurrentMonthAndYear, testUpdate, fetchArchivedStats } from '../../Utilities/Ambassador';
 import { getCurrentMonthAndYear, removePayoutVenmo, removePayoutZelle } from './DashboardConfig';
-// import { currentUserId } from '../../Utilities/firebase';
 // import { validateEmail } from '../../pages/AuthPages/CreateAccount';
 import MenuDashboard from './MenuDashboard';
 import { useData } from '../App';
-
+import { fetchUserStatus } from './UserProfile';
+import { currentUserId } from '../Utilities/firebase';
 
 const Dashboard = () => {
     const isBaseScreen = useBreakpointValue({ base: true, sm: false, md: false });
@@ -33,14 +33,14 @@ const Dashboard = () => {
     const navigate = useNavigate()
 
     const { showMenuDashboard, setMenuDashboard,
-        showPayoutDetails, 
-        
+        showPayoutDetails,
+
         setShowPayoutDetails,
-      homeSelected, setHomeSelected,
-      shareQRSelected, setShareQRSelected,
-      payoutDetailsSelected, setPayoutDetailsSelected,
-      helpSelected,
-      logoutPageSelected } = useData();
+        homeSelected, setHomeSelected,
+        shareQRSelected, setShareQRSelected,
+        payoutDetailsSelected, setPayoutDetailsSelected,
+        helpSelected,
+        logoutPageSelected } = useData();
 
     const includedTalkCirclePaths = [
 
@@ -429,6 +429,66 @@ const Dashboard = () => {
     }, [currentUserId]);
 */
 
+
+
+
+    const [status, setStatus] = useState('loading'); // Default to loading while fetching
+
+    const [statusMessage, setStatusMessage] = useState('');
+
+
+    useEffect(() => {
+        const getStatus = async () => {
+            const userStatus = await fetchUserStatus(currentUserId);
+            setStatus(userStatus); // Set the user status based on the fetch result
+            renderStatusInfo(userStatus);
+        };
+
+        getStatus();
+    }, [currentUserId]);
+
+    // Conditional rendering based on user status
+    const renderStatusInfo = (status) => {
+        switch (status) {
+            case 'pending':
+                setStatusMessage("* Your account is awaiting approval");
+
+                break;
+            case 'approved':
+                setStatusMessage("* Your account is active.");
+                break;
+
+            case 'paused':
+                setStatusMessage("* Your account has been paused");
+                break;
+            case 'suspended':
+                setStatusMessage("* Your account has been suspended.");
+
+                break;
+            case 'terminated':
+                setStatusMessage("* Your account has been terminated.");
+
+                break;
+            case 'non-existent':
+                setStatusMessage("* Your account is awaiting approval");
+
+                break;
+            case 'error':
+                setStatusMessage("* There was an error fetching your account status.");
+
+                break;
+            default:
+                setStatusMessage("* Pending Status...");
+
+        }
+    };
+
+
+
+
+
+
+
     return (
         <Box
             position="fixed"
@@ -449,28 +509,28 @@ const Dashboard = () => {
                 </>
 
             ) : shareQRSelected ? (
-<>
+                <>
 
-<ShareContentPage/>
+                    <ShareContentPage />
 
-</>
+                </>
 
-) : helpSelected ? (
-    <>
-<Help/>
-    </>
+            ) : helpSelected ? (
+                <>
+                    <Help />
+                </>
 
-) : logoutPageSelected ? (
-    <>
-    <LogoutPage/>
-        </>
-    
+            ) : logoutPageSelected ? (
+                <>
+                    <LogoutPage />
+                </>
+
             ) : (
 
                 <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "2rem"}>
                     <Flex direction="column">
 
-                        <HStack pt="1rem" pb="1rem">
+                        <HStack pt="0.5rem" pb="0.5rem">
 
                             {showPayoutDetails && (
                                 <IoArrowBack onClick={() => handleBackButton()} fontSize='24px' />
@@ -478,6 +538,12 @@ const Dashboard = () => {
                             <Text as='b' fontSize='24px' pt="1rem" pb="1rem ">Dashboard</Text>
 
                         </HStack>
+
+                        {/* Asterisk and message */}
+                        <Text fontSize="12px" color="gray.500">
+                            {statusMessage}
+                        </Text>
+
 
                         {showPayoutDetails ? (
 
@@ -666,7 +732,7 @@ const Dashboard = () => {
                                                 <Text fontWeight="bold" fontSize="14px" color="gray.600">Rollover Earnings</Text>
                                                 <Text fontWeight="bold" fontSize="16px" color="black">$0.00</Text>
 
-                                                <Text fontSize="12px" color="gray.500" mr="3rem">Previously unpaid earnings that will be moved to Payout Initiation once they reach $25.</Text>
+                                                <Text fontSize="12px" color="gray.500" mr="3rem">Unpaid earnings will be moved to Payout Initiation once they reach $25.</Text>
                                             </VStack>
 
                                             {/* Payout Initiation Date */}
@@ -874,7 +940,7 @@ const Dashboard = () => {
 
 
                                 {/* Payment Setup */}
-                                <VStack align="start" spacing={1} mt="1rem"     mb="4rem">
+                                <VStack align="start" spacing={1} mt="1rem" mb="4rem">
                                     <Text fontWeight="bold" fontSize="14px" color="gray.600">Payout Details</Text>
 
                                     {!payoutExists ? (

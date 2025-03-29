@@ -4,6 +4,8 @@ import { IoIosHelpCircleOutline, IoIosHelpCircle } from "react-icons/io";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
 
+import { currentUserId } from '../Utilities/firebase';
+import { fetchUserData, fetchUserStatus } from './UserProfile';
 
 import { IoCloseOutline } from "react-icons/io5";
 import { useState, useEffect } from 'react';
@@ -36,6 +38,7 @@ import { IoLanguageOutline } from "react-icons/io5";
 import { GiGearStickPattern } from "react-icons/gi";
 
 import { useData } from '../App';
+
 
 const MenuDashboard = () => {
 
@@ -90,7 +93,7 @@ const MenuDashboard = () => {
 
         navigate("/dashboard");
 
-    
+
         setLogoutPageSelected(false);
     };
 
@@ -177,6 +180,89 @@ const MenuDashboard = () => {
 
     const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
+    const [userData, setUserData] = useState(null); // State to hold user data
+
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const data = await fetchUserData(currentUserId); // Fetch user data using the utility function
+                setUserData(data); // Set the fetched data to state
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        if (currentUserId) {
+            getData(); // Call the function to fetch the data if the UID exists
+        }
+    }, [currentUserId]);
+
+
+    const [status, setStatus] = useState('loading'); // Default to loading while fetching
+
+    const [statusInfo, setStatusInfo] = useState('');
+    const [statusColor, setStatusColor] = useState('');
+    const [textColor, setTextColor] = useState('');
+    useEffect(() => {
+        const getStatus = async () => {
+            const userStatus = await fetchUserStatus(currentUserId);
+            setStatus(userStatus); // Set the user status based on the fetch result
+            renderStatusInfo(userStatus);
+        };
+
+        getStatus();
+    }, [currentUserId]);
+
+    const renderStatusInfo = (status) => {
+        switch (status) {
+            case 'pending':
+                setStatusInfo("Awaiting Approval");
+                setStatusColor("#FFA500");
+                setTextColor("#FFA500");
+                break;
+                
+            case 'approved':
+                setStatusInfo("Active");
+                setStatusColor("#4CAF50");
+                setTextColor("#4CAF50");
+                break;
+
+            case 'paused':
+                setStatusInfo("Paused");
+                setStatusColor("#FFA500");
+                setTextColor("#FFA500");
+                break;
+
+            case 'suspended':
+                setStatusInfo("Suspended");
+                setStatusColor("gray.600");
+                setTextColor("gray.600");
+                break;
+
+            case 'terminated':
+                setStatusInfo("Terminated");
+                setStatusColor("#FF0000");
+                setTextColor("#FF0000");
+                break;
+
+            case 'non-existent':
+                setStatusInfo("Pending Status...");
+                setStatusColor("#FF0000");
+                setTextColor("#FF0000");
+                break;
+            case 'error':
+                setStatusInfo("Pending Status...");
+                setStatusColor("#FFA500");
+                setTextColor("#FFA500");
+                break;
+            default:
+                setStatusInfo("Pending Status...");
+                setStatusColor("#FFA500");
+                setTextColor("#FFA500");
+        }
+    };
+
     return (
 
 
@@ -218,22 +304,37 @@ const MenuDashboard = () => {
 
                     <VStack>
 
+                        {userData && (
+                            <>
+                                <Image
+                                    src={userData.profilePhoto}
+                                    borderRadius='full'
+                                    width="50px"
+                                    maxH="50px"
+                                />
+                                <VStack gap={-20}>
+                                    <Text fontSize="16px">{userData.name}</Text>
+                                    <Text fontSize="14px">{userData.username}</Text>
+                                </VStack>
+                            </>
+                        )}
 
-                        <Image
-                            src="/PureMusicLogo.jpeg"
-                            borderRadius='full'
-                            width="50px"
-                            maxH="40px"
-                            className="profile-image-circle"
-                            alt='puremusic logo'
-                        />
+                        {/* Account Status Section */}
+                        <Flex align="center" gap={2} ml="1rem" >
+                            {/* Yellow Circle */}
+                            <Box
+                                width="8px"
+                                height="8px"
+                                borderRadius="50%"
+                                backgroundColor={statusColor} // Amber color (darker yellow)
+                            />
 
-                        <Text>Nathanael</Text>
+                            {/* "Awaiting Approval" Text */}
+                            <Text fontSize="12px" fontWeight="600" color={textColor} >
+                                {statusInfo}
+                            </Text>
 
-
-
-
-
+                        </Flex>
 
                         <Box pl="1rem" pr="1rem" rounded="md" width={{ base: "100%", sm: "320px", lg: "320px" }}>
 
@@ -286,7 +387,7 @@ const MenuDashboard = () => {
                                 }}
                             >
                                 <Flex justifyContent="space-between" alignItems="center" width={{ base: "100%", sm: "440px", lg: "440px" }}>
-                                    <Text fontSize='sm' color="black">Share Content</Text>
+                                    <Text fontSize='sm' color="black">Promote Content</Text>
 
 
                                     <MdOutlineKeyboardArrowRight />
@@ -318,7 +419,7 @@ const MenuDashboard = () => {
 
                             </Button>
 
-                            <Button 
+                            <Button
                                 width="100%"
                                 color="black"
                                 leftIcon={helpSelected ? <IoIosHelpCircle fontSize="24px" /> : <IoIosHelpCircleOutline fontSize="24px" />}
@@ -342,7 +443,7 @@ const MenuDashboard = () => {
                             </Button>
 
 
-                            <Text ml="1rem" fontSize="12px" textColor="gray.500" 
+                            <Text ml="1rem" fontSize="12px" textColor="gray.500"
                                 pt="3rem">Settings</Text>
                             <Button
 
