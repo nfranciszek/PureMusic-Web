@@ -19,6 +19,7 @@ const PromotedMovies = () => {
   const { setSignUpAsFan, setSignUpAsArtist, setSignUpAsPromoter,
 
     finalTipAmount, setFinalTipAmount,
+    TimeStopVideoForTips,
 } = useData();
   const goToSignUp = () => {
 
@@ -37,7 +38,7 @@ const PromotedMovies = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (videoRef.current && videoRef.current.currentTime >= 10) {
+      if (videoRef.current && videoRef.current.currentTime >= TimeStopVideoForTips) {
         videoRef.current.pause();
         setIsPausedForTips(true);
 

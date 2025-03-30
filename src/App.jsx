@@ -31,6 +31,9 @@ function App() {
   const auth = getAuth();
   const user = auth.currentUser;
 
+  const [TimeStopVideoForTips, setTimeStopVideoForTips] = useState(121);
+  const [TimeContinueVideoAfterTips, setTimeContinueVideoAfterTips] = useState(117);
+
   const [userIsArtist, setUserIsArtist] = useState(false);
   const [userIsPromoter, setUserIsPromoter] = useState(false);
   const [userIsFan, setUserIsFan] = useState(false);
@@ -41,22 +44,22 @@ function App() {
       const artistSnapshot = await get(child(usersArtistsRef, `${uid}`));
       const isArtist = artistSnapshot.exists();
       setUserIsArtist(artistSnapshot.exists());
-      console.log("User is Artist:", isArtist);  // Log artist status
+    //  console.log("User is Artist:", isArtist);  // Log artist status
 
       const promoterSnapshot = await get(child(userPromotersRef, `${uid}`));
       const isPromoter = promoterSnapshot.exists();
       setUserIsPromoter(promoterSnapshot.exists());
-      console.log("User is Promoter:", isPromoter);  // Log promoter status
+    //  console.log("User is Promoter:", isPromoter);  // Log promoter status
 
       const adminSnapshot = await get(child(userAdminRef, `${uid}`));
       const isAdmin = adminSnapshot.exists();
       setUserIsAdmin(adminSnapshot.exists());
-      console.log("User is A:", isAdmin);
+    //  console.log("User is A:", isAdmin);
 
       // You can set userIsFan based on other conditions if needed
       const isFan = !isArtist && !isPromoter && !isAdmin;
       setUserIsFan(!artistSnapshot.exists() && !promoterSnapshot.exists());
-      console.log("User is Fan:", isFan);  // Log fan status
+    //  console.log("User is Fan:", isFan);  // Log fan status
 
     } catch (error) {
       console.error("Error checking user type:", error);
@@ -134,7 +137,7 @@ function App() {
   useEffect(() => {
     if (extractedUrlUsername) {
       setSavedCreditedUser(extractedUrlUsername);
-      console.log("user credited : ", extractedUrlUsername); // Log extracted username directly
+     // console.log("user credited : ", extractedUrlUsername); // Log extracted username directly
     }
   }, [extractedUrlUsername]);
 
@@ -246,7 +249,7 @@ function App() {
       if (match && match[1]) {
         const usernameFromUrl = match[1]; // Extract the username part
         const username = usernameFromUrl.toLowerCase(); // Ensure username is in lowercase
-        console.log('Extracted Username:', username);
+       // console.log('Extracted Username:', username);
 
         // Call the function with the extracted username
         getPromoterUsernameUrl(username);
@@ -287,8 +290,8 @@ function App() {
 
       if (savedUser && savedAmount) {
 
-        console.log("initial saved Credited User ", savedUser);
-        console.log("initial saved final TipAmount ", savedAmount);
+      //  console.log("initial saved Credited User ", savedUser);
+       // console.log("initial saved final TipAmount ", savedAmount);
 
       }
     }
@@ -346,6 +349,9 @@ function App() {
       userIsPromoter,
       userIsFan,
       userIsAdmin,
+
+      TimeStopVideoForTips,
+      TimeContinueVideoAfterTips,
 
     }}>
       <PageLayouts>

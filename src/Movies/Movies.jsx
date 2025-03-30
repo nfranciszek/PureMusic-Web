@@ -12,14 +12,14 @@ const Movies = () => {
     const videoRef = useRef(null);
     const containerRef = useRef(null); // Fullscreen wrapper
 
-  
+  const { TimeContinueVideoAfterTips } = useData();
   
     useEffect(() => {
       const videoUrl = "https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f";
       setVideoUrl(videoUrl); // Directly set the URL to the state
     }, []);
 
-     
+
  
     useEffect(() => {
       const currentUrl = window.location.href;
@@ -32,8 +32,8 @@ const Movies = () => {
           
           if (savedUser && savedAmount) {
         
-            console.log("Credit USER FINAL ", savedUser);
-            console.log("Tip amount FINAL ", savedAmount);
+           // console.log("Credit USER FINAL ", savedUser);
+          //  console.log("Tip amount FINAL ", savedAmount);
             
             // Call the credit function
             await creditUserForConversion(savedUser, savedAmount);
@@ -42,7 +42,7 @@ const Movies = () => {
             localStorage.removeItem('savedCreditedUser');
             localStorage.removeItem('finalTipAmount');
           } else {
-            console.log("Data is empty or not found in localStorage.");
+          //  console.log("Data is empty or not found in localStorage.");
           }
         };
     
@@ -55,14 +55,14 @@ const Movies = () => {
   
     const handlePlayClick = () => {
         if (videoRef.current) {
-          videoRef.current.currentTime = 59; // Start at 59 seconds
+          videoRef.current.currentTime = TimeContinueVideoAfterTips; 
           videoRef.current.play();
           setIsPlaying(true);
         }
       };
   
     const handleTip = (amount) => {
-      console.log(`User tipped: $${amount}`);
+     // console.log(`User tipped: $${amount}`);
       
       tipWaiter(amount)
         .then((paymentSuccess) => {
@@ -70,12 +70,12 @@ const Movies = () => {
            
           } else {
             // Handle payment failure (if needed)
-            console.log('Payment failed or was canceled.');
+         //   console.log('Payment failed or was canceled.');
           }
         })
         .catch((error) => {
           // Handle any errors that occurred in the payment process
-          console.log('Payment initiation error:', error);
+         // console.log('Payment initiation error:', error);
         });
     };
   

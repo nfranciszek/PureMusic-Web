@@ -3,12 +3,16 @@ import { Button, Text, Flex, Image, VStack, Box } from '@chakra-ui/react';
 import { fetchVideoUrl } from '../Movies/videos';
 import { tipWaiter } from '../Utilities/stripe';
 import { useNavigate } from 'react-router-dom';
-
+import { useData } from '../App';
 const WelcomePage = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPausedForTips, setIsPausedForTips] = useState(false);
   const [tipAmount, setTipAmount] = useState("");
+
+  const [hideLogo, setHideLogo] = useState(false);
+
+  const { TimeStopVideoForTips } = useData();
 
   const videoRef = useRef(null);
   const containerRef = useRef(null); // Fullscreen wrapper
@@ -25,12 +29,12 @@ const WelcomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("Official videoUrl:", videoUrl);  // Check if videoUrl is set correctly
+   // console.log("Official videoUrl:", videoUrl);  // Check if videoUrl is set correctly
   }, [videoUrl]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (videoRef.current && videoRef.current.currentTime >= 10) {
+      if (videoRef.current && videoRef.current.currentTime >= TimeStopVideoForTips) {
         videoRef.current.pause();
         setIsPausedForTips(true);
 
@@ -56,6 +60,7 @@ const WelcomePage = () => {
   const handlePlayClick = () => {
     videoRef.current.play();
     setIsPlaying(true);
+    setHideLogo(true);
   };
 
 
@@ -107,6 +112,16 @@ const WelcomePage = () => {
     navigate('/signup');
 
 }
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    if (videoRef.current && videoRef.current.currentTime >= 5) {
+    setHideLogo(false);
+    }
+  }, 1000);
+  return () => clearInterval(interval);
+}, []);
+
   
   return (
 
@@ -288,7 +303,8 @@ const WelcomePage = () => {
 
 
     </div>
-
+    {!hideLogo  && (
+      <>
     <Text fontSize="24px" fontWeight="600"> Welcome to PureMusic</Text>
     <Image
                       src="/PureMusicLogo.jpeg"
@@ -354,6 +370,10 @@ onClick={() => goToSignUp()}
     Become a Promoter
   </Button>
 </Flex>
+</>
+
+  )}
+
 </VStack>
 
 

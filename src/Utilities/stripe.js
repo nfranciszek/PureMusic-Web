@@ -40,10 +40,10 @@ export async function tipWaiter(amount) {
             console.error("Payment error:", error.message);
             reject(false); // Payment failed or canceled
           } else if (paymentIntent.status === "succeeded") {
-            console.log("Payment succeeded!");
+           // console.log("Payment succeeded!");
             resolve(true); // Payment successful
           } else {
-            console.log("Unexpected payment status:", paymentIntent.status);
+          //  console.log("Unexpected payment status:", paymentIntent.status);
             reject(false); // Unexpected status
           }
         })

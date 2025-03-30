@@ -96,7 +96,7 @@ export const creditUserForConversion = async (profileURL, tipAmount) => {
             });
         }
 
-        console.log(`Successfully credited user ${profileURL} (${uid}) for ${tipAmount}.`);
+       // console.log(`Successfully credited user ${profileURL} (${uid}) for ${tipAmount}.`);
 
     } catch (error) {
         console.error("Error updating ambassador/promoter data:", error);

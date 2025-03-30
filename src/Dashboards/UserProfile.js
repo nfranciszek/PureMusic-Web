@@ -8,7 +8,7 @@ export const fetchUserData = async (uid) => {
     if (snapshot.exists()) {
       return snapshot.val(); // Return the user data
     } else {
-      console.log('No data available');
+    //  console.log('No data available');
       return null; // Return null if no data is found
     }
   } catch (err) {

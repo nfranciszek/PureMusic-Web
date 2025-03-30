@@ -199,7 +199,7 @@ export const checkTimeForArchive = async (uid, userType) => {
     const currentMonth = currentMonthIndex + 1; // Convert to 1-12
     const currentYear = currentDateStamp.getFullYear();
 
-    console.log("Current month is:", currentMonth);
+   // console.log("Current month is:", currentMonth);
 
     let userRef = null;
 
@@ -218,7 +218,7 @@ export const checkTimeForArchive = async (uid, userType) => {
         if (!snapshot.exists() || snapshot.val() !== currentMonth) {
             // Uncomment the next line if `storeStatForMonth` is defined elsewhere
             await storeStatForMonth(uid, currentMonth, currentYear, userType);
-            console.log("TIME TO ARCHIVE STATS");
+           // console.log("TIME TO ARCHIVE STATS");
         }
     } catch (error) {
         console.error("Error fetching current month:", error);
@@ -280,7 +280,7 @@ const storeStatForMonth = async (uid, currentMonth, currentYear, userType) => {
             currentYear: currentYear
         });
 
-        console.log(`Reset stats for the new month for user ${uid}`);
+       // console.log(`Reset stats for the new month for user ${uid}`);
     } catch (error) {
         console.error("Error archiving stats and resetting for the new month:", error);
     }
@@ -409,7 +409,7 @@ export const fetchUserDataPromotersList = async () => {
     // Perform the update
     try {
       await update(userReference, updateData);
-      console.log(`User status updated to ${status}`);
+     // console.log(`User status updated to ${status}`);
     } catch (error) {
       console.error('Error updating user status:', error);
     }
