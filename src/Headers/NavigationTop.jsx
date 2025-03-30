@@ -1,23 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { RxHamburgerMenu } from "react-icons/rx";
 import { Box, Flex, Image, HStack, Spacer, Button } from '@chakra-ui/react'
 import { useBreakpointValue } from '@chakra-ui/react';
-
+import { getAuth } from 'firebase/auth';
+import { useData } from '../App';
 
 const NavigationTop = () => {
 
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     const navigate = useNavigate();
 
-    const resetAudioPosting = () => {
-    
-    }
+
+  const { visitorUserMenu, setVisitorUserMenu } = useData();
 
 
-  
     const goToHome = () => {
-    
+
         navigate('/');
 
     };
@@ -29,27 +30,29 @@ const NavigationTop = () => {
     };
 
 
-    const goToAboutUs = () => {
-        resetAudioPosting();
+    const goToLogin = () => {
 
-        navigate('/about');
-
+        navigate('/account/login');
 
     };
 
-    const goToContactUs = () => {
+    const goToSignUp = () => {
 
-        resetAudioPosting();
-        navigate('/contact');
+        navigate('/signup');
 
+    }
 
-    };
+    const showMenu = () => {
+
+        setVisitorUserMenu(true);
+    
+      };
 
     const isBaseOrSm = useBreakpointValue({ base: true, sm: true, md: false, lg: false, xl: false });
 
 
 
-   
+
 
     return (
         <Box
@@ -75,7 +78,7 @@ const NavigationTop = () => {
             >
                 <Flex flexDirection="row" alignItems="center">
 
-             
+
 
                     <Image
                         src="/PureMusicLogoName.png"
@@ -83,7 +86,7 @@ const NavigationTop = () => {
                         maxH="70px"
                         ml="12px"
                         onClick={goToHome}
-                   
+
                     />
 
 
@@ -100,7 +103,7 @@ const NavigationTop = () => {
 
 
 
-             <Button
+                        <Button
                             width="full"
                             onClick={goToArtists}
                             size='sm'
@@ -115,54 +118,68 @@ const NavigationTop = () => {
                                 borderColor: 'white', // White border color
                             }}
                         >
-                         Artists
+                            Artists
                         </Button>
-             
 
 
+                        {isBaseOrSm && !user && (
 
+                            <HStack mr="1rem" onClick={() => showMenu()} gap={3}  _hover={{
+                                color: '#06e4ed', // White text color
+                                borderColor: 'white', // White border color
+                            }}>
+                                <RxHamburgerMenu size='20px' />
+                            </HStack>
 
+                        )}
 
-                        {!isBaseOrSm && (
+                        {!isBaseOrSm && !user && (
                             <>
+
 
                                 <Button
                                     width="full"
-                                    onClick={goToAboutUs}
+                                    onClick={goToLogin}
+
                                     size='sm'
-                                    variant='ghost'
-                                    fontSize="16px"
-                                    fontWeight="normal"
-                                    as='b'
-                                    color="gray"
+                                    bg="#06e4ed"
+                                    color="white"
+                                    px={{ base: '1rem', sm: '1.5rem', md: '2rem' }}
                                     _hover={{
-                                        color: '#06e4ed', // White text color
+                                        bg: '#05c7d0', // Semi-transparent gray background
+                                        color: 'white', // White text color
                                         borderColor: 'white', // White border color
                                     }}
                                 >
-                                    About
+                                    Log in
                                 </Button>
 
 
+
                                 <Button
+                                    variant="outline"
                                     width="full"
-                                    onClick={goToContactUs}
                                     size='sm'
-                                    variant='ghost'
-                                    fontSize="16px"
-                                    fontWeight="normal"
-                                    as='b'
-                                    color="gray"
+                                    onClick={goToSignUp}
+                                    bg="transparent"
+                                    color="#06e4ed"
+                                    px={{ base: '1rem', sm: '1.5rem', md: '2rem' }}
                                     _hover={{
-                                        color: '#06e4ed', // White text color
-                                        borderColor: 'white', // White border color
+                                        bg: 'white',
+                                        color: '#05c7d0',
+                                        outline: 'none', // Remove the outline on hover
+                                        borderColor: '#06e4ed'
+
                                     }}
+
                                 >
-                                    Contact
+                                    Sign Up
                                 </Button>
 
                             </>
                         )}
+
+
 
                     </Flex>
 

@@ -128,6 +128,9 @@ function App() {
 
   const [finalTipAmount, setFinalTipAmount] = useState("");
 
+  const [visitorUserMenu, setVisitorUserMenu] = useState(false);
+
+
   useEffect(() => {
     if (extractedUrlUsername) {
       setSavedCreditedUser(extractedUrlUsername);
@@ -172,7 +175,64 @@ function App() {
 
 
 
+  useEffect(() => {
+    const currentUrl = window.location.href;
   
+    // Check if the URL contains "/signup" or "/account/login" AND the user is logged in
+    if ((currentUrl.includes("/signup") || currentUrl.includes("/account/login")) && user) {
+      navigate("/dashboard");
+
+      setHomeSelected(true);
+      setShareQRSelected(false);
+      setPayoutDetailsSelected(false);
+      setShowPayoutDetails(false);
+      setHelpSelected(false);
+      setLogoutPageSelected(false);
+      setPromoterTabSelected(false);
+      setArtistTabSelected(false);
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    const currentUrl = window.location.href;
+  
+    // Check if the URL contains "/signup" or "/account/login" AND the user is logged in
+    if ((currentUrl.includes("/") && user)) {
+      
+      navigate("/dashboard");
+
+      if (userIsAdmin) {
+  
+      setHomeSelected(false);
+      setShareQRSelected(false);
+      setPayoutDetailsSelected(false);
+      setShowPayoutDetails(false);
+      setHelpSelected(false);
+      setLogoutPageSelected(false);
+
+      setPromoterTabSelected(true);
+      setArtistTabSelected(false);
+   
+      } else {
+
+       
+
+          setHomeSelected(true);
+          setShareQRSelected(false);
+          setPayoutDetailsSelected(false);
+          setShowPayoutDetails(false);
+          setHelpSelected(false);
+          setLogoutPageSelected(false);
+          setPromoterTabSelected(false);
+          setArtistTabSelected(false);
+
+
+       
+
+      }
+
+    }
+  }, [user, userIsAdmin, navigate, didUserJustLogIn, userJustSignedUp]);
 
   useEffect(() => {
     const currentUrl = window.location.href;
@@ -280,6 +340,7 @@ function App() {
 
       savedCreditedUser, setSavedCreditedUser,
       finalTipAmount, setFinalTipAmount,
+      visitorUserMenu, setVisitorUserMenu,
 
       userIsArtist,
       userIsPromoter,
@@ -315,7 +376,7 @@ function App() {
 
 
 
-
+         
           <Route path="/signup" element={<SignUpPage />} />
 
           <Route path="/account/login" element={<LoginPage />} />

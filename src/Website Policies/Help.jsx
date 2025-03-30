@@ -20,7 +20,7 @@ const Help = () => {
             <meta charset="UTF-8" />
           </Helmet>
     
-      
+
           <Heading mt="2rem">Help Center</Heading>
                         <Image src='/PureMusicLogo.jpeg' h={10} alt='Pure Music Logo'></Image>
     

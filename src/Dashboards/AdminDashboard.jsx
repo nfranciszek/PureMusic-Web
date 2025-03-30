@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Image, Button, Flex, VStack, Text, HStack, List, ListItem } from '@chakra-ui/react';
+import { Box, Heading, Image, Button, Flex, VStack, Text, HStack, List, ListItem } from '@chakra-ui/react';
 import { useData } from '../App';
 import { fetchUserDataPromotersList } from './DashboardConfig';
 import { fetchUserDataArtistsList } from './DashboardConfig';
@@ -77,6 +77,13 @@ const AdminDashboard = () => {
       w="100%"    // This allows the box to grow and take up available space
     >
       <VStack align="start" spacing={4} mt={6}>
+
+      {promoterTabSelected ? (
+      <Heading mt="2rem">Promoters</Heading>
+        ) : artistTabSelected ? (
+      <Heading mt="2rem">Artists</Heading>
+        ) : ( null)}
+
         {Object.keys(usersByStatus).map((status) => (
           <Box key={status} w="100%" borderBottom="1px solid #eee" pb={4}>
             <Text fontSize="xl" fontWeight="bold" color="gray.700">

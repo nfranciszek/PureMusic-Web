@@ -495,26 +495,19 @@ if (currentUserId && userType) {
 
 
     return (
-        <VStack>
-            <>
-                {(showMenuDashboard && isBaseScreen) ? (
-                    <>
-
-                        <MenuDashboard />
-                    </>
-
-                ) : (
+     
                     <Box
                         position="fixed"
                         top="0"
                         height="100%"
                         bg="white"
                         transition="left 0.6s ease" // Slower transition
+                        marginLeft={isBaseScreen ? null :"-8rem"}
                         zIndex="0"
                         pb="8px"
                         pt="3rem"
                         overflowY="auto">
-
+    
 
                         {userIsAdmin ? (
                             <>
@@ -548,7 +541,7 @@ if (currentUserId && userType) {
 
                         ) : (
 
-                            <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : "2rem"}>
+                            <VStack paddingInlineStart="6px" paddingInlineEnd="8px" pl={isBaseScreen ? "1rem" : null }>
                                 <Flex direction="column">
 
                                     <HStack pt="0.5rem" pb="0.5rem">
@@ -1044,11 +1037,11 @@ if (currentUserId && userType) {
 
 
                         )}
-                    </Box>
-                )}
-            </>
-        </VStack>
 
+
+                    </Box>
+        
+  
     )
 
 }

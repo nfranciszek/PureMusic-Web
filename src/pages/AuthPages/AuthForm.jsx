@@ -113,7 +113,7 @@ const AuthForm = ({ onLoginSuccess, onSignUp, onSignUpSuccess}) => {
         <VStack spacing={2}>
           <Text textAlign="center" fontSize={14}>
             {isLogin ? "Don't have an account? " : "Have an account? "}
-            <Link color="blue.500" fontSize="inherit" onClick={toggleAuthPage}>
+            <Link color="#049FB8" fontSize="inherit" onClick={toggleAuthPage}>
               {isLogin ? "Sign up" : "Log in"}
             </Link>
           </Text>

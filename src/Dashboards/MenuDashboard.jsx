@@ -3,6 +3,10 @@ import { Image, Text, VStack, Box, Button, Flex, HStack, Spacer, useBreakpointVa
 import { IoIosHelpCircleOutline, IoIosHelpCircle } from "react-icons/io";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
+import { IoQrCode } from "react-icons/io5";
+import { IoQrCodeOutline } from "react-icons/io5";
+
+
 
 import { IoPeopleOutline } from "react-icons/io5";
 import { IoPeople } from "react-icons/io5";
@@ -143,6 +147,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(false);
         setArtistTabSelected(false);
+        navigate("/dashboard");
     };
 
     const goPaymentDetails = () => {
@@ -161,6 +166,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(false);
         setArtistTabSelected(false);
+        navigate("/dashboard");
     };
 
     const goHelp = () => {
@@ -181,6 +187,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(false);
         setArtistTabSelected(false);
+        navigate("/dashboard");
     };
 
     const goToPromotersList = () => {
@@ -201,6 +208,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(true);
         setArtistTabSelected(false);
+        navigate("/dashboard");
     };
 
     const goToArtistsList = () => {
@@ -221,6 +229,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(false);
         setArtistTabSelected(true);
+        navigate("/dashboard");
     };
 
 
@@ -243,6 +252,7 @@ const MenuDashboard = () => {
 
         setPromoterTabSelected(false);
         setArtistTabSelected(false);
+        navigate("/dashboard");
     };
 
     const goDeleteAccount = () => {
@@ -523,7 +533,7 @@ const MenuDashboard = () => {
                                     <Button
                                         width="100%"
                                         color="black"
-                                        leftIcon={<BsQrCodeScan fontSize="24px" />}
+                                        leftIcon={shareQRSelected ? <IoQrCode fontSize="24px" /> : <IoQrCodeOutline fontSize="24px" />}
                                         onClick={goQRShareContent}
                                         bg="white"
                                         rounded="none"

@@ -99,8 +99,15 @@ const WelcomePage = () => {
       ></iframe>
     );
   };
-  
 
+ 
+
+  const goToSignUp = () => {
+
+    navigate('/signup');
+
+}
+  
   return (
 
     <VStack>
@@ -295,6 +302,8 @@ const WelcomePage = () => {
 
     <Flex justify="center" mt={3} flexDirection="column" >
     <Button
+
+onClick={() => goToSignUp()} 
     mb="1rem"
     variant="outline"
     size="sm"
@@ -318,6 +327,8 @@ const WelcomePage = () => {
     }}>
     Become an Artist
   </Button>
+
+
   <Button
     variant="outline"
     size="sm"
@@ -346,8 +357,10 @@ const WelcomePage = () => {
 </VStack>
 
 
-  );
-};
+  )
+
+}
+
 
 export default WelcomePage;
 
