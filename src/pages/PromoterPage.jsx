@@ -43,69 +43,85 @@ const PromoterPage = () => {
                         color="gray.800"
                         fontWeight="extrabold"
                         mb={4}
-                        border="2px solid gray.600" // Add a gray border
-                        borderRadius="10px" // Rounded corners
-                        p="10px" // Padding to make it more button-like
-                        paddingLeft="40px" // Increase left padding
-                        paddingRight="40px" // Increase right padding
-                        display="inline-block" // Ensure it's not taking full width
-                        bg="white" // White background
+                        border="2px solid gray.600"
+                        borderRadius="10px"
+                        p="10px"
+                        paddingLeft="40px"
+                        paddingRight="40px"
+                        display="inline-block"
+                        bg="white"
                         boxShadow="sm"
-                        width="auto" // Make the width auto to fit content, but still dynamic
-                        maxWidth="100%" // Optional: ensure it doesn't go beyond the screen width
+                        width="auto"
+                        maxWidth="100%"
                     >
                         How It Works
                     </Heading>
-                    <HStack spacing={8} align="center" flexWrap="wrap">
+    
+                    {/* Use Flex for responsive layout */}
+                    <Flex 
+                        direction={["column", "column", "row"]} 
+                        align="center" 
+                        justify="space-between" 
+                        w="100%" 
+                        px={4}
+                    >
+                        {/* Image */}
                         <Image
-                            src="/TrainConductorScanPureMusic.jpg"
-                            w={["100%", "60%", "50%"]}
+                            src="/socialmediabloggerPM01.jpeg"
+                            w={["100%", "80%", "50%"]} // Adjust width for responsiveness
                             borderRadius="lg"
                             shadow="md"
+                            mb={[4, 4, 0]} // Add margin-bottom on small screens to separate from text
                         />
-                        <VStack spacing={4} align="flex-start" textAlign="left">
-                            <Text fontSize="16px" color="gray.600" fontWeight="500">
-                                1. Sign Up as a PureMusic Promoter
-                            </Text>
-                            <Text fontSize="16px" color="gray.600" fontWeight="500">
-                                2. Share Artist Performances with Passengers
-                            </Text>
-                            <Text fontSize="16px" color="gray.600" fontWeight="500">
-                                3. Earn Tips Daily!
-                            </Text>
+    
+                        {/* Text Content */}
+                        <VStack 
+                            spacing={4} 
+                            align={["center", "center", "flex-start"]} // Align left on desktop
+                            textAlign={["center", "center", "left"]} // Center on mobile, left on desktop
+                            maxW={["100%", "100%", "45%"]} // Adjust width to prevent stretching
+                        >
+                            <Text fontSize="16px" fontWeight="bold">1. Sign Up on PureMusic</Text>
+                            <Text fontSize="14px">Join as a PureMusic Promoter and choose which artists to promote.</Text>
+    
+                            <Text fontSize="16px" fontWeight="bold">2. Share Content from our Artists</Text>
+                            <Text fontSize="14px">Post short highlights of their performances on social media with your unique link to their exclusive content.</Text>
+    
+                            <Text fontSize="16px" fontWeight="bold">3. Earn Revenue Daily</Text>
+                            <Text fontSize="14px">When an artist earns revenue from tips, you get a share of their earnings.</Text>
                         </VStack>
-                    </HStack>
-
+                    </Flex>
+    
                     <Button
                         onClick={() => goSignUp()}
                         variant="outline"
                         size="md"
                         bg="white"
-                        color="#05c7d0" // Website color for text
-                        border="2px solid #05c7d0" // Border to match the website color
+                        color="#05c7d0"
+                        border="2px solid #05c7d0"
                         px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
                         _hover={{
-                            bg: "#05c7d0", // Button background turns to website color on hover
-                            color: "white", // White text when hovering
-                            borderColor: "#06e4ed", // Keep border color same as background color
-                            transform: "scale(1.05)", // Slightly grow button on hover
-                            transition: "0.3s ease", // Smooth transition for hover effect
+                            bg: "#05c7d0",
+                            color: "white",
+                            borderColor: "#06e4ed",
+                            transform: "scale(1.05)",
+                            transition: "0.3s ease",
                         }}
                         _active={{
-                            transform: "scale(1.02)", // Slight scale on click
-                            boxShadow: "none", // Remove shadow on active state
+                            transform: "scale(1.02)",
+                            boxShadow: "none",
                         }}
                         _focus={{
-                            outline: "none", // Remove outline on focus
+                            outline: "none",
                         }}
                     >
                         Sign Up Now
                     </Button>
-
                 </VStack>
             </Center>
         );
     };
+    
 
 
 
@@ -126,7 +142,7 @@ const PromoterPage = () => {
         return (
             <VStack w="80%" spacing={6} py={10} textAlign="center">
                 <Text>
-                    If your job involves meeting hundreds of people daily, you can earn an extra $3000+ per month just by introducing passengers to PureMusic.
+                Earn $3,000+ per month by promoting exclusive content from top emerging artists!
                 </Text>
                 <Text
                     fontSize="xl"
@@ -225,7 +241,7 @@ const PromoterPage = () => {
             <Box position="relative" w="100%" h="40%">
                 <Image
                     //src={images[currentImage]}
-                    src="/TrainConductorPureMusic.jpg"
+                    src="/socialMediaBloggerPM02.jpg"
                     alt="Promoters of MureMusic"
                     objectFit="cover"
                     w="100%"
@@ -254,15 +270,15 @@ const PromoterPage = () => {
                         fontWeight="bold"
                         mb="10px"
                     >
-                        Become a PureMusic Promoter and Earn $100+ Per Day
+                        Monetize Your Social Media with PureMusic
                     </Heading>
                     <Text
                         color="white"
                         fontSize={["16px", "18px", "20px"]}
                         maxWidth="80%"
-                        mb="20px"
+                        mb="20px" 
                     >
-                        Turn your daily interactions at work into extra income
+Turn your social media into steady passive income by promoting exclusive content from our Artists
                     </Text>
                     <Button
                         onClick={() => goSignUp()}
