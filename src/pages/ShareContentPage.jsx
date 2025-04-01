@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { VStack, Flex, Box, Text, Button, Image, useBreakpointValue } from '@chakra-ui/react';
+import { VStack, Flex, Box, Text, Button, Image, useBreakpointValue, useToast } from '@chakra-ui/react';
 import { useData } from '../App';
 import { QRCodeCanvas } from "qrcode.react";
 import { fetchUserData } from '../Dashboards/UserProfile';
@@ -15,7 +15,7 @@ const ShareContentPage = () => {
 
     const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
-
+    const toast = useToast();
     useEffect(() => {
         const videoUrl = "https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f";
         setVideoUrl(videoUrl); // Directly set the URL to the state
@@ -86,7 +86,29 @@ const ShareContentPage = () => {
     };
 
 
+    const copyLinkToClipboard = () => {
 
+        
+        navigator.clipboard.writeText(qrValue)
+            .then(() => {
+                toast({
+                    title: "Link copied",
+                    status: "success",
+                    duration: 3000, // Optional duration in milliseconds
+                    isClosable: true,
+                });
+
+            })
+            .catch(error => {
+                console.error('Failed to copy link: ', error);
+                // Handle error, if any
+            });
+
+
+
+    };
+
+      
     return (
 
         <Flex
@@ -191,6 +213,30 @@ const ShareContentPage = () => {
                 <Box ref={qrRef} border="2px solid #05c7d0" borderRadius="8px" p="10px">
                     <QRCodeCanvas value={qrValue} size={200} />
                 </Box>
+
+                <Button onClick={copyLinkToClipboard} mt="5px" variant="outline"
+                    size="sm"
+                    bg="white"
+                    color="#05c7d0" // Website color for text
+                    border="2px solid #05c7d0" // Border to match the website color
+                    px={{ base: "1rem", sm: "1.5rem", md: "2rem" }}
+                    _hover={{
+                        bg: "#05c7d0", // Button background turns to website color on hover
+                        color: "white", // White text when hovering
+                        borderColor: "#06e4ed", // Keep border color same as background color
+                        transform: "scale(1.05)", // Slightly grow button on hover
+                        transition: "0.3s ease", // Smooth transition for hover effect
+                    }}
+                    _active={{
+                        transform: "scale(1.02)", // Slight scale on click
+                        boxShadow: "none", // Remove shadow on active state
+                    }}
+                    _focus={{
+                        outline: "none", // Remove outline on focus
+                    }}>
+                    Copy Your Unique Link
+                </Button>
+
                 <Button onClick={downloadQRCode} mt="5px" variant="outline"
                     size="sm"
                     bg="white"
