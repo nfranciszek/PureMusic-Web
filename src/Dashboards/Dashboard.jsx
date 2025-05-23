@@ -264,7 +264,7 @@ const Dashboard = () => {
 
 
     const calculateSingularEarnings = (count, rate) => {
-        return (count * rate).toFixed(2); // Ensure the result is a string with two decimal points
+        return (count * rate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
     // Calculate earnings by multiplying the count of live users with the respective rate
@@ -281,7 +281,7 @@ const Dashboard = () => {
         totalEarnings += stats.TipF * rates["F"];
 
 
-        return totalEarnings.toFixed(2);  // Ensure the earnings are formatted with 2 decimals
+        return totalEarnings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     };
 
     const totalEarnings = calculateEarnings(stats);
@@ -997,23 +997,34 @@ if (currentUserId && userType) {
                                                             {zelle && (
 
                                                                 <>
-                                                                    <ListItem
-                                                                        display="flex"
-                                                                        alignItems="center"
-                                                                        justifyContent="space-between"
-                                                                        p={2}
-                                                                        border="1px solid gray"
-                                                                        borderRadius="md"
-                                                                    >
-                                                                        <HStack>
-                                                                            <Image
-                                                                                src={zelleIcon}
-                                                                                boxSize="20px"
-                                                                            />
-                                                                            <Text>{zelle}</Text>
-                                                                        </HStack>
-
-                                                                    </ListItem>
+                                                                     <ListItem
+                                                            display="flex"
+                                                            alignItems="center"
+                                                            justifyContent="space-between"
+                                                            p={2}
+                                                            border="1px solid gray"
+                                                            borderRadius="md"
+                                                            minW="250px"         // Ensures it doesn't get too tiny
+                                                            w="fit-content"     // Shrinks to fit the content
+                                                            maxW="100%"        // Prevent content from spilling out
+                                                        >
+                                                            <HStack spacing={2} maxW="100%" flex="1" overflow="hidden">
+                                                                <Image
+                                                                    src={zelleIcon}
+                                                                    boxSize="20px"
+                                                                    flexShrink={0}        // Prevent image from shrinking
+                                                                />
+                                                                <Text
+                                                                    isTruncated           // Optional: adds "..." if text is too long
+                                                                    noOfLines={1}         // Ensures single-line wrap
+                                                                    overflow="hidden"
+                                                                    textOverflow="ellipsis"
+                                                                    whiteSpace="nowrap"
+                                                                >
+                                                                    {zelle}
+                                                                </Text>
+                                                            </HStack>
+                                                        </ListItem>
 
                                                                 </>
                                                             )}

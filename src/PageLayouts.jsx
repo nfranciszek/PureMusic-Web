@@ -184,10 +184,6 @@ const PageLayouts = ({ children }) => {
     >
 
 
-
-      {isVisible && !onTransferedPage ? (
-        <CenteredContent />
-      ) : (
         <>
 
 {visitorUserMenu && (
@@ -260,7 +256,9 @@ const PageLayouts = ({ children }) => {
 
 
         </>
-      )}
+
+     
+     
     </Flex>
   );
 };

@@ -7,6 +7,7 @@ import ContactUs from './Website Policies/ContactUs';
 import TermsOfService from './Website Policies/TermsOfService';
 import PrivacyPolicy from './Website Policies/PrivacyPolicy';
 import Help from './Website Policies/Help';
+import MotherhoodPage from './Home/MotherhoodPage';
 
 import PromotedMovies from './Movies/PromotedMovies';
 
@@ -359,6 +360,10 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/artists" element={<ArtistsPage />} />
           <Route path="/promoter-program" element={<PromoterPage />} />
+
+          <Route path="/gentle-music" element={<WelcomePage />} />
+
+          <Route path="/gentle-music/motherhood" element={<MotherhoodPage />} />
 
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
