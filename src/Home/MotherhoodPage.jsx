@@ -203,7 +203,7 @@ Supporting your baby’s development and your bond through live gentle music—f
           borderColor: '#06e4ed',
         }}
       >
-        View Studio Schedule
+        Join A Gentle Music Session 
       </Button>
     </Flex>
   </Flex>
@@ -263,6 +263,9 @@ The Science Behind Music and Child Development
         <ListItem  fontSize={["14px", "16px", "18px"]}>Repetition of calming sounds creates a sense of safety and predictability — essential for early brain development.</ListItem>
       </UnorderedList>
 
+      <Text color="white" fontSize={["16px", "18px", "20px"]} lineHeight="1.6">
+      Research shows that babies not only hear music — they feel it. Especially when it’s live, slow, and emotionally expressive.
+           </Text>
      
     </VStack>
    
@@ -664,14 +667,14 @@ I can’t wait to share this special experience with you in the next gentle musi
         {!hideLogo  && (
           <>
         <Image
-                          src="/PureMusicLogo.jpeg"
-                          borderRadius='full'
-                          width="90px"
-                          maxH="70px"
-                          className="profile-image-circle"
-                          alt='puremusic logo'
-               
-         />
+            src="/PureMusicLogo.jpeg"
+            borderRadius='full'
+            width="50px"
+            maxH="50px"
+            className="profile-image-circle"
+            alt='puremusic logo'
+
+          />
     
         <Flex justify="center" mt={3} flexDirection="column" >
     
