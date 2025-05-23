@@ -24,9 +24,9 @@ const AboutUs = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  const goToGentleMusicPage = () => {
+  const goToHomePage = () => {
 
-    navigate('/gentle-music');
+    navigate('/');
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
   };
@@ -173,7 +173,7 @@ const AboutUs = () => {
             color: 'white', // White text color
             borderColor: 'white', // White border color
           }}
-          onClick={goToGentleMusicPage}
+          onClick={goToHomePage}
         >
           Start Your Gentle Music Journey
         </Button>

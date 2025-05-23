@@ -14,7 +14,6 @@ const WelcomePage = () => {
   const [tipAmount, setTipAmount] = useState("");
 
   const [hideLogo, setHideLogo] = useState(false);
-  const [showLearnMore, setShowLearnMore] = useState(false);
 
   const { TimeStopVideoForTips } = useData();
 
@@ -132,7 +131,12 @@ const WelcomePage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const goToGentleMusicPage = () => {
 
+    navigate('/gentle-music');
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+  };
 
   return (
 
@@ -149,6 +153,51 @@ const WelcomePage = () => {
         mt="-1rem"
         overflow="hidden" // Important to clip overflow on small screens
       >
+
+<Box
+    position="absolute"
+    top={0}
+    left={0}
+    w="100%"
+    h="100%"
+    zIndex={0.5}
+  />
+
+ {/* Video */}
+ {mainVideoUrl ? (
+    <video
+      width="100%"
+      autoPlay
+      loop
+      muted
+      playsInline
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+      }}
+    >
+      <source src={mainVideoUrl} type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  ) : null}
+
+  {/* Dark overlay to improve contrast */}
+  <Box
+    position="absolute"
+    top={0}
+    left={0}
+    w="100%"
+    h="100%"
+    bg="rgba(0, 0, 0, 0.3)" // Adjust opacity as needed
+    zIndex={0.5}
+  />
+
+
         {/* Overlay Text */}
         <Flex
           direction="column"
@@ -235,107 +284,15 @@ const WelcomePage = () => {
 
         </Flex>
 
-        {/* Video */}
+    
 
-        {mainVideoUrl ? (
-          <video
-            width="100%"
 
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{
-              position: 'relative', zIndex: 0, width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          >
-            <source src={mainVideoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        ) : null}
+
       </Box>
 
 
 
 
-      {showLearnMore ? (
-        <>
-
-          <VStack bgColor="black" p={6} spacing={6} align="start" mt="-1rem" mb="2rem">
-
-            <Heading
-              color="white"
-              fontSize="26px"
-              maxWidth={["90%", "80%", "65%"]}
-              fontWeight="550"
-              mb="10px"
-              mt="2rem"
-            >
-              Our Musical Philosophy for Gentle Music
-            </Heading>
-
-            <Image
-              src="/learn_more_image3.jpg"
-              alt="Logo"
-              width="200px"
-              maxH="200px"
-              mb={4}
-            />
-
-
-
-
-
-            <Text color="white" fontSize={["16px", "18px", "20px"]} lineHeight="1.6">
-              Gentle Music is slowed down, stripped of urgency, yet full of feeling. Each note is placed with intention, each silence allowed to linger.
-            </Text>
-
-            <Text color="white" fontSize={["16px", "18px", "20px"]} lineHeight="1.6">
-              We don’t just play softly — we play gently. That means you may hear sudden swells, expressive dynamics, or deep low tones that stir emotion. But everything is anchored in slowness, awareness, and emotional intention — never rushed, never chaotic.
-            </Text>
-
-            <UnorderedList color="white" fontSize={["14px", "16px", "18px"]} pl={6} spacing={2}>
-              <ListItem fontSize={["14px", "16px", "18px"]}>Bright major keys like D, F, and A fill the upper registers with light and spaciousness.</ListItem>
-              <ListItem fontSize={["14px", "16px", "18px"]}>Darker tonalities like E-flat and G-flat major appear in the bass, grounding the experience with warmth.</ListItem>
-              <ListItem fontSize={["14px", "16px", "18px"]}>Sometimes we contrast soft passages with unexpectedly loud phrases — not to startle, but to open the heart wider.</ListItem>
-            </UnorderedList>
-
-            <Text color="white" fontSize={["16px", "18px", "20px"]} lineHeight="1.6">
-              With slowed-down classical pieces and reimagined pop songs, PureMusic's in-person live sessions create gentle musical experiences designed to awaken your senses and bring you into full awareness of your mind, body, and soul.</Text>
-
-            <Button
-              width="auto"
-              variant="outline"
-              color="white"
-              borderColor="white"
-              px={["1rem", "1.5rem", "2rem"]}
-              py={["1.25rem", "1.5rem", "1.5rem"]}
-              borderRadius="xl"
-              fontWeight="bold"
-              fontSize={["xs", "sm", "md"]}
-              _hover={{
-                bg: 'white',
-                color: '#05c7d0',
-                outline: 'none',
-                borderColor: '#06e4ed',
-              }}
-              onClick={() => {
-                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-              }}
-            >
-              Reserve Your Spot
-            </Button>
-          </VStack>
-
-
-
-        </>
-      ) : (
-
-        <>
           <VStack bgColor="black" p={6} spacing={6} align="start" mt="-1rem" mb="2rem">
 
             <Heading
@@ -409,11 +366,7 @@ const WelcomePage = () => {
                 outline: 'none',
                 borderColor: '#06e4ed',
               }}
-              onClick={() => {
-                setShowLearnMore(true);
-                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-              }}
+              onClick={goToGentleMusicPage}
             >
               Learn More
             </Button>
@@ -422,10 +375,7 @@ const WelcomePage = () => {
 
 
           </VStack>
-        </>
-      )
-
-      }
+     
 
 
       <VStack bgColor="white" p={6} spacing={6} align="start" mt="-1rem">
