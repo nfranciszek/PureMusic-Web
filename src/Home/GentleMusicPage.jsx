@@ -28,12 +28,14 @@
         navigate("/promoter-program");
       }
     
-      const goToMotherhoodPage = () => {
+   
+      const goToGeneralEvents = () => {
     
-        navigate('/gentle-music/motherhood');
+        navigate('/gentle-music/events');
+    
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     
       };
-
      
     
       useEffect(() => {
@@ -299,10 +301,7 @@
         outline: 'none',
         borderColor: '#06e4ed',
       }}
-      onClick={() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-      }}
+      onClick={goToGeneralEvents}
     >
       Join A Gentle Music Session
     </Button>
@@ -382,10 +381,7 @@
                 borderColor: 'white', // White border color
               }}
     
-              onClick={() => {
-                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    
-              }}
+              onClick={goToGeneralEvents}
             >
               Join A Gentle Music Session
             </Button>
@@ -625,10 +621,7 @@
               color: 'white', // White text color
               borderColor: 'white', // White border color
             }}
-            onClick={() => {
-              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    
-            }}
+            onClick={goToGeneralEvents}
           >
             Start Your Gentle Music Journey
           </Button>

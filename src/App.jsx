@@ -10,6 +10,9 @@ import Help from './Website Policies/Help';
 import MotherhoodPage from './Home/MotherhoodPage';
 import GentleMusicPage from './Home/GentleMusicPage';
 
+import EventMotherhood from './Events/EventMotherhood';
+import EventGeneral from './Events/EventGeneral';
+
 import PromotedMovies from './Movies/PromotedMovies';
 
 import WelcomePage from './Home/WelcomePage';
@@ -363,8 +366,10 @@ function App() {
           <Route path="/promoter-program" element={<PromoterPage />} />
 
           <Route path="/gentle-music" element={<GentleMusicPage />} />
+          <Route path="/gentle-music/events" element={<EventGeneral />} />
 
           <Route path="/gentle-music/motherhood" element={<MotherhoodPage />} />
+          <Route path="/gentle-music/motherhood/events" element={<EventMotherhood />} />
 
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />

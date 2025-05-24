@@ -32,6 +32,14 @@ const WelcomePage = () => {
 
   };
 
+  const goToGeneralEvents = () => {
+    
+    navigate('/gentle-music/events');
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+
+  };
+
   useEffect(() => {
     const videoUrl = "https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f";
     setVideoUrl(videoUrl); // Directly set the URL to the state
@@ -260,6 +268,7 @@ const WelcomePage = () => {
             </Button>
 
             <Button
+              onClick={goToGeneralEvents}
               width="auto"
               variant="outline"
               color="white"
@@ -444,10 +453,7 @@ const WelcomePage = () => {
             borderColor: 'white', // White border color
           }}
 
-          onClick={() => {
-            window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-          }}
+          onClick={goToGeneralEvents}
         >
           Join A Gentle Music Session
         </Button>

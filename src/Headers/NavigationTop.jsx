@@ -29,6 +29,13 @@ const NavigationTop = () => {
 
     };
 
+    const goToAbout = () => {
+        navigate('/about');
+
+
+    };
+
+
 
     const goToLogin = () => {
 
@@ -41,6 +48,13 @@ const NavigationTop = () => {
         navigate('/signup');
 
     }
+
+
+    const goToEvents = () => {
+
+        navigate('/gentle-music/events');
+
+    };
 
     const showMenu = () => {
 
@@ -105,6 +119,40 @@ const NavigationTop = () => {
 
                         <Button
                             width="full"
+                            onClick={goToAbout}
+                            size='sm'
+                            variant='ghost'
+                            fontSize="16px"
+                            fontWeight="normal"
+                            mr={!isBaseOrSm ? "1rem" : null}
+                            as='b'
+                            color="gray"
+                            _hover={{
+                                color: '#06e4ed', // White text color
+                                borderColor: 'white', // White border color
+                            }}
+                        >
+                            About
+                        </Button>
+
+
+                        {isBaseOrSm && !user && (
+
+                            <HStack mr="1rem" onClick={() => showMenu()} gap={3}  _hover={{
+                                color: '#06e4ed', // White text color
+                                borderColor: 'white', // White border color
+                            }}>
+                                <RxHamburgerMenu size='20px' />
+                            </HStack>
+
+                        )}
+
+
+                        {!isBaseOrSm && !user && (
+                            <>
+
+<Button
+                            width="full"
                             onClick={goToArtists}
                             size='sm'
                             variant='ghost'
@@ -121,23 +169,30 @@ const NavigationTop = () => {
                             Artists
                         </Button>
 
+<Button
+                                    width="full"
+                                    onClick={goToEvents}
 
-                        {isBaseOrSm && !user && (
+                                    size='sm'
+                                    bg="#06e4ed"
+                                    color="white"
+                                    px={{ base: '1rem', sm: '1.5rem', md: '2rem' }}
+                                    _hover={{
+                                        bg: '#05c7d0', // Semi-transparent gray background
+                                        color: 'white', // White text color
+                                        borderColor: 'white', // White border color
+                                    }}
+                                >
+                                    Events
+                                </Button>
 
-                            <HStack mr="1rem" onClick={() => showMenu()} gap={3}  _hover={{
-                                color: '#06e4ed', // White text color
-                                borderColor: 'white', // White border color
-                            }}>
-                                <RxHamburgerMenu size='20px' />
-                            </HStack>
 
-                        )}
-
-                        {!isBaseOrSm && !user && (
-                            <>
+                              
 
 
-                                <Button
+{/*
+
+  <Button
                                     width="full"
                                     onClick={goToLogin}
 
@@ -153,8 +208,6 @@ const NavigationTop = () => {
                                 >
                                     Log in
                                 </Button>
-
-
 
                                 <Button
                                     variant="outline"
@@ -175,6 +228,7 @@ const NavigationTop = () => {
                                 >
                                     Sign Up
                                 </Button>
+                                */}
 
                             </>
                         )}

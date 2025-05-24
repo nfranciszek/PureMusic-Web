@@ -27,7 +27,15 @@ import React, { useRef, useState, useEffect } from 'react';
         navigate("/promoter-program");
       }
     
+      const goToMotherhoodEvents = () => {
     
+        navigate('/gentle-music/motherhood/events');
+
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      
+    
+      };
+
       useEffect(() => {
         const videoUrl = "/SampleLullabyPiano.mp4";
         setVideoUrl(videoUrl); // Directly set the URL to the state
@@ -168,6 +176,7 @@ Supporting your baby’s development and your bond through live gentle music—f
 
     <Flex gap={4} mt={4} wrap="wrap" justify="center">
       <Button
+        onClick={goToMotherhoodEvents}
         width="auto"
         variant="outline"
         color="white"
@@ -187,6 +196,7 @@ Supporting your baby’s development and your bond through live gentle music—f
       </Button>
 
       <Button
+        onClick={goToMotherhoodEvents}
         width="auto"
         variant="outline"
         color="white"
@@ -497,10 +507,7 @@ Our Musical Philosophy for Gentle Music
           borderColor: 'white', // White border color
       }}
     
-        onClick={() => {
-          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    
-        }}
+      onClick={goToMotherhoodEvents}
       >
         Join A Gentle Music Session
       </Button>
