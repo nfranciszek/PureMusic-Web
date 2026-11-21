@@ -14,7 +14,7 @@ const NavigationTop = () => {
     const navigate = useNavigate();
 
 
-  const { visitorUserMenu, setVisitorUserMenu } = useData();
+    const { visitorUserMenu, setVisitorUserMenu } = useData();
 
 
     const goToHome = () => {
@@ -33,6 +33,15 @@ const NavigationTop = () => {
         navigate('/about');
 
 
+    };
+
+    const goToContactUs = () => {
+        navigate('/contact');
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth',
+        });
     };
 
 
@@ -59,8 +68,8 @@ const NavigationTop = () => {
     const showMenu = () => {
 
         setVisitorUserMenu(true);
-    
-      };
+
+    };
 
     const isBaseOrSm = useBreakpointValue({ base: true, sm: true, md: false, lg: false, xl: false });
 
@@ -138,7 +147,7 @@ const NavigationTop = () => {
 
                         {isBaseOrSm && !user && (
 
-                            <HStack mr="1rem" onClick={() => showMenu()} gap={3}  _hover={{
+                            <HStack mr="1rem" onClick={() => showMenu()} gap={3} _hover={{
                                 color: '#06e4ed', // White text color
                                 borderColor: 'white', // White border color
                             }}>
@@ -151,27 +160,29 @@ const NavigationTop = () => {
                         {!isBaseOrSm && !user && (
                             <>
 
-<Button
-                            width="full"
-                            onClick={goToArtists}
-                            size='sm'
-                            variant='ghost'
-                            fontSize="16px"
-                            fontWeight="normal"
-                            mr={!isBaseOrSm ? "1rem" : null}
-                            as='b'
-                            color="gray"
-                            _hover={{
-                                color: '#06e4ed', // White text color
-                                borderColor: 'white', // White border color
-                            }}
-                        >
-                            Artists
-                        </Button>
-
-<Button
+                                <Button
                                     width="full"
-                                    onClick={goToEvents}
+                                    onClick={goToArtists}
+                                    size='sm'
+                                    variant='ghost'
+                                    fontSize="16px"
+                                    fontWeight="normal"
+                                    mr={!isBaseOrSm ? "1rem" : null}
+                                    as='b'
+                                    color="gray"
+                                    _hover={{
+                                        color: '#06e4ed', // White text color
+                                        borderColor: 'white', // White border color
+                                    }}
+                                >
+                                    Artists
+                                </Button>
+
+
+
+                                <Button
+                                    width="full"
+                                    onClick={goToContactUs}
 
                                     size='sm'
                                     bg="#06e4ed"
@@ -183,14 +194,14 @@ const NavigationTop = () => {
                                         borderColor: 'white', // White border color
                                     }}
                                 >
-                                    Events
+                                    Contact
                                 </Button>
 
 
-                              
 
 
-{/*
+
+                                {/*
 
   <Button
                                     width="full"

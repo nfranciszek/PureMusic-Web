@@ -40,7 +40,7 @@ const EventMotherhood = () => {
 
       <HStack color="gray.600">
               <MdLocationOn />
-              <Text fontSize="12px">Mount Laurel, NJ</Text>
+              <Text fontSize="12px">Haddonfield, NJ</Text>
             </HStack>
 
             <VStack align="starting">

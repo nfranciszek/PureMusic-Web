@@ -35,12 +35,12 @@ import React, { useEffect, useState } from 'react';
             Nathanael Fra
           </Text>
           <Text textAlign="center" fontSize="sm" color="gray.700">
-            Weekdays: Tuesdays, Wednesdays, Thursdays — 7:45 PM (45 mins)
+            Weekdays: Tuesdays, Wednesdays, Thursdays — 10:30 AM (45 mins)
           </Text>
     
           <HStack color="gray.600">
                   <MdLocationOn />
-                  <Text fontSize="12px">Collingswood, NJ</Text>
+                  <Text fontSize="12px">Haddonfield, NJ</Text>
                 </HStack>
     
                 <VStack align="starting">

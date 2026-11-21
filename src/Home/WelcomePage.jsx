@@ -1,738 +1,880 @@
+
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Text, Flex, Image, VStack, Box, Heading, UnorderedList, ListItem, HStack } from '@chakra-ui/react';
-import { fetchVideoUrl } from '../Movies/videos';
-import { tipWaiter } from '../Utilities/stripe';
+import {
+  Button,
+  Text,
+  Flex,
+  Image,
+  VStack,
+  Box,
+  Heading,
+  SimpleGrid,
+  HStack,
+  Icon,
+} from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { useData } from '../App';
+import { Helmet } from 'react-helmet';
+import {
+  FaMusic,
+  FaVideo,
+  FaHotel,
+  FaPlay,
+  FaCheckCircle,
+} from 'react-icons/fa';
+
 const WelcomePage = () => {
 
-  const [mainVideoUrl, setMainVideoUrl] = useState("/Piano_playing_Is_silent.mp4");
+  const mainVideoUrl = '/Piano_playing_silent.mp4';
 
-  const [videoUrl, setVideoUrl] = useState("");
+
+
+  // Keep the original bottom video source.
+  const videoUrl = 'https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusicOfficialTrailer.mp4?alt=media&token=571ae786-abd7-45c1-b326-9184704ffaea'
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isPausedForTips, setIsPausedForTips] = useState(false);
-  const [tipAmount, setTipAmount] = useState("");
-
-  const [hideLogo, setHideLogo] = useState(false);
-
-  const { TimeStopVideoForTips } = useData();
 
   const videoRef = useRef(null);
-  const containerRef = useRef(null); // Fullscreen wrapper
-
+  const containerRef = useRef(null);
   const navigate = useNavigate();
 
-  const goToPromoterPage = () => {
-    navigate("/promoter-program");
-  }
-
-  const goToMotherhoodPage = () => {
-
-    navigate('/gentle-music/motherhood');
-
-  };
-
-  const goToGeneralEvents = () => {
-    
-    navigate('/gentle-music/events');
-
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-  };
-
   useEffect(() => {
-    const videoUrl = "https://firebasestorage.googleapis.com/v0/b/puremusic-d8ee8.firebasestorage.app/o/PureMusic_Musical_Movie_01.mp4?alt=media&token=381bebdf-f683-4514-bdb3-00284d9d3d7f";
-    setVideoUrl(videoUrl); // Directly set the URL to the state
+    window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    // console.log("Official videoUrl:", videoUrl);  // Check if videoUrl is set correctly
-  }, [videoUrl]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (videoRef.current && videoRef.current.currentTime >= TimeStopVideoForTips) {
-        videoRef.current.pause();
-        setIsPausedForTips(true);
-
-
-        // exitting full screen for tip 
-        // Ensure the video is fullscreen on all platforms before exiting
-        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-          // Exit fullscreen on supported browsers
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) { // Safari for iOS
-            document.webkitExitFullscreen();
-          }
-        }
-
-
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const handlePlayClick = () => {
-    videoRef.current.play();
-    setIsPlaying(true);
-    setHideLogo(true);
+  const goToContactUs = () => {
+    navigate('/contact');
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
 
+  const scrollToExperience = () => {
+    document.getElementById('puremusic-experience')
+      ?.scrollIntoView({
+        behavior: 'smooth',
+      });
+  };
 
+  const scrollToVideo = () => {
+    document.getElementById('puremusic-video')
+      ?.scrollIntoView({
+        behavior: 'smooth',
+      });
+  };
 
-  const enterFullscreen = () => {
-    if (containerRef.current.requestFullscreen) {
-      containerRef.current.requestFullscreen();
-    } else if (containerRef.current.webkitRequestFullscreen) {
-      containerRef.current.webkitRequestFullscreen();
-    } else if (containerRef.current.msRequestFullscreen) {
-      containerRef.current.msRequestFullscreen();
+  const handlePlayClick = async () => {
+    if (!videoRef.current) return;
+
+    try {
+      await videoRef.current.play();
+    } catch (error) {
+      console.error('Unable to play video:', error);
     }
   };
 
-  const DonorboxEmbed = ({ amount }) => {
-    useEffect(() => {
-      const script = document.createElement("script");
-      script.src = "https://donorbox.org/widget.js";
-      script.setAttribute("paypalExpress", "false");
-      script.async = true;
-      document.body.appendChild(script);
+  const enterFullscreen = () => {
+    const container = containerRef.current;
 
-      return () => {
-        document.body.removeChild(script);
-      };
-    }, []);
+    if (!container) return;
 
-    return (
-      <iframe
-        src={`https://donorbox.org/embed/puremusic-artists-${amount}?default_interval=o&amount=${amount}`}
-        name="donorbox"
-        allowpaymentrequest="allowpaymentrequest"
-        seamless="seamless"
-        frameBorder="0"
-        scrolling="no"
-        height="900px"
-        width="100%"
-        style={{ maxWidth: "500px", minWidth: "250px", maxHeight: "none !important" }}
-        allow="payment"
-      ></iframe>
-    );
+    if (document.fullscreenElement) {
+      return;
+    }
+
+    if (container.requestFullscreen) {
+      container.requestFullscreen();
+    } else if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen();
+    } else if (container.msRequestFullscreen) {
+      container.msRequestFullscreen();
+    }
   };
 
+  const features = [
 
+    {
+      icon: FaMusic,
+      title: 'Your Favorite Song in 30 Minutes',
+      description:
+        'Learn a beginner-friendly piano part and perform your favorite song alongside a professional pianist in a private 30-minute experience.',
+    },
 
-  const goToSignUp = () => {
-
-    navigate('/signup');
-
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (videoRef.current && videoRef.current.currentTime >= 5) {
-        setHideLogo(false);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const goToGentleMusicPage = () => {
-
-    navigate('/gentle-music');
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-  };
+    {
+      icon: FaCheckCircle,
+      title: 'Beginner-Friendly',
+      description:
+        'No previous piano experience is necessary. Our pianist guides you throughout the experience.',
+    },
+    {
+      icon: FaVideo,
+      title: 'Capture the Moment',
+      description:
+        'Receive a video of your performance to revisit and share with friends, family, and on social media.',
+    },
+  ];
 
   return (
+    <VStack spacing={0} w="100%" align="stretch">
+      <Helmet>
+        <title>
+          PureMusic | Private Grand Piano Experiences
+        </title>
+        <meta
+          name="description"
+          content="PureMusic creates private, beginner-friendly grand piano experiences for hotel and resort guests. Play your favorite song with a professional pianist and receive a video to share."
+        />
+      </Helmet>
 
-    <VStack>
-
-
-
+      {/* HERO SECTION — ORIGINAL SILENT VIDEO */}
       <Box
         position="relative"
         w="100vw"
-        h={{ base: "60vh", sm: "80vh", md: "70vh" }}
-        maxW="100%"
-        margin="auto"
+        h="100vh"
+        minH="600px"
+        left="50%"
+        transform="translateX(-50%)"
         mt="-1rem"
-        overflow="hidden" // Important to clip overflow on small screens
+        overflow="hidden"
       >
+        <video
+          width="100%"
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+          }}
+        >
+          <source
+            src={mainVideoUrl}
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
 
-<Box
-    position="absolute"
-    top={0}
-    left={0}
-    w="100%"
-    h="100%"
-    zIndex={0.5}
-  />
+        {/* Dark overlay */}
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          w="100%"
+          h="100%"
+          bg="rgba(0, 0, 0, 0.48)"
+          zIndex={1}
+        />
 
- {/* Video */}
- {mainVideoUrl ? (
-    <video
-      width="100%"
-      autoPlay
-      loop
-      muted
-      playsInline
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        zIndex: 0,
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-      }}
-    >
-      <source src={mainVideoUrl} type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
-  ) : null}
-
-  {/* Dark overlay to improve contrast */}
-  <Box
-    position="absolute"
-    top={0}
-    left={0}
-    w="100%"
-    h="100%"
-    bg="rgba(0, 0, 0, 0.3)" // Adjust opacity as needed
-    zIndex={0.5}
-  />
-
-
-        {/* Overlay Text */}
+        {/* Hero content */}
         <Flex
           direction="column"
           position="absolute"
           top="50%"
           left="50%"
           transform="translate(-50%, -50%)"
-          zIndex="1"
+          zIndex={2}
           align="center"
           textAlign="center"
-          gap={2}
+          gap={4}
+          width={{
+            base: '90%',
+            md: '75%',
+            lg: '65%',
+          }}
         >
-
-          <Text
-            fontWeight="bold"
+          <Heading
+            as="h1"
             color="white"
+            fontSize={{
+              base: '36px',
+              md: '56px',
+              lg: '68px',
+            }}
             lineHeight="1.1"
-            fontSize={["30px", "40px", "60px"]}
           >
             PureMusic
-          </Text>
+          </Heading>
 
           <Image
             src="/PureMusicWhiteLogo.png"
-            alt="Logo"
+            alt="PureMusic Logo"
             width="80px"
             maxH="80px"
-            mb={4}
           />
 
-          <Text
-            fontWeight="500"
+          <Heading
+            as="h2"
             color="white"
-            lineHeight="1.1"
-            fontSize={["14px", "16px", "20px"]}
+            fontSize={{
+              base: '22px',
+              md: '30px',
+              lg: '36px',
+            }}
+            fontWeight="500"
+            lineHeight="1.3"
           >
+            Your Favorite Song.
+            Your Moment at the Piano.
+          </Heading>
 
-            Bringing gentle music to you — slowed down, stripped of urgency, and full of expressive sounds — to help you breathe deeply, relax, and reconnect with yourself. </Text>
+
+          <Text
+            color="white"
+            fontSize={{
+              base: '14px',
+              md: '17px',
+              lg: '19px',
+            }}
+            maxW="700px"
+            lineHeight="1.7"
+          >
+            Learn to play your favorite song in just
+            30 minutes alongside a professional pianist.
+            No experience necessary. Perform together
+            on a grand piano and take home a video
+            of your performance to share with friends,
+            family, and on social media.
+          </Text>
 
 
-          <Flex gap={4} mt={4} wrap="wrap" justify="center" direction="column">
+          <Flex
+            gap={4}
+            mt={4}
+            wrap="wrap"
+            justify="center"
+          >
             <Button
-              onClick={goToMotherhoodPage}
-              width="auto"
-              variant="outline"
-              color="white"
-              px={["1rem", "1.5rem", "2rem"]}
-              py={["1.25rem", "1.5rem", "1.5rem"]}
-              borderRadius="xl"
-              fontWeight="bold"
-              fontSize={["xs", "sm", "md"]} // smaller text on base
-              _hover={{
-                bg: 'white',
-                color: '#05c7d0',
-                outline: 'none',
-                borderColor: '#06e4ed',
-              }}
-            >
-              PureMusic For Mothers & Babies
-            </Button>
-
-            <Button
-              onClick={goToGeneralEvents}
-              width="auto"
               variant="outline"
               color="white"
               borderColor="white"
-              px={["1rem", "1.5rem", "2rem"]}
-              py={["1.25rem", "1.5rem", "1.5rem"]}
               borderRadius="xl"
+              px={6}
+              py={6}
               fontWeight="bold"
-              fontSize={["xs", "sm", "md"]}
+              fontSize={{
+                base: 'sm',
+                md: 'md',
+              }}
               _hover={{
                 bg: 'white',
                 color: '#05c7d0',
-                outline: 'none',
-                borderColor: '#06e4ed',
               }}
+              onClick={scrollToVideo}
             >
-              Join A Gentle Music Session
+              Watch the Experience
+            </Button>
+
+            <Button
+              bg="#06e4ed"
+              color="white"
+              borderRadius="xl"
+              px={6}
+              py={6}
+              fontWeight="bold"
+              fontSize={{
+                base: 'sm',
+                md: 'md',
+              }}
+              _hover={{
+                bg: '#05c7d0',
+              }}
+              onClick={scrollToExperience}
+            >
+              How It Works
             </Button>
           </Flex>
-
-
-
         </Flex>
-
-    
-
-
-
       </Box>
 
-
-
-
-          <VStack bgColor="black" p={6} spacing={6} align="start" mt="-1rem" mb="2rem">
-
-            <Heading
-              color="white"
-              fontSize={["26px", "30px", "36px"]}
-              maxWidth={["90%", "80%", "65%"]}
-              fontWeight="550"
-              mb="10px"
-              mt="2rem"
-            >
-              What to Expect in Our Live Gentle Music Sessions
-            </Heading>
-
-            <Image
-              src="/yogamusicmeditations.jpeg"
-              alt="Logo"
-              width="200px"
-              maxH="200px"
-              mb={4}
-            />
-
-
-            <Text color="white" fontWeight="bold" maxWidth={["90%", "80%", "65%"]}>
-              I. Live Piano Music as a Lullaby for the Soul
-            </Text>
-            <Text color="white" maxWidth={["90%", "80%", "65%"]}>
-              Experience soothing piano music played with care, expression, and intention. Tunes and melodies are gently slowed down, softened, and shaped like lullabies — creating a peaceful atmosphere that feels like a personal sound bath, but with real music, not random tones.
-            </Text>
-
-
-            <Text color="white" fontWeight="bold" maxWidth={["90%", "80%", "65%"]}>
-              II. Music infused with Meditation & Mindfulness
-            </Text>
-            <Text color="white" maxWidth={["90%", "80%", "65%"]}>
-              The music encourages deep breathing, calm awareness, and gentle observation. Each piece unfolds slowly — allowing space for stillness, reflection, and emotional depth.
-            </Text>
-
-            <Text color="white" fontWeight="bold" maxWidth={["90%", "80%", "65%"]}>
-              III. Music designed for Deep Rest, Relaxation, and Reflection
-            </Text>
-
-            <Text color="white" maxWidth={["90%", "80%", "65%"]}>
-              Lie back with a mat or pillow, close your eyes, and let the music guide your awareness. You don’t need to do anything — just listen and feel. Our sessions meet you where you are.
-            </Text>
-
-
-            <Text color="white" fontWeight="bold" maxWidth={["90%", "80%", "65%"]}>
-              IV. Music that's more Than Ambient Sound
-            </Text>
-
-
-            <Text color="white" maxWidth={["90%", "80%", "65%"]}>
-              This isn’t background noise — it’s real music just slowed down and performed live in a gentle, delicate way. From Mozart to reimagined pop songs, every note is played to move something inside you — gently, and with care. Gentle doesn’t always mean quiet. You’ll hear rich contrasts — bold, low tones alongside soft high whispers — all thoughtfully paced to keep you present, grounded, and emotionally attuned.
-            </Text>
-
-
-
-            <Button
-              width="auto"
-              variant="outline"
-              color="white"
-              borderColor="white"
-              px={["1rem", "1.5rem", "2rem"]}
-              py={["1.25rem", "1.5rem", "1.5rem"]}
-              borderRadius="xl"
-              fontWeight="bold"
-              fontSize={["xs", "sm", "md"]}
-              _hover={{
-                bg: 'white',
-                color: '#05c7d0',
-                outline: 'none',
-                borderColor: '#06e4ed',
-              }}
-              onClick={goToGentleMusicPage}
-            >
-              Learn More
-            </Button>
-
-
-
-
-          </VStack>
-     
-
-
-      <VStack bgColor="white" p={6} spacing={6} align="start" mt="-1rem">
-
+      {/* THE EXPERIENCE */}
+      <VStack
+        id="puremusic-experience"
+        bg="black"
+        color="white"
+        p={{
+          base: 6,
+          md: 12,
+        }}
+        spacing={8}
+        align="center"
+        width="100%"
+      >
         <Heading
-          fontSize={["26px", "30px", "36px"]}
-          maxWidth={["90%", "80%", "65%"]}
-          fontWeight="550"
-          mb="10px"
-          mt="2rem"
+          as="h2"
+          fontSize={{
+            base: '26px',
+            md: '36px',
+          }}
+          textAlign="center"
+          mt={5}
         >
-          Why Join PureMusic's Live Gentle Music Sessions
+          The PureMusic Experience
         </Heading>
 
-        <Image
-          src="/learn_more_image1.jpg"
-          alt="Logo"
-          width="200px"
-          maxH="200px"
-          mb={4}
+        <Text
+          fontSize={{
+            base: '14px',
+            md: '16px',
+          }}
+          lineHeight="1.8"
+          maxW="750px"
+          textAlign="center"
+        >
+          Imagine arriving with no piano experience
+          and, within just 30 minutes, performing
+          your favorite song alongside a professional
+          pianist on a beautiful grand piano.
+
+          PureMusic makes that possible through a
+          beginner-friendly experience, complete
+          with a video of your performance to
+          take home and share.
+        </Text>
+
+        <SimpleGrid
+          columns={{
+            base: 1,
+            md: 3,
+          }}
+          spacing={8}
+          width="100%"
+          maxW="1100px"
+          mt={4}
+        >
+          {features.map((feature) => (
+            <VStack
+              key={feature.title}
+              align="center"
+              spacing={4}
+              p={6}
+              textAlign="center"
+              border="1px solid"
+              borderColor="gray.700"
+              borderRadius="xl"
+            >
+              <Icon
+                as={feature.icon}
+                boxSize={7}
+                color="#06e4ed"
+              />
+
+              <Heading
+                as="h3"
+                size="md"
+                color="white"
+              >
+                {feature.title}
+              </Heading>
+
+              <Text
+                color="gray.200"
+                fontSize="sm"
+                lineHeight="1.7"
+              >
+                {feature.description}
+              </Text>
+            </VStack>
+          ))}
+        </SimpleGrid>
+      </VStack>
+
+      {/* HOW IT WORKS */}
+      <VStack
+        bg="white"
+        color="black"
+        p={{
+          base: 6,
+          md: 12,
+        }}
+        spacing={7}
+        align="center"
+        width="100%"
+      >
+        <Heading
+          as="h2"
+          fontSize={{
+            base: '26px',
+            md: '36px',
+          }}
+          textAlign="center"
+        >
+          How It Works
+        </Heading>
+
+        <VStack
+          align="start"
+          spacing={6}
+          maxW="750px"
+          width="100%"
+        >
+          <Box>
+            <Heading as="h3" size="sm" mb={2}>
+              1. Arrange Your Experience
+            </Heading>
+
+            <Text fontSize="sm" lineHeight="1.8">
+              Reserve your PureMusic experience through a
+              participating hotel or resort, or contact us
+              directly to inquire about a private one-on-one
+              piano collaboration.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading as="h3" size="sm" mb={2}>
+              2. Choose Your Favorite Song
+            </Heading>
+
+            <Text fontSize="sm" lineHeight="1.8">
+              Select a favorite song to learn and
+              perform. Our pianist will guide you
+              through a simple part suited to your
+              experience level.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading as="h3" size="sm" mb={2}>
+              3. Make Music Together
+            </Heading>
+
+            <Text fontSize="sm" lineHeight="1.8">
+              Sit alongside a professional pianist
+              at a grand piano and bring your
+              favorite song to life together.
+            </Text>
+          </Box>
+
+          <Box>
+            <Heading as="h3" size="sm" mb={2}>
+              4. Take Home Your Performance
+            </Heading>
+
+            <Text fontSize="sm" lineHeight="1.8">
+              Your performance is recorded, giving
+              you a personal video to enjoy,
+              remember, and share with friends,
+              family, and on social media.
+            </Text>
+          </Box>
+        </VStack>
+      </VStack>
+
+      {/* WHY PEOPLE LOVE THE EXPERIENCE */}
+      <VStack
+        bg="gray.50"
+        p={{
+          base: 6,
+          md: 12,
+        }}
+        spacing={6}
+        width="100%"
+      >
+        <Heading
+          as="h2"
+          fontSize={{
+            base: '26px',
+            md: '36px',
+          }}
+          textAlign="center"
+        >
+          More Than a Musical Performance
+        </Heading>
+
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          PureMusic is about creating a memory
+          that lasts beyond the moment.
+
+          Whether you're celebrating a birthday,
+          anniversary, special occasion, or simply
+          trying something new, the experience
+          gives you the opportunity to become
+          part of the music yourself.
+        </Text>
+
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          And when the experience is over,
+          your performance video becomes
+          something you can revisit and
+          share with the people in your life.
+        </Text>
+      </VStack>
+
+      {/* HOTEL & RESORT PARTNERSHIPS */}
+      <VStack
+        bg="white"
+        p={{
+          base: 6,
+          md: 12,
+        }}
+        spacing={6}
+        width="100%"
+        align="center"
+      >
+        <Icon
+          as={FaHotel}
+          boxSize={8}
+          color="#04b6c3"
         />
 
+        <Heading
+          as="h2"
+          fontSize={{
+            base: '26px',
+            md: '36px',
+          }}
+          textAlign="center"
+        >
+          For Hotels & Resorts
+        </Heading>
 
-        <UnorderedList>
-          <ListItem>
-            <Text as="span" fontWeight="bold">Take a pause from the Pace of Modern Life:</Text>{" "}
-            PureMusic offers a gentle escape giving you a chance to slow down, breathe deeply, and simply be.
-          </ListItem>
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          PureMusic partners with hotels and
+          resorts to offer guests a distinctive,
+          beginner-friendly grand piano experience.
+        </Text>
 
-          <ListItem>
-            <Text as="span" fontWeight="bold">Support for Your Nervous System:</Text>{" "}
-            The slow tempo, gentle dynamics, and thoughtful contrast in our music help signal safety to your body making it especially supportive for those experiencing stress or anxiety.
-          </ListItem>
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          Our reservation-based program brings
+          professional pianists and personalized
+          musical experiences to participating
+          properties, giving guests something
+          memorable to enjoy during their stay.
+        </Text>
 
-          <ListItem>
-            <Text as="span" fontWeight="bold">Find Community:</Text>{" "}
-            You’re not alone here. Every session brings together people looking for calm, reflection, and real connection. It’s a quiet but meaningful way to feel part of something — to be held in sound, space, and shared intention.
-          </ListItem>
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          Guests receive a video of their
+          performance, which they can share
+          with friends, family, and on social
+          media, creating opportunities for
+          additional visibility for participating
+          properties.
+        </Text>
 
-          <ListItem>
-            <Text as="span" fontWeight="bold">Listen to Real Music played Live:</Text>{" "}
-            No ambient noises or background loops. You’ll hear is real music performed live by a musician who listens deeply, feels the energy of the room, and responds with intentional, emotionally expressive sound. Slowed down and shaped like a story, the music is meant to move and support you.
-          </ListItem>
-
-          <ListItem>
-            <Text as="span" fontWeight="bold">Unwind and Connect with Your Inner Self:</Text>{" "}
-            There’s no pressure to perform or achieve anything. You're welcome to lie down, close your eyes, and simply receive the music. Whether you're feeling peaceful, overwhelmed, tender, or tired — this is your space to feel, heal, and just be.
-          </ListItem>
-
-        </UnorderedList>
 
         <Button
-          width="auto"
-          variant="outline"
           bg="#06e4ed"
           color="white"
-          borderColor="white"
-          px={["1rem", "1.5rem", "2rem"]}
-          py={["1.25rem", "1.5rem", "1.5rem"]}
           borderRadius="xl"
+          px={7}
+          py={6}
           fontWeight="bold"
-          fontSize={["xs", "sm", "md"]}
           _hover={{
-            bg: '#05c7d0', // Semi-transparent gray background
-            color: 'white', // White text color
-            borderColor: 'white', // White border color
+            bg: '#05c7d0',
           }}
-
-          onClick={goToGeneralEvents}
+          onClick={goToContactUs}
         >
-          Join A Gentle Music Session
+          Inquire About a Partnership
         </Button>
 
       </VStack>
 
 
 
-      <VStack bgColor="black" p={6} spacing={6} align="center" mt="-1rem" mb="2rem" width="100%">
-
+      {/* RESERVATIONS & COLLABORATIONS */}
+      <VStack
+        bg="gray.50"
+        p={{ base: 6, md: 12 }}
+        spacing={6}
+        width="100%"
+        align="center"
+      >
         <Heading
-          color="white"
-          fontSize="26px"
-          maxWidth={["90%", "80%", "65%"]}
-          fontWeight="550"
-          mb="10px"
-          mt="2rem"
+          as="h2"
+          fontSize={{ base: '26px', md: '36px' }}
+          textAlign="center"
         >
-          Meet our Artist
+          Reservations & Collaborations
+        </Heading>
+
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          Interested in experiencing PureMusic?
+          Guests can arrange their experience through
+          participating hotels and resorts.
+        </Text>
+
+        <Text
+          fontSize="sm"
+          maxW="750px"
+          lineHeight="1.9"
+          textAlign="center"
+        >
+          We also welcome inquiries for private
+          one-on-one piano collaborations. Whether
+          you're a beginner or an experienced musician,
+          you can contact us directly to discuss
+          an experience together.
+        </Text>
+
+        <Button
+          bg="#06e4ed"
+          color="white"
+          borderRadius="xl"
+          px={7}
+          py={6}
+          fontWeight="bold"
+          _hover={{
+            bg: '#05c7d0',
+          }}
+          onClick={goToContactUs}
+        >
+          Contact PureMusic
+        </Button>
+      </VStack>
+
+
+      {/* ORIGINAL BOTTOM VIDEO */}
+      <VStack
+        id="puremusic-video"
+        bg="black"
+        color="white"
+        p={{
+          base: 6,
+          md: 12,
+        }}
+        spacing={6}
+        align="center"
+        width="100%"
+      >
+        <Heading
+          as="h2"
+          fontSize={{
+            base: '26px',
+            md: '36px',
+          }}
+          textAlign="center"
+        >
+          Watch the PureMusic Experience
         </Heading>
 
         <Image
           src="/Artists1.jpg"
-          alt="Logo"
+          alt="PureMusic pianist"
           borderRadius="full"
           boxSize="80px"
-
         />
-        <Text color="white" fontWeight="500" fontSize="16px">Nathanael Fra</Text>
 
-
-
-
-        <Text color="white" fontSize={["14px", "14px", "14px"]} lineHeight="1.6" textAlign="center" mx="3rem">
-          Our gentle music sessions are led by an experienced and compassionate musician who specialize in music performance. Listen to some of his video recorded performances
+        <Text
+          color="white"
+          fontWeight="500"
+          fontSize="16px"
+        >
+          Nathanael Fra
         </Text>
 
-        <div ref={containerRef} style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: 'auto' }}>
-          {videoUrl ? (
-            <>
-              <video
-                ref={videoRef}
-                width="100%"
-                controls={false}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                controlsList="nodownload nofullscreen noremoteplayback" // Removes the gray fullscreen button
-                style={{ position: 'relative', zIndex: 0, borderRadius: '10px' }}
-                onClick={enterFullscreen} // Enter fullscreen properly
-              >
-                <source src={videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+        <Text
+          color="gray.200"
+          fontSize="sm"
+          lineHeight="1.8"
+          textAlign="center"
+          maxW="650px"
+        >
+          See what happens when guests sit
+          alongside a professional pianist
+          and make music together.
 
-              {/* Play Button */}
-              {!isPlaying && !isPausedForTips && (
-                <>
-                  <div
-                    onClick={handlePlayClick}
-                    style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      background: 'rgba(0, 0, 0, 0.5)',
-                      borderRadius: '8px',
-                      border: '2px solid white',
-                      height: '50px',
-                      width: '150px', // Adjust width as needed
-                      cursor: 'pointer',
-                      color: 'white',
-                      fontSize: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      zIndex: 2,
-                    }}
-                  >
-                    <p>Watch Now</p>
-                  </div>
+          Watch a demonstration of the
+          PureMusic experience.
+        </Text>
 
-                </>
-              )}
-
-              {/* Show Thumbnail Image when the video is paused */}
-              {!isPlaying && !isPausedForTips && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    borderRadius: '8px',
-                    width: '100%',
-                    height: '100%',
-                    background: `url("/MusicalMovie01Thumbnail.jpg") no-repeat center center/cover`,  // Thumbnail from public folder
-                    backgroundSize: 'cover',
-                    zIndex: 1,
-                  }}
-                ></div>
-              )}
-
-              {/* Tip Overlay */}
-
-              {!tipAmount ? (
-                <>
-                  {isPausedForTips && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: 'rgba(0, 0, 0, 0.8)',
-                        padding: '20px',
-                        borderRadius: '10px',
-                        textAlign: 'center',
-                        zIndex: 3,
-                        minWidth: '300px',
-                      }}
-                    >
-                      <Text color="white" fontWeight="bold" fontSize={{ base: "14px", md: "16px", lg: "18px" }} marginBottom="20px">
-                        Tip this artist to access the full performance.
-                      </Text>
-                      {/*
-              <Flex alignItems="center" justifyContent="center" flexDirection="row"     mb="1rem" >
-  <Image
-    src={"Artists1.jpg"}
-    alt={name}
-    borderRadius="full"
-    boxSize="50px"
-    mr={4}
-
-  />
-  
-    <Text fontSize="16px" color="white">
-      Nathanael Fra
-    </Text>
-
-            </Flex> */}
+        <Box
+          ref={containerRef}
+          position="relative"
+          width="100%"
+          maxW="600px"
+          margin="auto"
+        >
+          <video
+            ref={videoRef}
+            width="100%"
+            controls={isPlaying}
+            controlsList="nodownload noremoteplayback"
+            poster="/PureMusicTrailerThumbnail.jpg"
+            playsInline
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => setIsPlaying(false)}
+            onClick={enterFullscreen}
+            style={{
+              position: 'relative',
+              zIndex: 0,
+              borderRadius: '10px',
+              width: '100%',
+            }}
+          >
+            <source
+              src={videoUrl}
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
 
 
-                      <Flex wrap="wrap" justify="center"
-                        align="center" gap={2}>
-                        {[10, 15, 25, 30, 50, 100].map((amount) => (
-                          <Button
-                            key={amount}
-                            onClick={() => setTipAmount(amount)}
-                            bg="#04b6c3"
-                            color="white"
-                            m="2"
-                            size={{ base: "sm", sm: "sm", md: "md" }}
-                            _hover={{ bg: "white", color: "#04b6c3", border: "2px solid #04b6c3" }}
-                          >
-                            Tip ${amount}
-                          </Button>
-                        ))}
-                      </Flex>
 
-                      <Text color="white" fontWeight="bold" fontSize={{ base: "12px", md: "14x", lg: "14px" }}>
-                        Unlock the full musical movie with your tip.
-                      </Text>
-                    </div>
 
-                  )}
-
-                </>
-              ) : (
-                <>
-                  <Box
-                    style={{
-                      flex: 1,
-                      zIndex: 5, // This should be above the overlay
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      padding: '20px',
-                      position: 'absolute', // Make sure it's absolutely positioned
-                      top: '90%', // Adjust this to move it lower
-                      left: '50%',
-                      width: '80%',
-                      transform: 'translate(-50%, -50%)',
-                    }}
-                  >
-                    <DonorboxEmbed amount={tipAmount} />
-                  </Box>
-
-                </>
-              )}
-            </>
-          ) : (
-
-            <div
-              style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
-                background: `url("/MusicalMovie01Thumbnail.jpg") no-repeat center center/cover`,
-                backgroundSize: 'cover',
-                zIndex: 1,
+          {/* Play button */}
+          {!isPlaying && (
+            <Flex
+              position="absolute"
+              top="50%"
+              left="50%"
+              transform="translate(-50%, -50%)"
+              bg="rgba(0, 0, 0, 0.65)"
+              borderRadius="md"
+              border="1px solid white"
+              px={4}
+              py={2}
+              cursor="pointer"
+              align="center"
+              justify="center"
+              gap={2}
+              zIndex={2}
+              onClick={handlePlayClick}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (
+                  event.key === 'Enter' ||
+                  event.key === ' '
+                ) {
+                  event.preventDefault();
+                  handlePlayClick();
+                }
               }}
+            >
+              <Icon
+                as={FaPlay}
+                color="white"
+                boxSize={3}
+              />
 
-
-
-            ></div>
-
-
-
+              <Text
+                color="white"
+                fontSize="sm"
+                fontWeight="bold"
+              >
+                Watch Now
+              </Text>
+            </Flex>
           )}
 
 
+        </Box>
 
-        </div>
-
-
-
-
+        <Text
+          color="gray.300"
+          fontSize="sm"
+          textAlign="center"
+          maxW="650px"
+        >
+          No piano experience necessary.
+          Just the opportunity to create
+          something memorable.
+        </Text>
       </VStack>
 
-
-
-
-      <Button
-        width="auto"
-        variant="outline"
-        bg="#06e4ed"
-        color="white"
-        borderColor="white"
-        px={["1rem", "1.5rem", "2rem"]}
-        py={["1.25rem", "1.5rem", "1.5rem"]}
-        borderRadius="xl"
-        fontWeight="bold"
-        fontSize={["xs", "sm", "md"]}
-        _hover={{
-          bg: '#05c7d0', // Semi-transparent gray background
-          color: 'white', // White text color
-          borderColor: 'white', // White border color
-        }}
-        onClick={() => {
-          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-
-        }}
+      {/* FINAL CTA */}
+      <VStack
+        bg="white"
+        align="center"
+        width="100%"
+        spacing={5}
+        py={10}
+        px={6}
       >
-        Start Your Gentle Music Journey
-      </Button>
+
+        <Heading
+          as="h2"
+          size="md"
+          textAlign="center"
+        >
+           Play Your Favorite Song in Just 30 Minutes
+        </Heading>
+
+        <Text
+          fontSize="sm"
+          textAlign="center"
+          maxW="600px"
+        >
+          No piano experience necessary. Learn and
+          perform alongside a professional pianist
+          on a grand piano, and take home a video
+          of your performance to share.
+        </Text>
 
 
-      {!hideLogo && (
-        <>
-          <Image
-            src="/PureMusicLogo.jpeg"
-            borderRadius='full'
-            width="50px"
-            maxH="50px"
-            className="profile-image-circle"
-            alt='puremusic logo'
+        <Button
+          variant="outline"
+          bg="#06e4ed"
+          color="white"
+          borderColor="white"
+          px={['1rem', '1.5rem', '2rem']}
+          py={['1.25rem', '1.5rem', '1.5rem']}
+          borderRadius="xl"
+          fontWeight="bold"
+          fontSize={['xs', 'sm', 'md']}
+          _hover={{
+            bg: '#05c7d0',
+            color: 'white',
+            borderColor: 'white',
+          }}
+          onClick={goToContactUs}
+        >
+          Get Started
+        </Button>
 
-          />
-
-          <Flex justify="center" mt={3} flexDirection="column" >
-
-
-
-
-          </Flex>
-        </>
-
-      )}
-
+        <Image
+          src="/PureMusicLogo.jpeg"
+          borderRadius="full"
+          width="50px"
+          maxH="50px"
+          className="profile-image-circle"
+          alt="PureMusic logo"
+        />
+      </VStack>
     </VStack>
-
-
-  )
-
-}
-
+  );
+};
 
 export default WelcomePage;
+
 
 
 {/*}

@@ -1,136 +1,134 @@
-import React, { useState, useEffect } from 'react'
-import { VStack, Box, Text, Button, Flex, Image } from '@chakra-ui/react'
 
+import React, { useState, useEffect } from 'react';
+import {
+  VStack,
+  Box,
+  Button,
+  Image,
+} from '@chakra-ui/react';
 import { useData } from '../App';
 import { keyframes } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
-import { IoCloseOutline } from "react-icons/io5";
+import { IoCloseOutline } from 'react-icons/io5';
 
 const VisitorMenu = ({ onCloseComplete }) => {
-  const { setVisitorUserMenu, } = useData();
+  const { setVisitorUserMenu } = useData();
+
   const [isClosing, setIsClosing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const navigate = useNavigate();
+
+  const slideDown = keyframes`
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+      background-color: #05c7d0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+      background-color: white;
+    }
+  `;
+
+  const slideUp = keyframes`
+    from {
+      transform: translateY(0);
+      opacity: 1;
+      background-color: white;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+      background-color: #05c7d0;
+    }
+  `;
 
   const closeMobileNav = () => {
     setIsClosing(true);
   };
 
   useEffect(() => {
-    if (isClosing) {
-      const timer = setTimeout(() => {
-        setVisitorUserMenu(false);
-        onCloseComplete();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isClosing, setVisitorUserMenu, onCloseComplete]);
+    if (!isClosing) return;
 
-  const slideDown = keyframes`
-        from {
-            transform: translateY(-100%);
-            opacity: 0;
-            background-color: #05c7d0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-            background-color: white;
+    const timer = setTimeout(() => {
+      setVisitorUserMenu(false);
+      onCloseComplete?.();
+    }, 1000);
 
-        }
-    `;
+    return () => clearTimeout(timer);
+  }, [
+    isClosing,
+    setVisitorUserMenu,
+    onCloseComplete,
+  ]);
 
-  const slideUp = keyframes`
-        from {
-            transform: translateY(0);
-            opacity: 1;
-            background-color: white;
-
-        }
-        to {
-            transform: translateY(-100%);
-            opacity: 0;
-            background-color: #05c7d0;
-
-        }
-    `;
-
-
-
-  const navigate = useNavigate();
-
-
-  const goToLogin = () => {
+  const goToPage = (path) => {
     closeMobileNav();
-    navigate('/account/login');
+    navigate(path);
 
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
-  const goToSignUp = () => {
-    closeMobileNav();
-    navigate('/signup');
-
-  }
-
-  const goToHelp = () => {
-    closeMobileNav();
-    navigate('/help');
-
-  }
-
-  const goToAbout = () => {
-    closeMobileNav();
-    navigate('/about');
-
-  }
-
-  const goToGentleMusic = () => {
-    closeMobileNav();
-    navigate('/gentle-music');
-
-  }
-
-  const goToEvents = () => {
-    closeMobileNav();
-    navigate('/gentle-music/events/');
-
-  };
-
-  const goToArtists = () => {
-    closeMobileNav();
-    navigate('/artists/');
-
-  };
-
-  const goToPureMusicForMothers = () => {
-    closeMobileNav();
-    navigate('/gentle-music/motherhood');
-
-  }
+  const menuItems = [
+    {
+      label: 'The PureMusic Experience',
+      path: '/',
+    },
+    {
+      label: 'Artists',
+      path: '/artists/',
+    },
+    {
+      label: 'Contact',
+      path: '/contact',
+    },
+    {
+      label: 'About',
+      path: '/about',
+    },
+    {
+      label: 'Help',
+      path: '/help',
+    },
+  ];
 
   return (
     <VStack
+      position="relative"
       top="0"
       bg="white"
       width="100%"
-      height="100vh" // Use 100vh to ensure it fills the viewport height
-      animation={`${isClosing ? slideUp : slideDown} 1s ease forwards`}
+      height="100dvh"
+      minH="100vh"
+      overflowY="auto"
+      animation={`${
+        isClosing ? slideUp : slideDown
+      } 1s ease forwards`}
       alignItems="center"
       justifyContent="center"
+      spacing={0}
+      px={5}
+      py={8}
     >
-      {/* Close Button - Top Left */}
+      {/* CLOSE BUTTON */}
       <Box
-        position="fixed" // Use fixed positioning
+        position="absolute"
         top="0"
         left="0"
         width="100%"
         display="flex"
         justifyContent="flex-start"
-        pt="5px"
         p="10px"
-        zIndex="1000" // Ensure it's above other elements
+        zIndex="1000"
       >
         <Button
+          aria-label="Close navigation menu"
           bg="transparent"
           _hover={{ bg: 'transparent' }}
           onMouseEnter={() => setIsHovered(true)}
@@ -139,187 +137,70 @@ const VisitorMenu = ({ onCloseComplete }) => {
         >
           <IoCloseOutline
             size={40}
-            color={isHovered ? '#05c7d0' : 'black'}
+            color={
+              isHovered ? '#05c7d0' : 'black'
+            }
           />
         </Button>
       </Box>
 
-      {/* Centered Login & Sign Up */}
-      <Box display="flex" flexDirection="column" alignItems="center" gap={7} mt="8rem">
-
-        {/*
+      {/* NAVIGATION LINKS */}
+      <VStack
+        spacing={{ base: 5, md: 7 }}
+        width="100%"
+        align="center"
+        justify="center"
+        flex="1"
+        pt="3rem"
+      >
+        {menuItems.map((item) => (
           <Button
-            variant='ghost'
-            fontSize="30px"
+            key={item.path}
+            variant="ghost"
+            height="auto"
+            maxW="100%"
+            px={3}
+            py={2}
+            fontSize={{
+              base: '23px',
+              sm: '27px',
+              md: '30px',
+            }}
             fontWeight={300}
             color="black"
-            onClick={goToLogin}
+            whiteSpace="normal"
+            textAlign="center"
+            lineHeight="1.4"
+            onClick={() => goToPage(item.path)}
             _hover={{
               transform: 'scale(1.022)',
               color: '#06e4ed',
+              bg: 'transparent',
             }}
-            style={{
-              transition: 'transform 0.1s',
-              cursor: 'pointer',
-            }}
+            transition="transform 0.1s, color 0.1s"
           >
-            Login
+            {item.label}
           </Button>
-      
-          <Button
-            variant='ghost'
-            fontSize="30px"
-            fontWeight={300}
-            color="black"
-            onClick={goToSignUp}
-            _hover={{
-              transform: 'scale(1.022)',
-              color: '#06e4ed',
-            }}
-            style={{
-              transition: 'transform 0.1s',
-              cursor: 'pointer',
-            }}
-          >
-            Sign Up
-          </Button>
-          */}
+        ))}
+      </VStack>
 
-
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToEvents}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-          }}
-        >
-          Events
-        </Button>
-
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToGentleMusic}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-          }}
-        >
-          Gentle Music
-        </Button>
-
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToPureMusicForMothers}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-            whiteSpace: 'normal',  // Allow text to wrap
-            textAlign: 'center',   // Optional: center align multiline text
-          }}
-        >
-          PureMusic For Mothers & Babies
-        </Button>
-
-
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToArtists}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-          }}
-        >
-          Artists
-        </Button>
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToAbout}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-          }}
-        >
-          About
-        </Button>
-
-
-        <Button
-          variant='ghost'
-          fontSize="30px"
-          fontWeight={300}
-          color="black"
-          onClick={goToHelp}
-          _hover={{
-            transform: 'scale(1.022)',
-            color: '#06e4ed',
-          }}
-          style={{
-            transition: 'transform 0.1s',
-            cursor: 'pointer',
-          }}
-        >
-          Help
-        </Button>
-
-
-
-
-
-
-      </Box>
-
-      {/* Logo - Bottom Left */}
-      <Box bottom={0} mt="3rem" onClick={closeMobileNav}>
+      {/* PUREMUSIC LOGO */}
+      <Box
+        mt={6}
+        mb={4}
+        cursor="pointer"
+        onClick={() => goToPage('/')}
+      >
         <Image
           src="/PureMusicLogoName.png"
-          alt="Pure Music Logo"
+          alt="PureMusic - Return to homepage"
           maxH="70px"
+          maxW="220px"
+          objectFit="contain"
         />
       </Box>
     </VStack>
-
   );
 };
 
-export default VisitorMenu
+export default VisitorMenu;
